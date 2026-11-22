@@ -1,9 +1,14 @@
 # RouterTLN
-장기 계획형 라우터 기반 Race/Avoid TLN 주행 제어
 
-Berlin 정방향에서 첫 랩은 장애물을 관측하면서 달리고, 다음 랩부터 성공한 첫 랩의 기록으로 감속 시점과 Race → Avoid 전환을 계획한다. 채택 기준은 한 배치에서 연속 3랩 동안 결승선 전 정지와 충돌이 모두 0인 것이다. 이를 만족한 주행끼리 랩타임을 비교한다.
+## 문제 정의
 
-**현재 판정** · 원본 Avoid의 회피 목표 속도 하한을 2.7 m/s로 둔 ROS 시험에서 여섯 배치 모두 적어도 한 번은 통과했다. 최신 CPU 추론 시험은 **18회 중 15회 완주, 충돌 0회, 보호 정지 3회**다. 반복 주행 채택 기준은 아직 미달이다. 2.7 m/s는 첫 랩 성공 후 2·3랩의 Avoid 구간에 적용하는 **명령 하한**이다. [전체 판정과 랩타임](runs/berlin-control-timing/results.json)
+**경량 TLN의 실시간 제어 성능을 유지하면서 첫 랩에서 관측한 장애물과 성공한 회피 경로를 다음 랩의 감속·모델 전환·복귀 계획에 활용할 수 있을까? 목표는 다양한 장애물 배치에서 정지와 충돌 없이 3랩을 완주하고, 그 조건에서 랩타임을 줄이는 것이다.**
+
+원형 TinyLidarNet은 2D 라이다 스캔으로 조향과 스로틀을 직접 예측한다. 코너 직후에 장애물이 있다면 첫 랩에는 시야에 들어온 뒤 대응할 수 있다. 두 번째 랩에는 코너에 들어가기 전부터 감속할 수 있지만, 그러려면 장애물을 만난 위치와 통과 경로를 기억하고 현재 위치와 연결해야 한다. RouterTLN에서는 Race와 Avoid가 매 제어 주기의 명령을 만들고, C++ 라우터가 랩을 넘나드는 기억과 전환 계획을 맡는다. [TinyLidarNet 원 논문](https://arxiv.org/abs/2410.07447) · [랩 계획 구현](include/el/lap_plan.hpp)
+
+Berlin 정방향 동기식 시험에서 같은 두 모델, 같은 8개 시드, 한 변 30 cm인 장애물 3개를 사용했다. 첫 랩 속도 상한을 2.2 m/s, 이후 상한을 3.0 m/s로 설정했을 때 **랩 계획을 끄면 0/8회, 켜면 8/8회** 연속 3랩을 완주했다. [비교 조건과 시드별 결과](runs/berlin-lap-plan/RESULTS.md)
+
+**현재 ROS 검증 결과** · 첫 랩 이후 Avoid 목표 속도 하한을 2.7 m/s로 둔 CPU 추론 시험에서는 **18회 중 15회가 무정지·무충돌로 3랩을 완주**했다. 여섯 배치 모두 완주 기록이 있지만 보호 정지 3회가 남아 있다. 전체 충돌은 0회였다. [배치별 판정과 랩타임](runs/berlin-control-timing/results.json)
 
 ## 주행 구성
 
@@ -18,7 +23,7 @@ Berlin 정방향에서 첫 랩은 장애물을 관측하면서 달리고, 다음
 
 ## Weight-Space Programming 실험
 
-MIT CSAIL의 *Sparks of Weight-Space Programming*은 신경망 가중치를 읽고 직접 편집해 동작을 바꾸는 실험을 다룬다. 여기서는 Python/PyTorch로 기존 TorchScript 체크포인트의 텐서와 층별 역할을 확인하고, 수정한 모델을 같은 폐루프 주행 조건에서 원본 및 대조군과 비교했다. [연구진의 원문](https://rikiyat.github.io/blog/weight-space-programming/) · [가중치 조회 도구](tools/read_weights.py)
+MIT CSAIL의 *Sparks of Weight-Space Programming*은 신경망 가중치를 읽고 직접 편집해 동작을 바꾸는 실험을 다룬다. 이 프로젝트에서는 Python/PyTorch로 기존 TorchScript 체크포인트의 가중치를 편집해 개별 정책의 조향·속도 출력을 개선할 수 있는지 시험했다. 편집 효과는 원본과 대조군을 같은 폐루프 조건에서 주행시켜 평가했다. [연구진의 원문](https://rikiyat.github.io/blog/weight-space-programming/) · [가중치 조회 도구](tools/read_weights.py)
 
 - **Race에는 적용했다.** 출력에 미치는 가중치가 작은 은닉 유닛을 재사용해 전방 경로점의 횡방향 특징(`context[6]`)이 조향 헤드에 직접 반영되도록 편집했다. 재배선만 한 대조군의 이득은 0, 적용 후보의 이득은 12다. Berlin의 네 가지 추가 시작 조건에서 원본은 4회 모두 1랩 전에 충돌했고, 편집 모델은 4회 모두 충돌 없이 1랩을 완주했다. 이 시험은 Race 단독 일반화를 본 것으로, 장애물이 있는 3랩 라우터 시험은 아래에 따로 정리했다. [편집 코드](runs/race-wsp-berlin/make_edit.py) · [원본 결과](runs/race-wsp-berlin/original-test/summary.json) · [편집 결과](runs/race-wsp-berlin/guided-test/summary.json)
 - **Avoid는 후보를 시험하고 원본을 유지했다.** 속도 출력을 일괄 또는 곡률에 따라 올리는 편집과, 회전 속도·전방 경로를 조향에 반영하는 편집을 비교했다. 당시 2.7 m/s 동기식 시험 12건에서 원본은 5건, 요레이트 보정은 6건, 경로 보정은 8건 완주했다. 배치와 시드에 걸쳐 정지·충돌 0이라는 기준에 도달하지 못했다. 이후의 제동·복귀 수정과 아래의 최신 계측 결과는 원본 Avoid 기준이다. [속도 편집 코드](runs/avoid-wsp-speed/make_edits.py) · [후보별 평가](runs/avoid-flying-band/RESULTS.md)
@@ -131,3 +136,76 @@ python3 runs/race-wsp-berlin/make_edit.py
 python3 runs/avoid-wsp-speed/make_edits.py
 ```
 
+## 랜덤 장애물 배치기와 평가기 사용법
+
+### 매 랩 새 배치로 평가하기 · Forza `race_manager`
+
+`obstacle_spawner`는 경로와 트랙 폭을 이용해 후보를 만들고, 랩이 바뀔 때 장애물을 다시 뽑아 `/sim/obstacles`로 발행한다. `scorer`는 랩타임과 벽·장애물 충돌을 기록한다. 시뮬레이터와 주행 제어기를 먼저 실행한 뒤, 같은 ROS 도메인의 별도 터미널에서 두 노드를 함께 시작한다. 이때 장애물 발행기는 하나만 실행한다. 아래는 베이스 이미지에 설치된 `hyhall12` 맵 예시다.
+
+```bash
+source /opt/ros/humble/setup.bash
+source /home/misys/forza_ws/race_stack/install/setup.bash
+cd /workspace
+ros2 launch race_manager race_manager_launch.xml \
+  map_name:=hyhall12 seed:=2026 num_obstacles:=4 \
+  log_dir:=/workspace/runs/race-manager plot:=false
+```
+
+같은 웨이포인트·배치 설정·시드를 사용하면 같은 순서로 배치를 추첨한다. `seed:=-1`은 새 실행마다 다른 시드를 뽑는다. `num_obstacles`는 랩당 개수다. 원하는 랩 수를 주행한 뒤 launch 터미널에서 **Ctrl-C**로 종료한다. `race_result_*.json`에는 랩별 시간과 충돌 수가 남고, `best lap`에는 출발선부터 결승선까지 충돌 없이 달린 랩만 들어간다. 아래 명령으로 최근 결과의 PNG를 저장할 수 있다. [race_manager 사용 설명서](https://github.com/jimin1203/misys-forza-2026/blob/bfba899165e4de371ac4014cad52add06f27559d/utilities/nodes/race_manager/README.md)
+
+```bash
+log=$(ls -t /workspace/runs/race-manager/race_result_*.json | head -1)
+ros2 run race_manager report "$log" --no-show
+```
+
+**Berlin에서 실행할 때** launch 파일은 `stack_master/maps/<map_name>/global_waypoints.json`을 읽고, 이 저장소의 Berlin 맵은 `/workspace/maps/berlin`에 있다. Berlin 시뮬레이터와 제어기를 실행한 상태에서 아래 두 명령을 각각 별도 터미널에서 실행하면 저장소의 웨이포인트를 직접 지정할 수 있다. 각 터미널에서 위의 두 `source` 명령을 먼저 실행한다.
+
+```bash
+# 터미널 1 · 장애물 배치기
+cfg="$(ros2 pkg prefix --share race_manager)/config/race_manager_params.yaml"
+ros2 run race_manager obstacle_spawner --ros-args --params-file "$cfg" \
+  -p waypoints_file:=/workspace/maps/berlin/global_waypoints.json -p seed:=2026 -p num_obstacles:=3
+```
+
+```bash
+# 터미널 2 · 랩과 충돌 평가기
+cfg="$(ros2 pkg prefix --share race_manager)/config/race_manager_params.yaml"
+ros2 run race_manager scorer --ros-args --params-file "$cfg" \
+  -p waypoints_file:=/workspace/maps/berlin/global_waypoints.json -p map_name:=berlin \
+  -p seed:=2026 -p log_dir:=/workspace/runs/race-manager-berlin
+```
+
+### 한 배치를 유지하며 랩 계획 평가하기 · RouterTLN
+
+Berlin 3랩 시험에서는 첫 랩의 기록을 다음 랩에 쓸 수 있도록 한 주행 동안 장애물 위치를 유지한다. `scripts/smoke.sh`가 시뮬레이터, `el_scenario`, 제어기를 함께 실행한다. 아래 예시는 웨이포인트 94부터 30개 인덱스 간격으로 장애물 3개를 놓고, 각 장애물의 횡방향 위치를 시드 2026으로 −0.12~+0.12 m 범위에서 뽑는다. 같은 시드로 배치를 재현하거나 `EL_OBSTACLE_OFFSETS='[0.083,-0.083,0.083]'`으로 세 위치를 직접 지정할 수 있다. [배치기 코드](src/scenario.cpp)
+
+```bash
+cd /workspace
+tag=berlin-seed2026-$(date +%Y%m%d-%H%M%S)
+EL_OBSTACLE_OFFSETS= EL_START_INDEX=37 EL_OBSTACLE_INDEX=94 EL_OBSTACLE_STRIDE=30 \
+EL_MAP_DIR=/workspace/maps/berlin EL_LAP_PLANNING=true EL_STOP_AFTER_LAPS=3 \
+EL_SPEED_CAP=3.0 EL_SIM_AVOID_MIN=2.7 EL_SIM_AVOID_MAX=3.0 EL_INFERENCE_DEVICE=cpu \
+bash scripts/smoke.sh 130 3 moe "$tag" "" 2026
+/build/el_inspect --metrics "/workspace/runs/$tag.csv"
+```
+
+`130`은 주행 제한 시간(초), `3`은 장애물 수, 마지막 인자는 시드다. CSV에서 `reason`, `progress_m`, `collision`으로 정지 지점과 충돌을 확인한다. **여섯 고정 배치의 무정지·무충돌 3랩 판정**은 위의 ‘원본 Avoid로 ROS 폐루프 반복’ 명령을 사용한다. `ros.py`가 배치·회차별 좌표와 CSV를 저장하고, `summarize.py`의 `trials[].accepted`가 각 주행의 통과 여부를 보여 준다.
+
+### 같은 조건에서 모델 두 개를 비교할 때 · 동기식 Gym 평가기
+
+`evaluate_avoid.sh`에 Avoid 체크포인트, 새 결과 JSONL 경로, 시험 조건 JSON, Race 체크포인트를 순서대로 전달한다. 아래는 Berlin 정방향 4개 배치와 3개 시드에서 모델 조합을 3랩씩 평가한다. 모델 간 비교에서는 같은 조건 파일을 사용하고 출력 파일명을 바꾼다. [시험 조건 12개](runs/berlin-brake-merge/paired.json) · [평가기](src/eval_avoid.cpp)
+
+```bash
+out="/tmp/berlin-paired-$(date +%Y%m%d-%H%M%S).jsonl"
+bash scripts/evaluate_avoid.sh models/avoid-corridor-v2.pt "$out" \
+  runs/berlin-brake-merge/paired.json models/race-berlin-wsp.pt
+python3 - "$out" <<'PY'
+import json, sys
+with open(sys.argv[1]) as stream:
+    for line in stream:
+        r = json.loads(line)
+        print(r["case"], r["reason"], len(r["laps"]), r["first_rejection"], r["contact"])
+PY
+```
+
+한 줄이 한 케이스다. `reason=completed`, 완료 랩 3개, `first_rejection`과 `contact`가 모두 `null`인지 확인한다. 이 시험의 랩타임은 시뮬레이션 시간으로 계산한다. ROS 스캔 지연과 실제 제어 연산 기한은 ROS 폐루프 시험에서 측정한다.
