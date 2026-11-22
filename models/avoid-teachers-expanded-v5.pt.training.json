@@ -1,0 +1,489 @@
+{
+  "batch_size": 64,
+  "best_epoch": 19,
+  "best_validation_loss": 0.0018192438154343378,
+  "checkpoint": "/workspace/models/avoid-teachers-expanded-v5.pt",
+  "checkpoint_reload_verified": true,
+  "epochs": 20,
+  "expert": "avoid",
+  "history": [
+    {
+      "epoch": 1,
+      "saved_best": true,
+      "train_loss": 0.020053791045432708,
+      "validation": {
+        "loss": 0.007492330834036282,
+        "speed_mae_mps": 0.2972165419731611,
+        "steer_mae_rad": 0.049900100546539136
+      }
+    },
+    {
+      "epoch": 2,
+      "saved_best": true,
+      "train_loss": 0.006812714058667587,
+      "validation": {
+        "loss": 0.005034775734095583,
+        "speed_mae_mps": 0.28093606548965294,
+        "steer_mae_rad": 0.03660938429454017
+      }
+    },
+    {
+      "epoch": 3,
+      "saved_best": true,
+      "train_loss": 0.004704086470322072,
+      "validation": {
+        "loss": 0.003746273445303846,
+        "speed_mae_mps": 0.27968216920025135,
+        "steer_mae_rad": 0.02866971900643916
+      }
+    },
+    {
+      "epoch": 4,
+      "saved_best": true,
+      "train_loss": 0.003494886317995654,
+      "validation": {
+        "loss": 0.003269723953344125,
+        "speed_mae_mps": 0.28517630775138814,
+        "steer_mae_rad": 0.02567436485694198
+      }
+    },
+    {
+      "epoch": 5,
+      "saved_best": true,
+      "train_loss": 0.0029023045523378665,
+      "validation": {
+        "loss": 0.0027144205345849405,
+        "speed_mae_mps": 0.28403575552834404,
+        "steer_mae_rad": 0.020985046534731683
+      }
+    },
+    {
+      "epoch": 6,
+      "saved_best": true,
+      "train_loss": 0.0025713986214390833,
+      "validation": {
+        "loss": 0.002618585551704561,
+        "speed_mae_mps": 0.2864514969854338,
+        "steer_mae_rad": 0.020734164517182314
+      }
+    },
+    {
+      "epoch": 7,
+      "saved_best": true,
+      "train_loss": 0.0024086062710429214,
+      "validation": {
+        "loss": 0.002506395340511145,
+        "speed_mae_mps": 0.29388873518249137,
+        "steer_mae_rad": 0.018980760347275503
+      }
+    },
+    {
+      "epoch": 8,
+      "saved_best": true,
+      "train_loss": 0.0022670097596941548,
+      "validation": {
+        "loss": 0.0021370154653546094,
+        "speed_mae_mps": 0.26339350501486025,
+        "steer_mae_rad": 0.017812277635779545
+      }
+    },
+    {
+      "epoch": 9,
+      "saved_best": true,
+      "train_loss": 0.002158976670689991,
+      "validation": {
+        "loss": 0.0020484489423052013,
+        "speed_mae_mps": 0.257565946070185,
+        "steer_mae_rad": 0.017470083741283927
+      }
+    },
+    {
+      "epoch": 10,
+      "saved_best": true,
+      "train_loss": 0.002134546522975393,
+      "validation": {
+        "loss": 0.0020330198227413118,
+        "speed_mae_mps": 0.25545622694849757,
+        "steer_mae_rad": 0.01757515127696689
+      }
+    },
+    {
+      "epoch": 11,
+      "saved_best": false,
+      "train_loss": 0.0020620506476744078,
+      "validation": {
+        "loss": 0.0021768167657642977,
+        "speed_mae_mps": 0.259719778936376,
+        "steer_mae_rad": 0.019184182535403625
+      }
+    },
+    {
+      "epoch": 12,
+      "saved_best": true,
+      "train_loss": 0.0020311528097021994,
+      "validation": {
+        "loss": 0.0019758829278452568,
+        "speed_mae_mps": 0.25519224239194627,
+        "steer_mae_rad": 0.01718778298224931
+      }
+    },
+    {
+      "epoch": 13,
+      "saved_best": true,
+      "train_loss": 0.00196007557995874,
+      "validation": {
+        "loss": 0.0019570306601328037,
+        "speed_mae_mps": 0.25261735747941166,
+        "steer_mae_rad": 0.01713043207003747
+      }
+    },
+    {
+      "epoch": 14,
+      "saved_best": true,
+      "train_loss": 0.001948247884396218,
+      "validation": {
+        "loss": 0.001943562303199983,
+        "speed_mae_mps": 0.24913341458722607,
+        "steer_mae_rad": 0.017198804791431994
+      }
+    },
+    {
+      "epoch": 15,
+      "saved_best": false,
+      "train_loss": 0.0018959202403987664,
+      "validation": {
+        "loss": 0.002005717233463964,
+        "speed_mae_mps": 0.25142699553642744,
+        "steer_mae_rad": 0.018279690036067248
+      }
+    },
+    {
+      "epoch": 16,
+      "saved_best": true,
+      "train_loss": 0.0018914227890875221,
+      "validation": {
+        "loss": 0.0018571325154840368,
+        "speed_mae_mps": 0.24125151827642316,
+        "steer_mae_rad": 0.01717213495278064
+      }
+    },
+    {
+      "epoch": 17,
+      "saved_best": true,
+      "train_loss": 0.0018523931781180684,
+      "validation": {
+        "loss": 0.0018544037594760536,
+        "speed_mae_mps": 0.2403701580600974,
+        "steer_mae_rad": 0.017081791955116984
+      }
+    },
+    {
+      "epoch": 18,
+      "saved_best": true,
+      "train_loss": 0.0018168517288597037,
+      "validation": {
+        "loss": 0.0018362658948972623,
+        "speed_mae_mps": 0.23979641436689536,
+        "steer_mae_rad": 0.017103934716926054
+      }
+    },
+    {
+      "epoch": 19,
+      "saved_best": true,
+      "train_loss": 0.0017926059776465642,
+      "validation": {
+        "loss": 0.0018192438154343378,
+        "speed_mae_mps": 0.23716081660470845,
+        "steer_mae_rad": 0.017142789603541136
+      }
+    },
+    {
+      "epoch": 20,
+      "saved_best": false,
+      "train_loss": 0.001773920833183866,
+      "validation": {
+        "loss": 0.0018480145098556102,
+        "speed_mae_mps": 0.23601007314375888,
+        "steer_mae_rad": 0.017528821845954466
+      }
+    }
+  ],
+  "initial_validation": {
+    "loss": 0.1008396567359593,
+    "speed_mae_mps": 2.910585169649208,
+    "steer_mae_rad": 0.07873590866304157
+  },
+  "learning_rate": 0.0001,
+  "loss": "SmoothL1 mean over normalized steering/speed",
+  "optimizer": "Adam",
+  "optimizer_state_saved": false,
+  "paths": {
+    "test_episodes": [
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-005-encounter-1.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-005-encounter-2.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-005-encounter-3.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-011-encounter-1.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-011-encounter-2.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-011-encounter-3.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-017-encounter-1.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-017-encounter-2.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-017-encounter-3.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-023-encounter-1.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-029-encounter-1.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-029-encounter-2.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-029-encounter-3.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-035-encounter-1.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-035-encounter-2.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-035-encounter-3.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-041-encounter-1.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-041-encounter-2.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-041-encounter-3.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-047-encounter-1.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-047-encounter-2.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-047-encounter-3.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-053-encounter-1.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-053-encounter-2.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-053-encounter-3.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-059-encounter-1.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-059-encounter-2.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-059-encounter-3.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-065-encounter-1.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-065-encounter-2.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-065-encounter-3.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-071-encounter-1.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-071-encounter-2.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-071-encounter-3.elds",
+      "/workspace/data/teachers-expanded-v5-balanced-20261029/accepted/balanced-avoid-01-encounter-1.elds",
+      "/workspace/data/teachers-expanded-v5-balanced-20261029/accepted/balanced-avoid-01-encounter-2.elds",
+      "/workspace/data/teachers-expanded-v5-balanced-20261029/accepted/balanced-avoid-01-encounter-3.elds",
+      "/workspace/data/teachers-expanded-v5-balanced-20261029/accepted/balanced-avoid-03-encounter-1.elds",
+      "/workspace/data/teachers-expanded-v5-balanced-20261029/accepted/balanced-avoid-03-encounter-2.elds",
+      "/workspace/data/teachers-expanded-v5-balanced-20261029/accepted/balanced-avoid-03-encounter-3.elds",
+      "/workspace/data/teachers-expanded-v5-balanced-20261029/accepted/balanced-avoid-05-encounter-1.elds",
+      "/workspace/data/teachers-expanded-v5-balanced-20261029/accepted/balanced-avoid-05-encounter-2.elds",
+      "/workspace/data/teachers-expanded-v5-balanced-20261029/accepted/balanced-avoid-05-encounter-3.elds",
+      "/workspace/data/teachers-expanded-v5-balanced-20261029/accepted/balanced-avoid-07-encounter-1.elds",
+      "/workspace/data/teachers-expanded-v5-balanced-20261029/accepted/balanced-avoid-07-encounter-2.elds",
+      "/workspace/data/teachers-expanded-v5-balanced-20261029/accepted/balanced-avoid-07-encounter-3.elds",
+      "/workspace/data/teachers-expanded-v5-balanced-20261029/accepted/balanced-avoid-09-encounter-1.elds",
+      "/workspace/data/teachers-expanded-v5-balanced-20261029/accepted/balanced-avoid-09-encounter-2.elds",
+      "/workspace/data/teachers-expanded-v5-balanced-20261029/accepted/balanced-avoid-09-encounter-3.elds",
+      "/workspace/data/teachers-expanded-v5-balanced-20261029/accepted/balanced-avoid-11-encounter-1.elds",
+      "/workspace/data/teachers-expanded-v5-balanced-20261029/accepted/balanced-avoid-11-encounter-2.elds",
+      "/workspace/data/teachers-expanded-v5-balanced-20261029/accepted/balanced-avoid-11-encounter-3.elds"
+    ],
+    "train_episodes": [
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-001-encounter-1.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-001-encounter-2.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-001-encounter-3.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-003-encounter-1.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-003-encounter-2.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-003-encounter-3.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-004-encounter-1.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-004-encounter-2.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-004-encounter-3.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-006-encounter-1.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-006-encounter-2.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-006-encounter-3.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-007-encounter-1.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-007-encounter-2.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-007-encounter-3.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-009-encounter-1.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-009-encounter-2.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-009-encounter-3.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-010-encounter-1.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-010-encounter-2.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-010-encounter-3.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-012-encounter-1.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-013-encounter-1.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-013-encounter-2.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-013-encounter-3.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-015-encounter-1.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-015-encounter-2.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-015-encounter-3.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-016-encounter-1.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-016-encounter-2.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-016-encounter-3.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-018-encounter-1.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-018-encounter-2.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-018-encounter-3.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-019-encounter-1.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-019-encounter-2.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-019-encounter-3.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-021-encounter-1.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-021-encounter-2.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-021-encounter-3.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-022-encounter-1.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-022-encounter-2.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-022-encounter-3.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-024-encounter-1.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-024-encounter-2.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-024-encounter-3.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-025-encounter-1.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-025-encounter-2.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-025-encounter-3.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-027-encounter-1.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-027-encounter-2.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-027-encounter-3.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-028-encounter-1.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-028-encounter-2.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-028-encounter-3.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-030-encounter-1.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-030-encounter-2.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-030-encounter-3.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-031-encounter-1.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-031-encounter-2.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-031-encounter-3.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-033-encounter-1.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-033-encounter-2.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-033-encounter-3.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-034-encounter-1.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-034-encounter-2.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-034-encounter-3.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-036-encounter-1.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-036-encounter-2.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-036-encounter-3.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-037-encounter-1.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-037-encounter-2.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-037-encounter-3.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-039-encounter-1.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-039-encounter-2.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-039-encounter-3.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-040-encounter-1.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-040-encounter-2.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-040-encounter-3.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-042-encounter-1.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-042-encounter-2.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-043-encounter-1.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-043-encounter-2.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-043-encounter-3.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-045-encounter-1.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-045-encounter-2.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-045-encounter-3.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-046-encounter-1.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-046-encounter-2.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-046-encounter-3.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-048-encounter-1.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-048-encounter-2.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-048-encounter-3.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-049-encounter-1.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-049-encounter-2.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-049-encounter-3.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-051-encounter-1.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-051-encounter-2.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-051-encounter-3.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-052-encounter-1.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-052-encounter-2.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-052-encounter-3.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-054-encounter-1.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-054-encounter-2.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-054-encounter-3.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-055-encounter-1.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-055-encounter-2.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-055-encounter-3.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-057-encounter-1.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-057-encounter-2.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-057-encounter-3.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-058-encounter-1.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-058-encounter-2.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-058-encounter-3.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-060-encounter-1.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-060-encounter-2.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-060-encounter-3.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-061-encounter-1.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-061-encounter-2.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-061-encounter-3.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-063-encounter-1.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-063-encounter-2.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-063-encounter-3.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-064-encounter-1.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-064-encounter-2.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-064-encounter-3.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-066-encounter-1.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-066-encounter-2.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-066-encounter-3.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-067-encounter-1.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-067-encounter-2.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-067-encounter-3.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-069-encounter-1.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-069-encounter-2.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-069-encounter-3.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-070-encounter-1.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-070-encounter-2.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-070-encounter-3.elds",
+      "/workspace/data/teachers-expanded-v5-rear-20261029/accepted/rear-avoid-00-encounter-1.elds",
+      "/workspace/data/teachers-expanded-v5-rear-20261029/accepted/rear-avoid-00-encounter-2.elds",
+      "/workspace/data/teachers-expanded-v5-rear-20261029/accepted/rear-avoid-01-encounter-1.elds",
+      "/workspace/data/teachers-expanded-v5-rear-20261029/accepted/rear-avoid-01-encounter-2.elds"
+    ],
+    "validation_episodes": [
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-002-encounter-1.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-002-encounter-2.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-002-encounter-3.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-008-encounter-1.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-008-encounter-2.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-008-encounter-3.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-014-encounter-1.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-014-encounter-2.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-014-encounter-3.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-020-encounter-1.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-020-encounter-2.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-020-encounter-3.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-026-encounter-1.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-026-encounter-2.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-026-encounter-3.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-032-encounter-1.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-032-encounter-2.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-032-encounter-3.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-038-encounter-1.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-038-encounter-2.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-038-encounter-3.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-044-encounter-1.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-050-encounter-1.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-050-encounter-2.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-050-encounter-3.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-056-encounter-1.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-056-encounter-2.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-056-encounter-3.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-062-encounter-1.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-062-encounter-2.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-062-encounter-3.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-068-encounter-1.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-068-encounter-2.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/avoid-068-encounter-3.elds",
+      "/workspace/data/teachers-expanded-v5-balanced-20261029/accepted/balanced-avoid-00-encounter-1.elds",
+      "/workspace/data/teachers-expanded-v5-balanced-20261029/accepted/balanced-avoid-00-encounter-2.elds",
+      "/workspace/data/teachers-expanded-v5-balanced-20261029/accepted/balanced-avoid-00-encounter-3.elds",
+      "/workspace/data/teachers-expanded-v5-balanced-20261029/accepted/balanced-avoid-02-encounter-1.elds",
+      "/workspace/data/teachers-expanded-v5-balanced-20261029/accepted/balanced-avoid-02-encounter-2.elds",
+      "/workspace/data/teachers-expanded-v5-balanced-20261029/accepted/balanced-avoid-02-encounter-3.elds",
+      "/workspace/data/teachers-expanded-v5-balanced-20261029/accepted/balanced-avoid-04-encounter-1.elds",
+      "/workspace/data/teachers-expanded-v5-balanced-20261029/accepted/balanced-avoid-04-encounter-2.elds",
+      "/workspace/data/teachers-expanded-v5-balanced-20261029/accepted/balanced-avoid-04-encounter-3.elds",
+      "/workspace/data/teachers-expanded-v5-balanced-20261029/accepted/balanced-avoid-06-encounter-1.elds",
+      "/workspace/data/teachers-expanded-v5-balanced-20261029/accepted/balanced-avoid-06-encounter-2.elds",
+      "/workspace/data/teachers-expanded-v5-balanced-20261029/accepted/balanced-avoid-06-encounter-3.elds",
+      "/workspace/data/teachers-expanded-v5-balanced-20261029/accepted/balanced-avoid-08-encounter-1.elds",
+      "/workspace/data/teachers-expanded-v5-balanced-20261029/accepted/balanced-avoid-08-encounter-2.elds",
+      "/workspace/data/teachers-expanded-v5-balanced-20261029/accepted/balanced-avoid-08-encounter-3.elds",
+      "/workspace/data/teachers-expanded-v5-balanced-20261029/accepted/balanced-avoid-10-encounter-1.elds",
+      "/workspace/data/teachers-expanded-v5-balanced-20261029/accepted/balanced-avoid-10-encounter-2.elds",
+      "/workspace/data/teachers-expanded-v5-balanced-20261029/accepted/balanced-avoid-10-encounter-3.elds",
+      "/workspace/data/teachers-expanded-v5-rear-20261029/accepted/rear-avoid-02-encounter-1.elds",
+      "/workspace/data/teachers-expanded-v5-rear-20261029/accepted/rear-avoid-02-encounter-2.elds"
+    ]
+  },
+  "reloaded_validation": {
+    "loss": 0.0018192438154343378,
+    "speed_mae_mps": 0.23716081660470845,
+    "steer_mae_rad": 0.017142789603541136
+  },
+  "seed": 2026,
+  "selection": "strictly lowest validation loss; ties keep first",
+  "status": "completed",
+  "test_evaluated": false,
+  "train_records": 15245,
+  "training_executed": true,
+  "training_seconds": 21.58057654,
+  "validation_records": 5670
+}

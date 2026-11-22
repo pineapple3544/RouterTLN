@@ -1,0 +1,57 @@
+{
+  "diagnostic_replay_physical_columns_identical": true,
+  "diagnostic_rows": 929,
+  "checkpoint_unchanged": true,
+  "timing": {
+    "smppi": {
+      "control_ms": {
+        "mean": 21.092526867593957,
+        "median": 20.9409,
+        "samples": 11646,
+        "p95": 22.3339,
+        "max": 27.5637
+      },
+      "inference_ms": {
+        "mean": 0.0,
+        "median": 0.0,
+        "samples": 11646,
+        "p95": 0.0,
+        "max": 0.0
+      }
+    },
+    "tln_only": {
+      "control_ms": {
+        "mean": 2.7849481115769636,
+        "median": 2.71274,
+        "samples": 11687,
+        "p95": 3.36407,
+        "max": 7.08913
+      },
+      "inference_ms": {
+        "mean": 0.665725791991101,
+        "median": 0.607548,
+        "samples": 11687,
+        "p95": 0.933687,
+        "max": 5.21313
+      }
+    },
+    "tln_smppi_guarded": {
+      "control_ms": {
+        "mean": 2.9656634334763874,
+        "median": 2.82373,
+        "samples": 11417,
+        "p95": 3.6634,
+        "max": 22.8838
+      },
+      "inference_ms": {
+        "mean": 0.7686631088727355,
+        "median": 0.656782,
+        "samples": 11417,
+        "p95": 1.0948,
+        "max": 5.39044
+      }
+    }
+  },
+  "paired_runs_checked": 30,
+  "latency_scope": "Inference includes tensor transfer and CPU output synchronization; control includes features, shadow safety checks and optimizer when invoked, excludes simulator steps and ROS transport."
+}

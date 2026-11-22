@@ -1,0 +1,52 @@
+{
+  "checkpoint": "/workspace/runs/race-wsp-berlin/guided.pt",
+  "completed": true,
+  "lap_timing": "Polyline projected signed progress, interpolated full-loop crossings; standing-start first lap included. Incomplete laps excluded and failed runs reported separately.",
+  "runs": 1,
+  "scope": "Offline synchronous F110 Gym closed-loop, static walls and no added obstacles. Guard uses dynamic one-command plus braking check and SMPPI v5 with 0.3s return dwell, not the ROS fallback implementation. No real-time deadline enforcement.",
+  "tln_only": {
+    "all_completed_lap_times_s": {
+      "count": 1,
+      "max": 26.924472612311764,
+      "mean": 26.924472612311764,
+      "median": 26.924472612311764,
+      "min": 26.924472612311764,
+      "p95": 26.924472612311764
+    },
+    "candidate_rejected_steps": 0,
+    "collision_runs": 0,
+    "completed_runs": 1,
+    "completion_rate": 1.0,
+    "fallback_fraction": 0.0,
+    "fallback_steps": 0,
+    "fully_completed_run_lap_times_s": {
+      "count": 1,
+      "max": 26.924472612311764,
+      "mean": 26.924472612311764,
+      "median": 26.924472612311764,
+      "min": 26.924472612311764,
+      "p95": 26.924472612311764
+    },
+    "maps": {
+      "berlin": {
+        "collisions": 0,
+        "completed": 1,
+        "runs": 1
+      }
+    },
+    "peak_actual_speeds_mps": {
+      "count": 1,
+      "max": 2.417834997177124,
+      "mean": 2.417834997177124,
+      "median": 2.417834997177124,
+      "min": 2.417834997177124,
+      "p95": 2.417834997177124
+    },
+    "reasons": {
+      "completed": 1
+    },
+    "runs": 1,
+    "steps": 539
+  },
+  "training_executed": false
+}

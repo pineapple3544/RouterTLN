@@ -1,0 +1,41 @@
+{
+  "teacher": false,
+  "cases": [
+    {
+      "name": "berlin-forward",
+      "map": "berlin",
+      "layout": 0,
+      "count": 3,
+      "seed": 2026,
+      "start": 37,
+      "stations": [
+        5.73,
+        8.73,
+        11.73
+      ],
+      "offsets": [
+        0.083,
+        -0.083,
+        0.083
+      ]
+    },
+    {
+      "name": "berlin-reverse",
+      "map": "berlin",
+      "layout": 1,
+      "count": 3,
+      "seed": 2027,
+      "start": 96,
+      "stations": [
+        5.73,
+        8.73,
+        11.73
+      ],
+      "offsets": [
+        0.083,
+        -0.083,
+        0.083
+      ]
+    }
+  ]
+}

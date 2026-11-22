@@ -1,0 +1,65 @@
+[
+  {
+    "candidate_rejected_steps": 0,
+    "checkpoint": "/workspace/runs/race-wsp-berlin/guided.pt",
+    "collision": false,
+    "command_clipped_steps": 0,
+    "completed_laps": 1,
+    "control_dt": 0.05,
+    "control_ms": {
+      "count": 539,
+      "max": 6.469306,
+      "mean": 3.6273297940630784,
+      "median": 3.536993,
+      "min": 3.092307,
+      "p95": 4.12808
+    },
+    "controller": "tln_only",
+    "emergency_steps": 0,
+    "failure_diagnostic": null,
+    "fallback_entries": 0,
+    "fallback_steps": 0,
+    "id": "berlin-forward-tln_only",
+    "inference_ms": {
+      "count": 539,
+      "max": 2.075256,
+      "mean": 0.7105744341372915,
+      "median": 0.658819,
+      "min": 0.528361,
+      "p95": 1.116441
+    },
+    "lap_times_s": [
+      26.924472612311764
+    ],
+    "model_error_max": 1.9073486328125e-06,
+    "obstacles": 0,
+    "peak_actual_speed_mps": 2.417834997177124,
+    "physics_dt": 0.01,
+    "progress_m": 48.83359534325966,
+    "reason": "completed",
+    "reference_error_m": {
+      "count": 539,
+      "max": 0.269071388158349,
+      "mean": 0.09990369765463097,
+      "median": 0.07951907064578834,
+      "min": 5.017493742546427e-06,
+      "p95": 0.22289386900753824
+    },
+    "reference_error_rms_m": 0.12181966940554902,
+    "scenario": {
+      "laps": 1,
+      "map_dir": "/workspace/maps/berlin",
+      "map_name": "berlin",
+      "map_stem": "berlin",
+      "name": "berlin-forward",
+      "seed": 2026,
+      "speed_cap": 3
+    },
+    "simulation_seconds": 26.950000000001413,
+    "steps": 539,
+    "synchronous": true,
+    "trace": "/workspace/runs/race-wsp-berlin/guided/berlin-forward-tln_only.csv",
+    "track_length_m": 48.783905029296875,
+    "training_executed": false
+  }
+]

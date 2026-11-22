@@ -1,0 +1,3 @@
+race_checkpoint: /workspace/models/race-berlin-wsp.pt
+avoid_lookahead_scale: 0.50
+race_speed_scale: 2.15

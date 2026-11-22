@@ -1,0 +1,185 @@
+{
+  "teacher": false,
+  "cases": [
+    {
+      "name": "cap3-seed2031",
+      "map": "berlin",
+      "layout": 0,
+      "count": 3,
+      "seed": 2031,
+      "start": 37,
+      "stations": [
+        5.73,
+        8.73,
+        11.73
+      ],
+      "offsets": [
+        0.083,
+        -0.083,
+        0.083
+      ],
+      "full_lap": true,
+      "speed_cap": 3
+    },
+    {
+      "name": "cap3-seed2047",
+      "map": "berlin",
+      "layout": 0,
+      "count": 3,
+      "seed": 2047,
+      "start": 37,
+      "stations": [
+        5.73,
+        8.73,
+        11.73
+      ],
+      "offsets": [
+        0.083,
+        -0.083,
+        0.083
+      ],
+      "full_lap": true,
+      "speed_cap": 3
+    },
+    {
+      "name": "cap3-seed7719",
+      "map": "berlin",
+      "layout": 0,
+      "count": 3,
+      "seed": 7719,
+      "start": 37,
+      "stations": [
+        5.73,
+        8.73,
+        11.73
+      ],
+      "offsets": [
+        0.083,
+        -0.083,
+        0.083
+      ],
+      "full_lap": true,
+      "speed_cap": 3
+    },
+    {
+      "name": "cap4-seed2031",
+      "map": "berlin",
+      "layout": 0,
+      "count": 3,
+      "seed": 2031,
+      "start": 37,
+      "stations": [
+        5.73,
+        8.73,
+        11.73
+      ],
+      "offsets": [
+        0.083,
+        -0.083,
+        0.083
+      ],
+      "full_lap": true,
+      "speed_cap": 4
+    },
+    {
+      "name": "cap4-seed2047",
+      "map": "berlin",
+      "layout": 0,
+      "count": 3,
+      "seed": 2047,
+      "start": 37,
+      "stations": [
+        5.73,
+        8.73,
+        11.73
+      ],
+      "offsets": [
+        0.083,
+        -0.083,
+        0.083
+      ],
+      "full_lap": true,
+      "speed_cap": 4
+    },
+    {
+      "name": "cap4-seed7719",
+      "map": "berlin",
+      "layout": 0,
+      "count": 3,
+      "seed": 7719,
+      "start": 37,
+      "stations": [
+        5.73,
+        8.73,
+        11.73
+      ],
+      "offsets": [
+        0.083,
+        -0.083,
+        0.083
+      ],
+      "full_lap": true,
+      "speed_cap": 4
+    },
+    {
+      "name": "cap5-seed2031",
+      "map": "berlin",
+      "layout": 0,
+      "count": 3,
+      "seed": 2031,
+      "start": 37,
+      "stations": [
+        5.73,
+        8.73,
+        11.73
+      ],
+      "offsets": [
+        0.083,
+        -0.083,
+        0.083
+      ],
+      "full_lap": true,
+      "speed_cap": 5
+    },
+    {
+      "name": "cap5-seed2047",
+      "map": "berlin",
+      "layout": 0,
+      "count": 3,
+      "seed": 2047,
+      "start": 37,
+      "stations": [
+        5.73,
+        8.73,
+        11.73
+      ],
+      "offsets": [
+        0.083,
+        -0.083,
+        0.083
+      ],
+      "full_lap": true,
+      "speed_cap": 5
+    },
+    {
+      "name": "cap5-seed7719",
+      "map": "berlin",
+      "layout": 0,
+      "count": 3,
+      "seed": 7719,
+      "start": 37,
+      "stations": [
+        5.73,
+        8.73,
+        11.73
+      ],
+      "offsets": [
+        0.083,
+        -0.083,
+        0.083
+      ],
+      "full_lap": true,
+      "speed_cap": 5
+    }
+  ]
+}

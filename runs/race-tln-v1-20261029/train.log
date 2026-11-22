@@ -1,0 +1,22 @@
+train_records=12773 validation_records=4829 initial_validation=0.09390132225
+epoch=1 train=0.0192929827 validation=0.006276345996 best_epoch=1 saved=1
+epoch=2 train=0.005038640104 validation=0.003817772039 best_epoch=2 saved=1
+epoch=3 train=0.003464313001 validation=0.002755265012 best_epoch=3 saved=1
+epoch=4 train=0.002517644844 validation=0.002085798833 best_epoch=4 saved=1
+epoch=5 train=0.001961847858 validation=0.001807765644 best_epoch=5 saved=1
+epoch=6 train=0.001681817066 validation=0.001548798401 best_epoch=6 saved=1
+epoch=7 train=0.001504491024 validation=0.001520150873 best_epoch=7 saved=1
+epoch=8 train=0.001375000771 validation=0.001380783529 best_epoch=8 saved=1
+epoch=9 train=0.001292892642 validation=0.001325856846 best_epoch=9 saved=1
+epoch=10 train=0.001205806747 validation=0.001308790055 best_epoch=10 saved=1
+epoch=11 train=0.001126866964 validation=0.00125430231 best_epoch=11 saved=1
+epoch=12 train=0.001101113795 validation=0.001161633172 best_epoch=12 saved=1
+epoch=13 train=0.001048761879 validation=0.001132083484 best_epoch=13 saved=1
+epoch=14 train=0.0009898556834 validation=0.001301439239 best_epoch=13 saved=0
+epoch=15 train=0.000958384121 validation=0.001048198435 best_epoch=15 saved=1
+epoch=16 train=0.0009356963367 validation=0.001172906151 best_epoch=15 saved=0
+epoch=17 train=0.0008997266847 validation=0.001044543414 best_epoch=17 saved=1
+epoch=18 train=0.000899316783 validation=0.001000798514 best_epoch=18 saved=1
+epoch=19 train=0.0008820037487 validation=0.001000471601 best_epoch=19 saved=1
+epoch=20 train=0.0008385079623 validation=0.00101276831 best_epoch=19 saved=0
+BEST epoch=19 validation=0.001000471601 steer_mae_rad=0.01192936375 speed_mae_mps=0.1850203976 checkpoint=/workspace/models/race-teachers-expanded-v5.pt

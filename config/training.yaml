@@ -1,0 +1,8 @@
+# Template only. Never invoked by build, tests, or simulation scripts.
+expert: race
+train_episodes: []
+validation_episodes: []
+epochs: 20
+batch_size: 64
+learning_rate: 0.0001
+checkpoint: /workspace/models/race.pt

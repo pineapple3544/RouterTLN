@@ -1,0 +1,384 @@
+/home/misys/forza_ws/race_stack/base_system/f110_simulator/f1tenth_gym/gym/f110_gym/envs/base_classes.py:96: UserWarning: Chosen integrator is RK4. This is different from previous versions of the gym.
+  warnings.warn(f"Chosen integrator is RK4. This is different from previous versions of the gym.")
+heldout-race-005-tln_only step=0 laps=0.000143347909 speed=0.245198086 fallback=0
+heldout-race-005-tln_only step=200 laps=0.591993204 speed=2.4685092 fallback=0
+heldout-race-005-tln_only step=400 laps=1.14375442 speed=1.70451415 fallback=0
+heldout-race-005-tln_only step=600 laps=1.74543522 speed=2.0740211 fallback=0
+heldout-race-005-tln_only step=800 laps=2.2920578 speed=2.05507755 fallback=0
+heldout-race-005-tln_only step=1000 laps=2.91175341 speed=1.90613651 fallback=0
+RESULT heldout-race-005-tln_only completed laps=3 fallback=0/1034
+heldout-race-005-tln_smppi_guarded step=0 laps=0.000143347909 speed=0.245198086 fallback=0
+heldout-race-005-tln_smppi_guarded step=200 laps=0.591993204 speed=2.4685092 fallback=0
+heldout-race-005-tln_smppi_guarded step=400 laps=1.14375442 speed=1.70451415 fallback=0
+heldout-race-005-tln_smppi_guarded step=600 laps=1.74543522 speed=2.0740211 fallback=0
+heldout-race-005-tln_smppi_guarded step=800 laps=2.2920578 speed=2.05507755 fallback=0
+heldout-race-005-tln_smppi_guarded step=1000 laps=2.91175341 speed=1.90613651 fallback=0
+RESULT heldout-race-005-tln_smppi_guarded completed laps=3 fallback=0/1034
+heldout-race-005-smppi step=0 laps=0.00016314895 speed=0.279021084 fallback=0
+heldout-race-005-smppi step=200 laps=0.569936887 speed=2.43448639 fallback=0
+heldout-race-005-smppi step=400 laps=1.14889022 speed=1.93769026 fallback=0
+heldout-race-005-smppi step=600 laps=1.74014841 speed=1.82933509 fallback=0
+heldout-race-005-smppi step=800 laps=2.30259971 speed=1.87943137 fallback=0
+heldout-race-005-smppi step=1000 laps=2.90734176 speed=2.23080349 fallback=0
+RESULT heldout-race-005-smppi completed laps=3 fallback=0/1034
+heldout-race-011-tln_only step=0 laps=6.82895156e-05 speed=0.165670753 fallback=0
+heldout-race-011-tln_only step=200 laps=0.486723404 speed=1.65727723 fallback=0
+heldout-race-011-tln_only step=400 laps=0.974286548 speed=1.48386848 fallback=0
+heldout-race-011-tln_only step=600 laps=1.47161252 speed=1.76528275 fallback=0
+heldout-race-011-tln_only step=800 laps=1.95848001 speed=1.59168208 fallback=0
+heldout-race-011-tln_only step=1000 laps=2.45755965 speed=1.78330481 fallback=0
+heldout-race-011-tln_only step=1200 laps=2.94669219 speed=1.63983393 fallback=0
+RESULT heldout-race-011-tln_only completed laps=3 fallback=0/1227
+heldout-race-011-tln_smppi_guarded step=0 laps=6.82895156e-05 speed=0.165670753 fallback=0
+heldout-race-011-tln_smppi_guarded step=200 laps=0.486723404 speed=1.65727723 fallback=0
+heldout-race-011-tln_smppi_guarded step=400 laps=0.974286548 speed=1.48386848 fallback=0
+heldout-race-011-tln_smppi_guarded step=600 laps=1.47161252 speed=1.76528275 fallback=0
+heldout-race-011-tln_smppi_guarded step=800 laps=1.95848001 speed=1.59168208 fallback=0
+heldout-race-011-tln_smppi_guarded step=1000 laps=2.45755965 speed=1.78330481 fallback=0
+heldout-race-011-tln_smppi_guarded step=1200 laps=2.94669219 speed=1.63983393 fallback=0
+RESULT heldout-race-011-tln_smppi_guarded completed laps=3 fallback=0/1227
+heldout-race-011-smppi step=0 laps=7.53424019e-05 speed=0.177712888 fallback=0
+heldout-race-011-smppi step=200 laps=0.491536507 speed=1.7253685 fallback=0
+heldout-race-011-smppi step=400 laps=0.964794944 speed=1.43225932 fallback=0
+heldout-race-011-smppi step=600 laps=1.46225469 speed=1.88614023 fallback=0
+heldout-race-011-smppi step=800 laps=1.94505753 speed=1.6513238 fallback=0
+heldout-race-011-smppi step=1000 laps=2.43324225 speed=1.86284518 fallback=0
+heldout-race-011-smppi step=1200 laps=2.90840254 speed=1.48335636 fallback=0
+RESULT heldout-race-011-smppi completed laps=3 fallback=0/1245
+heldout-race-017-tln_only step=0 laps=0.000112661446 speed=0.192424357 fallback=0
+heldout-race-017-tln_only step=200 laps=0.629527275 speed=1.94706678 fallback=0
+heldout-race-017-tln_only step=400 laps=1.21424595 speed=3.39078975 fallback=0
+heldout-race-017-tln_only step=600 laps=1.82198361 speed=1.95926106 fallback=0
+heldout-race-017-tln_only step=800 laps=2.45990238 speed=1.90318871 fallback=0
+heldout-race-017-tln_only step=1000 laps=3.00089859 speed=1.81031954 fallback=0
+RESULT heldout-race-017-tln_only completed laps=3 fallback=0/1001
+heldout-race-017-tln_smppi_guarded step=0 laps=0.000112661446 speed=0.192424357 fallback=0
+heldout-race-017-tln_smppi_guarded step=200 laps=0.629527275 speed=1.94706678 fallback=0
+heldout-race-017-tln_smppi_guarded step=400 laps=1.21424595 speed=3.39078975 fallback=0
+heldout-race-017-tln_smppi_guarded step=600 laps=1.82198361 speed=1.95926106 fallback=0
+heldout-race-017-tln_smppi_guarded step=800 laps=2.45990238 speed=1.90318871 fallback=0
+heldout-race-017-tln_smppi_guarded step=1000 laps=3.00089859 speed=1.81031954 fallback=0
+RESULT heldout-race-017-tln_smppi_guarded completed laps=3 fallback=0/1001
+heldout-race-017-smppi step=0 laps=8.26907766e-05 speed=0.141235545 fallback=0
+heldout-race-017-smppi step=200 laps=0.64958975 speed=2.11407042 fallback=0
+heldout-race-017-smppi step=400 laps=1.29608197 speed=2.70952797 fallback=0
+heldout-race-017-smppi step=600 laps=1.87591967 speed=1.4761138 fallback=0
+heldout-race-017-smppi step=800 laps=2.53050514 speed=2.01785994 fallback=0
+RESULT heldout-race-017-smppi completed laps=3 fallback=0/971
+heldout-race-023-tln_only step=0 laps=4.24505243e-05 speed=0.207227141 fallback=0
+heldout-race-023-tln_only step=200 laps=0.499309977 speed=1.66166055 fallback=0
+heldout-race-023-tln_only step=400 laps=0.962640187 speed=1.82802188 fallback=0
+heldout-race-023-tln_only step=600 laps=1.47265574 speed=1.82473433 fallback=0
+heldout-race-023-tln_only step=800 laps=1.93872455 speed=1.77833116 fallback=0
+heldout-race-023-tln_only step=1000 laps=2.45598601 speed=1.79606879 fallback=0
+heldout-race-023-tln_only step=1200 laps=2.92396869 speed=1.692191 fallback=0
+RESULT heldout-race-023-tln_only completed laps=3 fallback=0/1230
+heldout-race-023-tln_smppi_guarded step=0 laps=4.24505243e-05 speed=0.207227141 fallback=0
+heldout-race-023-tln_smppi_guarded step=200 laps=0.499309977 speed=1.66166055 fallback=0
+heldout-race-023-tln_smppi_guarded step=400 laps=0.962640187 speed=1.82802188 fallback=0
+heldout-race-023-tln_smppi_guarded step=600 laps=1.47265574 speed=1.82473433 fallback=0
+heldout-race-023-tln_smppi_guarded step=800 laps=1.93872455 speed=1.77833116 fallback=0
+heldout-race-023-tln_smppi_guarded step=1000 laps=2.45598601 speed=1.79606879 fallback=0
+heldout-race-023-tln_smppi_guarded step=1200 laps=2.92396869 speed=1.692191 fallback=0
+RESULT heldout-race-023-tln_smppi_guarded completed laps=3 fallback=0/1230
+heldout-race-023-smppi step=0 laps=0.000136994001 speed=0.368740141 fallback=0
+heldout-race-023-smppi step=200 laps=0.485093067 speed=1.62874281 fallback=0
+heldout-race-023-smppi step=400 laps=0.939439815 speed=1.58481014 fallback=0
+heldout-race-023-smppi step=600 laps=1.45271914 speed=1.9605031 fallback=0
+heldout-race-023-smppi step=800 laps=1.90979071 speed=1.73585379 fallback=0
+heldout-race-023-smppi step=1000 laps=2.4233975 speed=2.15306664 fallback=0
+heldout-race-023-smppi step=1200 laps=2.89396524 speed=1.85284507 fallback=0
+RESULT heldout-race-023-smppi completed laps=3 fallback=0/1247
+heldout-balanced-race-01-tln_only step=0 laps=0.000103825426 speed=0.211405173 fallback=0
+heldout-balanced-race-01-tln_only step=200 laps=0.482427181 speed=2.34008765 fallback=0
+heldout-balanced-race-01-tln_only step=400 laps=0.994033335 speed=1.921646 fallback=0
+heldout-balanced-race-01-tln_only step=600 laps=1.46783897 speed=2.51690435 fallback=0
+heldout-balanced-race-01-tln_only step=800 laps=1.98575702 speed=1.92956567 fallback=0
+heldout-balanced-race-01-tln_only step=1000 laps=2.44625444 speed=2.57685018 fallback=0
+heldout-balanced-race-01-tln_only step=1200 laps=2.98049029 speed=1.95889497 fallback=0
+RESULT heldout-balanced-race-01-tln_only completed laps=3 fallback=0/1210
+heldout-balanced-race-01-tln_smppi_guarded step=0 laps=0.000103825426 speed=0.211405173 fallback=0
+heldout-balanced-race-01-tln_smppi_guarded step=200 laps=0.482427181 speed=2.34008765 fallback=0
+heldout-balanced-race-01-tln_smppi_guarded step=400 laps=0.980796264 speed=1.93128848 fallback=8
+heldout-balanced-race-01-tln_smppi_guarded step=600 laps=1.44710778 speed=2.67414355 fallback=8
+heldout-balanced-race-01-tln_smppi_guarded step=800 laps=1.96694466 speed=1.91529465 fallback=8
+heldout-balanced-race-01-tln_smppi_guarded step=1000 laps=2.42839165 speed=2.32953262 fallback=8
+heldout-balanced-race-01-tln_smppi_guarded step=1200 laps=2.95618767 speed=1.87245238 fallback=8
+RESULT heldout-balanced-race-01-tln_smppi_guarded completed laps=3 fallback=8/1221
+heldout-balanced-race-01-smppi step=0 laps=0.000126125191 speed=0.254167229 fallback=0
+heldout-balanced-race-01-smppi step=200 laps=0.418490746 speed=2.57308269 fallback=0
+heldout-balanced-race-01-smppi step=400 laps=0.98673503 speed=1.90961587 fallback=0
+heldout-balanced-race-01-smppi step=600 laps=1.42594017 speed=2.69184685 fallback=0
+heldout-balanced-race-01-smppi step=800 laps=1.98942382 speed=2.03217173 fallback=0
+heldout-balanced-race-01-smppi step=1000 laps=2.43640138 speed=3.26442623 fallback=0
+heldout-balanced-race-01-smppi step=1200 laps=2.99981306 speed=1.97487438 fallback=0
+RESULT heldout-balanced-race-01-smppi completed laps=3 fallback=0/1202
+heldout-balanced-race-03-tln_only step=0 laps=0.000112278125 speed=0.217620835 fallback=0
+heldout-balanced-race-03-tln_only step=200 laps=0.45781886 speed=1.66097081 fallback=0
+heldout-balanced-race-03-tln_only step=400 laps=0.896490548 speed=2.23975086 fallback=0
+heldout-balanced-race-03-tln_only step=600 laps=1.41844956 speed=1.80291915 fallback=0
+heldout-balanced-race-03-tln_only step=800 laps=1.85423528 speed=1.90071583 fallback=0
+heldout-balanced-race-03-tln_only step=1000 laps=2.39009778 speed=1.77923584 fallback=0
+heldout-balanced-race-03-tln_only step=1200 laps=2.82906857 speed=1.69244182 fallback=0
+RESULT heldout-balanced-race-03-tln_only completed laps=3 fallback=0/1259
+heldout-balanced-race-03-tln_smppi_guarded step=0 laps=0.000112278125 speed=0.217620835 fallback=0
+heldout-balanced-race-03-tln_smppi_guarded step=200 laps=0.446749768 speed=1.68822813 fallback=8
+heldout-balanced-race-03-tln_smppi_guarded step=400 laps=0.879155222 speed=2.05759215 fallback=8
+heldout-balanced-race-03-tln_smppi_guarded step=600 laps=1.40605777 speed=1.8107667 fallback=8
+heldout-balanced-race-03-tln_smppi_guarded step=800 laps=1.83700631 speed=1.74478137 fallback=8
+heldout-balanced-race-03-tln_smppi_guarded step=1000 laps=2.36770507 speed=1.72285783 fallback=8
+heldout-balanced-race-03-tln_smppi_guarded step=1200 laps=2.80335328 speed=2.10949159 fallback=8
+RESULT heldout-balanced-race-03-tln_smppi_guarded completed laps=3 fallback=8/1270
+heldout-balanced-race-03-smppi step=0 laps=0.000213080687 speed=0.41100347 fallback=0
+heldout-balanced-race-03-smppi step=200 laps=0.477538359 speed=1.63105369 fallback=0
+heldout-balanced-race-03-smppi step=400 laps=0.918259824 speed=2.98366189 fallback=0
+heldout-balanced-race-03-smppi step=600 laps=1.43560541 speed=1.630216 fallback=0
+heldout-balanced-race-03-smppi step=800 laps=1.86012641 speed=1.90128767 fallback=0
+heldout-balanced-race-03-smppi step=1000 laps=2.39678295 speed=1.72987688 fallback=0
+heldout-balanced-race-03-smppi step=1200 laps=2.82314205 speed=1.71026826 fallback=0
+RESULT heldout-balanced-race-03-smppi completed laps=3 fallback=0/1261
+new-start-0-tln_only step=0 laps=0.000259183336 speed=0.254645973 fallback=0
+new-start-0-tln_only step=200 laps=0.467066899 speed=1.73786616 fallback=0
+new-start-0-tln_only step=400 laps=0.969709469 speed=2.44919729 fallback=0
+new-start-0-tln_only step=600 laps=1.45625044 speed=1.80888677 fallback=0
+new-start-0-tln_only step=800 laps=1.93843492 speed=2.24254823 fallback=0
+new-start-0-tln_only step=1000 laps=2.42967912 speed=1.86685777 fallback=0
+new-start-0-tln_only step=1200 laps=2.91877551 speed=2.00738263 fallback=0
+RESULT new-start-0-tln_only completed laps=3 fallback=0/1228
+new-start-0-tln_smppi_guarded step=0 laps=0.000259183336 speed=0.254645973 fallback=0
+new-start-0-tln_smppi_guarded step=200 laps=0.467066899 speed=1.73786616 fallback=0
+new-start-0-tln_smppi_guarded step=400 laps=0.969709469 speed=2.44919729 fallback=0
+new-start-0-tln_smppi_guarded step=600 laps=1.45625044 speed=1.80888677 fallback=0
+new-start-0-tln_smppi_guarded step=800 laps=1.93843492 speed=2.24254823 fallback=0
+RESULT new-start-0-tln_smppi_guarded no_feasible_plan laps=2 fallback=1/929
+new-start-0-smppi step=0 laps=0.000333089478 speed=0.404512048 fallback=0
+new-start-0-smppi step=200 laps=0.434543414 speed=1.51663506 fallback=0
+new-start-0-smppi step=400 laps=0.983151008 speed=2.85376 fallback=0
+new-start-0-smppi step=600 laps=1.44138517 speed=1.68338466 fallback=0
+new-start-0-smppi step=800 laps=2.02003561 speed=2.08987045 fallback=0
+new-start-0-smppi step=1000 laps=2.46321432 speed=1.92732513 fallback=0
+RESULT new-start-0-smppi completed laps=3 fallback=0/1187
+new-start-1-tln_only step=0 laps=4.16762043e-05 speed=0.242694005 fallback=0
+new-start-1-tln_only step=200 laps=0.501300789 speed=1.80579793 fallback=0
+new-start-1-tln_only step=400 laps=1.16274738 speed=1.94877243 fallback=0
+new-start-1-tln_only step=600 laps=1.77749881 speed=2.39697051 fallback=0
+new-start-1-tln_only step=800 laps=2.3532042 speed=1.74665999 fallback=0
+new-start-1-tln_only step=1000 laps=2.99963425 speed=2.19344997 fallback=0
+RESULT new-start-1-tln_only completed laps=3 fallback=0/1002
+new-start-1-tln_smppi_guarded step=0 laps=4.16762043e-05 speed=0.242694005 fallback=0
+new-start-1-tln_smppi_guarded step=200 laps=0.501300789 speed=1.80579793 fallback=0
+new-start-1-tln_smppi_guarded step=400 laps=1.16274738 speed=1.94877243 fallback=0
+new-start-1-tln_smppi_guarded step=600 laps=1.77749881 speed=2.39697051 fallback=0
+new-start-1-tln_smppi_guarded step=800 laps=2.3532042 speed=1.74665999 fallback=0
+new-start-1-tln_smppi_guarded step=1000 laps=2.99963425 speed=2.19344997 fallback=0
+RESULT new-start-1-tln_smppi_guarded completed laps=3 fallback=0/1002
+new-start-1-smppi step=0 laps=5.46004027e-05 speed=0.264890909 fallback=0
+new-start-1-smppi step=200 laps=0.524735146 speed=2.10865903 fallback=0
+new-start-1-smppi step=400 laps=1.20606329 speed=2.24395347 fallback=0
+new-start-1-smppi step=600 laps=1.86703847 speed=2.05306673 fallback=0
+new-start-1-smppi step=800 laps=2.41924552 speed=2.31505013 fallback=0
+RESULT new-start-1-smppi completed laps=3 fallback=0/977
+new-start-2-tln_only step=0 laps=4.74757292e-05 speed=0.210716471 fallback=0
+new-start-2-tln_only step=200 laps=0.508204046 speed=1.82501876 fallback=0
+new-start-2-tln_only step=400 laps=0.917826598 speed=1.93665898 fallback=0
+new-start-2-tln_only step=600 laps=1.46224475 speed=1.92420149 fallback=0
+new-start-2-tln_only step=800 laps=1.88453436 speed=1.85037518 fallback=0
+new-start-2-tln_only step=1000 laps=2.41571521 speed=2.53411579 fallback=0
+new-start-2-tln_only step=1200 laps=2.8499259 speed=1.88115001 fallback=0
+RESULT new-start-2-tln_only completed laps=3 fallback=0/1263
+new-start-2-tln_smppi_guarded step=0 laps=4.74757292e-05 speed=0.210716471 fallback=0
+new-start-2-tln_smppi_guarded step=200 laps=0.495804471 speed=1.86979938 fallback=14
+new-start-2-tln_smppi_guarded step=400 laps=0.905636893 speed=1.91637826 fallback=14
+new-start-2-tln_smppi_guarded step=600 laps=1.44784843 speed=2.1649704 fallback=14
+new-start-2-tln_smppi_guarded step=800 laps=1.87819005 speed=1.86196506 fallback=14
+new-start-2-tln_smppi_guarded step=1000 laps=2.40826078 speed=2.49179077 fallback=14
+new-start-2-tln_smppi_guarded step=1200 laps=2.83371115 speed=1.88332677 fallback=22
+RESULT new-start-2-tln_smppi_guarded completed laps=3 fallback=22/1270
+new-start-2-smppi step=0 laps=2.19240352e-05 speed=0.161476061 fallback=0
+new-start-2-smppi step=200 laps=0.509270417 speed=1.82546341 fallback=0
+new-start-2-smppi step=400 laps=0.920475835 speed=1.92029655 fallback=0
+new-start-2-smppi step=600 laps=1.46681259 speed=2.0362618 fallback=0
+new-start-2-smppi step=800 laps=1.87545091 speed=1.49004042 fallback=0
+new-start-2-smppi step=1000 laps=2.41242623 speed=2.39909244 fallback=0
+new-start-2-smppi step=1200 laps=2.84330713 speed=1.7837441 fallback=0
+RESULT new-start-2-smppi completed laps=3 fallback=0/1267
+new-start-3-tln_only step=0 laps=0.000124728414 speed=0.215477675 fallback=0
+new-start-3-tln_only step=200 laps=0.466800457 speed=1.52692151 fallback=0
+new-start-3-tln_only step=400 laps=0.966472178 speed=1.82804048 fallback=0
+new-start-3-tln_only step=600 laps=1.44498887 speed=1.47117448 fallback=0
+new-start-3-tln_only step=800 laps=1.94364828 speed=1.70113742 fallback=0
+new-start-3-tln_only step=1000 laps=2.43037145 speed=1.4738369 fallback=0
+new-start-3-tln_only step=1200 laps=2.92284472 speed=1.84354842 fallback=0
+RESULT new-start-3-tln_only completed laps=3 fallback=0/1233
+new-start-3-tln_smppi_guarded step=0 laps=0.000124728414 speed=0.215477675 fallback=0
+new-start-3-tln_smppi_guarded step=200 laps=0.466800457 speed=1.52692151 fallback=0
+new-start-3-tln_smppi_guarded step=400 laps=0.966472178 speed=1.82804048 fallback=0
+new-start-3-tln_smppi_guarded step=600 laps=1.44498887 speed=1.47117448 fallback=0
+new-start-3-tln_smppi_guarded step=800 laps=1.94364828 speed=1.70113742 fallback=0
+new-start-3-tln_smppi_guarded step=1000 laps=2.43037145 speed=1.4738369 fallback=0
+new-start-3-tln_smppi_guarded step=1200 laps=2.92284472 speed=1.84354842 fallback=0
+RESULT new-start-3-tln_smppi_guarded completed laps=3 fallback=0/1233
+new-start-3-smppi step=0 laps=0.0001078376 speed=0.186291233 fallback=0
+new-start-3-smppi step=200 laps=0.453802842 speed=1.50949359 fallback=0
+new-start-3-smppi step=400 laps=0.935689787 speed=1.68858421 fallback=0
+new-start-3-smppi step=600 laps=1.41107419 speed=1.54511428 fallback=0
+new-start-3-smppi step=800 laps=1.91475623 speed=1.67867613 fallback=0
+new-start-3-smppi step=1000 laps=2.39131192 speed=1.61748838 fallback=0
+new-start-3-smppi step=1200 laps=2.87215568 speed=1.77877069 fallback=0
+RESULT new-start-3-smppi completed laps=3 fallback=0/1255
+{
+  "checkpoint": "/workspace/models/race-teachers-expanded-v5.pt",
+  "completed": true,
+  "lap_timing": "Polyline projected signed progress, interpolated full-loop crossings; standing-start first lap included. Incomplete laps excluded and failed runs reported separately.",
+  "runs": 30,
+  "scope": "Offline synchronous F110 Gym closed-loop, static walls and no added obstacles. Guard uses dynamic one-command plus braking check and SMPPI v5 with 0.3s return dwell, not the ROS fallback implementation. No real-time deadline enforcement.",
+  "smppi": {
+    "all_completed_lap_times_s": {
+      "count": 30,
+      "max": 21.55456095470941,
+      "mean": 19.40104918629932,
+      "median": 20.302786871350907,
+      "min": 15.98291289741659,
+      "p95": 21.416277452541635
+    },
+    "candidate_rejected_steps": 0,
+    "collision_runs": 0,
+    "completed_runs": 10,
+    "completion_rate": 1.0,
+    "fallback_fraction": 0.0,
+    "fallback_steps": 0,
+    "fully_completed_run_lap_times_s": {
+      "count": 30,
+      "max": 21.55456095470941,
+      "mean": 19.40104918629932,
+      "median": 20.302786871350907,
+      "min": 15.98291289741659,
+      "p95": 21.416277452541635
+    },
+    "maps": {
+      "hyhall12": {
+        "collisions": 0,
+        "completed": 4,
+        "runs": 4
+      },
+      "teras": {
+        "collisions": 0,
+        "completed": 6,
+        "runs": 6
+      }
+    },
+    "peak_actual_speeds_mps": {
+      "count": 10,
+      "max": 4.83837890625,
+      "mean": 3.4571383476257322,
+      "median": 3.4932388067245483,
+      "min": 2.4997568130493164,
+      "p95": 4.83837890625
+    },
+    "reasons": {
+      "completed": 10
+    },
+    "runs": 10,
+    "steps": 11646
+  },
+  "tln_only": {
+    "all_completed_lap_times_s": {
+      "count": 30,
+      "max": 21.68063976314021,
+      "mean": 19.471283930602414,
+      "median": 20.37331877540826,
+      "min": 16.31998028986697,
+      "p95": 21.603510174354025
+    },
+    "candidate_rejected_steps": 37,
+    "collision_runs": 0,
+    "completed_runs": 10,
+    "completion_rate": 1.0,
+    "fallback_fraction": 0.0,
+    "fallback_steps": 0,
+    "fully_completed_run_lap_times_s": {
+      "count": 30,
+      "max": 21.68063976314021,
+      "mean": 19.471283930602414,
+      "median": 20.37331877540826,
+      "min": 16.31998028986697,
+      "p95": 21.603510174354025
+    },
+    "maps": {
+      "hyhall12": {
+        "collisions": 0,
+        "completed": 4,
+        "runs": 4
+      },
+      "teras": {
+        "collisions": 0,
+        "completed": 6,
+        "runs": 6
+      }
+    },
+    "peak_actual_speeds_mps": {
+      "count": 10,
+      "max": 3.6796207427978516,
+      "mean": 2.8131515264511107,
+      "median": 2.7752411365509033,
+      "min": 2.2905054092407227,
+      "p95": 3.6796207427978516
+    },
+    "reasons": {
+      "completed": 10
+    },
+    "runs": 10,
+    "steps": 11687
+  },
+  "tln_smppi_guarded": {
+    "all_completed_lap_times_s": {
+      "count": 29,
+      "max": 21.96166734600837,
+      "mean": 19.490282914045494,
+      "median": 20.445204047904525,
+      "min": 16.31998028986697,
+      "p95": 21.830156030520843
+    },
+    "candidate_rejected_steps": 8,
+    "collision_runs": 0,
+    "completed_runs": 9,
+    "completion_rate": 0.9,
+    "fallback_fraction": 0.003415958658141368,
+    "fallback_steps": 39,
+    "fully_completed_run_lap_times_s": {
+      "count": 27,
+      "max": 21.96166734600837,
+      "mean": 19.41419604486558,
+      "median": 20.38985920288914,
+      "min": 16.31998028986697,
+      "p95": 21.830156030520843
+    },
+    "maps": {
+      "hyhall12": {
+        "collisions": 0,
+        "completed": 3,
+        "runs": 4
+      },
+      "teras": {
+        "collisions": 0,
+        "completed": 6,
+        "runs": 6
+      }
+    },
+    "peak_actual_speeds_mps": {
+      "count": 10,
+      "max": 3.6796207427978516,
+      "mean": 2.8058013200759886,
+      "median": 2.7523131370544434,
+      "min": 2.2905054092407227,
+      "p95": 3.6796207427978516
+    },
+    "reasons": {
+      "completed": 9,
+      "no_feasible_plan": 1
+    },
+    "runs": 10,
+    "steps": 11417
+  },
+  "training_executed": false
+}

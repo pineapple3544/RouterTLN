@@ -1,0 +1,120 @@
+{
+  "speed_sigma": 0.3,
+  "lidar_range_m": 18,
+  "horizon": 40,
+  "samples": 2048,
+  "output": "/workspace/runs/teacher-improvement/holdout-v5",
+  "temperature": 0.5,
+  "steer_sigma": 0.035,
+  "metrics_only": true,
+  "episodes": [
+    {
+      "laps": 2,
+      "mode": "race",
+      "name": "race-holdout-0",
+      "start_index": 60,
+      "max_steps": 1800,
+      "speed_cap": 4,
+      "seed": 15000
+    },
+    {
+      "laps": 2,
+      "mode": "race",
+      "name": "race-holdout-1",
+      "start_index": 240,
+      "max_steps": 1800,
+      "speed_cap": 6,
+      "seed": 15001
+    },
+    {
+      "laps": 2,
+      "mode": "race",
+      "name": "race-holdout-2",
+      "start_index": 360,
+      "max_steps": 1800,
+      "speed_cap": 10,
+      "seed": 15002
+    },
+    {
+      "speed_cap": 2.5,
+      "name": "avoid-holdout-0",
+      "max_steps": 1400,
+      "start_index": 0,
+      "seed": 15100,
+      "laps": 1,
+      "obstacle_size": 0.2,
+      "mode": "avoid",
+      "obstacle_indices": [
+        85
+      ]
+    },
+    {
+      "speed_cap": 2.5,
+      "name": "avoid-holdout-1",
+      "max_steps": 1400,
+      "start_index": 0,
+      "seed": 15101,
+      "laps": 1,
+      "obstacle_size": 0.3,
+      "mode": "avoid",
+      "obstacle_indices": [
+        145
+      ]
+    },
+    {
+      "speed_cap": 2.5,
+      "name": "avoid-holdout-2",
+      "max_steps": 1400,
+      "start_index": 0,
+      "seed": 15102,
+      "laps": 1,
+      "obstacle_size": 0.25,
+      "mode": "avoid",
+      "obstacle_indices": [
+        225
+      ]
+    },
+    {
+      "speed_cap": 2.5,
+      "name": "avoid-holdout-3",
+      "max_steps": 1400,
+      "start_index": 0,
+      "seed": 15103,
+      "laps": 1,
+      "obstacle_size": 0.2,
+      "mode": "avoid",
+      "obstacle_indices": [
+        335
+      ]
+    },
+    {
+      "speed_cap": 2.5,
+      "name": "avoid-holdout-4",
+      "max_steps": 1400,
+      "start_index": 0,
+      "seed": 15104,
+      "laps": 1,
+      "obstacle_size": 0.3,
+      "mode": "avoid",
+      "obstacle_indices": [
+        80,
+        250
+      ]
+    },
+    {
+      "speed_cap": 2.5,
+      "name": "avoid-holdout-5",
+      "max_steps": 1400,
+      "start_index": 0,
+      "seed": 15105,
+      "laps": 1,
+      "obstacle_size": 0.25,
+      "mode": "avoid",
+      "obstacle_indices": [
+        120,
+        280,
+        380
+      ]
+    }
+  ]
+}

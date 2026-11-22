@@ -1,0 +1,69 @@
+{
+  "config_equals_v1_except_output": true,
+  "checkpoint_sha256": "F2D88F6F29589E636F7AB1B59F13632085998447D3FA4F7FBC6A0E7AEA38D925",
+  "checkpoint_unchanged": true,
+  "training_executed": false,
+  "tln_only_trace_comparison": [
+    {
+      "file": "heldout-balanced-race-01-tln_only.csv",
+      "rows": 1210,
+      "compared_columns": 14,
+      "equal": true
+    },
+    {
+      "file": "heldout-balanced-race-03-tln_only.csv",
+      "rows": 1259,
+      "compared_columns": 14,
+      "equal": true
+    },
+    {
+      "file": "heldout-race-005-tln_only.csv",
+      "rows": 1034,
+      "compared_columns": 14,
+      "equal": true
+    },
+    {
+      "file": "heldout-race-011-tln_only.csv",
+      "rows": 1227,
+      "compared_columns": 14,
+      "equal": true
+    },
+    {
+      "file": "heldout-race-017-tln_only.csv",
+      "rows": 1001,
+      "compared_columns": 14,
+      "equal": true
+    },
+    {
+      "file": "heldout-race-023-tln_only.csv",
+      "rows": 1230,
+      "compared_columns": 14,
+      "equal": true
+    },
+    {
+      "file": "new-start-0-tln_only.csv",
+      "rows": 1228,
+      "compared_columns": 14,
+      "equal": true
+    },
+    {
+      "file": "new-start-1-tln_only.csv",
+      "rows": 1002,
+      "compared_columns": 14,
+      "equal": true
+    },
+    {
+      "file": "new-start-2-tln_only.csv",
+      "rows": 1263,
+      "compared_columns": 14,
+      "equal": true
+    },
+    {
+      "file": "new-start-3-tln_only.csv",
+      "rows": 1233,
+      "compared_columns": 14,
+      "equal": true
+    }
+  ],
+  "trace_precision_note": "Exact stored CSV values; candidate_safe and timing columns intentionally excluded"
+}

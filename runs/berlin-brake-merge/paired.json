@@ -1,0 +1,509 @@
+{
+  "teacher": false,
+  "cases": [
+    {
+      "name": "original-9051-2.7",
+      "map": "berlin",
+      "layout": 0,
+      "start": 37,
+      "count": 3,
+      "seed": 9051,
+      "stations": [
+        5.697861897503426,
+        8.696939580342306,
+        11.696065825632402
+      ],
+      "shapes": [
+        [
+          0.3,
+          0.3,
+          0
+        ],
+        [
+          0.3,
+          0.3,
+          0
+        ],
+        [
+          0.3,
+          0.3,
+          0
+        ]
+      ],
+      "offsets": [
+        0.083,
+        -0.083,
+        0.083
+      ],
+      "full_lap": true,
+      "laps": 3,
+      "lap_planning": true,
+      "speed_cap": 3,
+      "sim_avoid_min": 2.7,
+      "sim_avoid_max": 3.0,
+      "trace_avoid": true
+    },
+    {
+      "name": "original-36002-2.7",
+      "map": "berlin",
+      "layout": 0,
+      "start": 37,
+      "count": 3,
+      "seed": 36002,
+      "stations": [
+        5.697861897503426,
+        8.696939580342306,
+        11.696065825632402
+      ],
+      "shapes": [
+        [
+          0.3,
+          0.3,
+          0
+        ],
+        [
+          0.3,
+          0.3,
+          0
+        ],
+        [
+          0.3,
+          0.3,
+          0
+        ]
+      ],
+      "offsets": [
+        0.083,
+        -0.083,
+        0.083
+      ],
+      "full_lap": true,
+      "laps": 3,
+      "lap_planning": true,
+      "speed_cap": 3,
+      "sim_avoid_min": 2.7,
+      "sim_avoid_max": 3.0,
+      "trace_avoid": true
+    },
+    {
+      "name": "original-43771-2.7",
+      "map": "berlin",
+      "layout": 0,
+      "start": 37,
+      "count": 3,
+      "seed": 43771,
+      "stations": [
+        5.697861897503426,
+        8.696939580342306,
+        11.696065825632402
+      ],
+      "shapes": [
+        [
+          0.3,
+          0.3,
+          0
+        ],
+        [
+          0.3,
+          0.3,
+          0
+        ],
+        [
+          0.3,
+          0.3,
+          0
+        ]
+      ],
+      "offsets": [
+        0.083,
+        -0.083,
+        0.083
+      ],
+      "full_lap": true,
+      "laps": 3,
+      "lap_planning": true,
+      "speed_cap": 3,
+      "sim_avoid_min": 2.7,
+      "sim_avoid_max": 3.0,
+      "trace_avoid": true
+    },
+    {
+      "name": "mirror-9051-2.7",
+      "map": "berlin",
+      "layout": 0,
+      "start": 37,
+      "count": 3,
+      "seed": 9051,
+      "stations": [
+        5.697861897503426,
+        8.696939580342306,
+        11.696065825632402
+      ],
+      "shapes": [
+        [
+          0.3,
+          0.3,
+          0
+        ],
+        [
+          0.3,
+          0.3,
+          0
+        ],
+        [
+          0.3,
+          0.3,
+          0
+        ]
+      ],
+      "offsets": [
+        -0.083,
+        0.083,
+        -0.083
+      ],
+      "full_lap": true,
+      "laps": 3,
+      "lap_planning": true,
+      "speed_cap": 3,
+      "sim_avoid_min": 2.7,
+      "sim_avoid_max": 3.0,
+      "trace_avoid": true
+    },
+    {
+      "name": "mirror-36002-2.7",
+      "map": "berlin",
+      "layout": 0,
+      "start": 37,
+      "count": 3,
+      "seed": 36002,
+      "stations": [
+        5.697861897503426,
+        8.696939580342306,
+        11.696065825632402
+      ],
+      "shapes": [
+        [
+          0.3,
+          0.3,
+          0
+        ],
+        [
+          0.3,
+          0.3,
+          0
+        ],
+        [
+          0.3,
+          0.3,
+          0
+        ]
+      ],
+      "offsets": [
+        -0.083,
+        0.083,
+        -0.083
+      ],
+      "full_lap": true,
+      "laps": 3,
+      "lap_planning": true,
+      "speed_cap": 3,
+      "sim_avoid_min": 2.7,
+      "sim_avoid_max": 3.0,
+      "trace_avoid": true
+    },
+    {
+      "name": "mirror-43771-2.7",
+      "map": "berlin",
+      "layout": 0,
+      "start": 37,
+      "count": 3,
+      "seed": 43771,
+      "stations": [
+        5.697861897503426,
+        8.696939580342306,
+        11.696065825632402
+      ],
+      "shapes": [
+        [
+          0.3,
+          0.3,
+          0
+        ],
+        [
+          0.3,
+          0.3,
+          0
+        ],
+        [
+          0.3,
+          0.3,
+          0
+        ]
+      ],
+      "offsets": [
+        -0.083,
+        0.083,
+        -0.083
+      ],
+      "full_lap": true,
+      "laps": 3,
+      "lap_planning": true,
+      "speed_cap": 3,
+      "sim_avoid_min": 2.7,
+      "sim_avoid_max": 3.0,
+      "trace_avoid": true
+    },
+    {
+      "name": "tight-9051-2.7",
+      "map": "berlin",
+      "layout": 0,
+      "start": 37,
+      "count": 3,
+      "seed": 9051,
+      "stations": [
+        8.696939580342306,
+        10.49642134499974,
+        12.295882752519706
+      ],
+      "shapes": [
+        [
+          0.3,
+          0.3,
+          0
+        ],
+        [
+          0.3,
+          0.3,
+          0
+        ],
+        [
+          0.3,
+          0.3,
+          0
+        ]
+      ],
+      "offsets": [
+        0.12,
+        -0.12,
+        0.12
+      ],
+      "full_lap": true,
+      "laps": 3,
+      "lap_planning": true,
+      "speed_cap": 3,
+      "sim_avoid_min": 2.7,
+      "sim_avoid_max": 3.0,
+      "trace_avoid": true
+    },
+    {
+      "name": "tight-36002-2.7",
+      "map": "berlin",
+      "layout": 0,
+      "start": 37,
+      "count": 3,
+      "seed": 36002,
+      "stations": [
+        8.696939580342306,
+        10.49642134499974,
+        12.295882752519706
+      ],
+      "shapes": [
+        [
+          0.3,
+          0.3,
+          0
+        ],
+        [
+          0.3,
+          0.3,
+          0
+        ],
+        [
+          0.3,
+          0.3,
+          0
+        ]
+      ],
+      "offsets": [
+        0.12,
+        -0.12,
+        0.12
+      ],
+      "full_lap": true,
+      "laps": 3,
+      "lap_planning": true,
+      "speed_cap": 3,
+      "sim_avoid_min": 2.7,
+      "sim_avoid_max": 3.0,
+      "trace_avoid": true
+    },
+    {
+      "name": "tight-43771-2.7",
+      "map": "berlin",
+      "layout": 0,
+      "start": 37,
+      "count": 3,
+      "seed": 43771,
+      "stations": [
+        8.696939580342306,
+        10.49642134499974,
+        12.295882752519706
+      ],
+      "shapes": [
+        [
+          0.3,
+          0.3,
+          0
+        ],
+        [
+          0.3,
+          0.3,
+          0
+        ],
+        [
+          0.3,
+          0.3,
+          0
+        ]
+      ],
+      "offsets": [
+        0.12,
+        -0.12,
+        0.12
+      ],
+      "full_lap": true,
+      "laps": 3,
+      "lap_planning": true,
+      "speed_cap": 3,
+      "sim_avoid_min": 2.7,
+      "sim_avoid_max": 3.0,
+      "trace_avoid": true
+    },
+    {
+      "name": "same-side-9051-2.7",
+      "map": "berlin",
+      "layout": 0,
+      "start": 37,
+      "count": 3,
+      "seed": 9051,
+      "stations": [
+        26.690554154453388,
+        29.889523778480207,
+        33.088563625787806
+      ],
+      "shapes": [
+        [
+          0.3,
+          0.3,
+          0
+        ],
+        [
+          0.3,
+          0.3,
+          0
+        ],
+        [
+          0.3,
+          0.3,
+          0
+        ]
+      ],
+      "offsets": [
+        0.12,
+        0.12,
+        0.12
+      ],
+      "full_lap": true,
+      "laps": 3,
+      "lap_planning": true,
+      "speed_cap": 3,
+      "sim_avoid_min": 2.7,
+      "sim_avoid_max": 3.0,
+      "trace_avoid": true
+    },
+    {
+      "name": "same-side-36002-2.7",
+      "map": "berlin",
+      "layout": 0,
+      "start": 37,
+      "count": 3,
+      "seed": 36002,
+      "stations": [
+        26.690554154453388,
+        29.889523778480207,
+        33.088563625787806
+      ],
+      "shapes": [
+        [
+          0.3,
+          0.3,
+          0
+        ],
+        [
+          0.3,
+          0.3,
+          0
+        ],
+        [
+          0.3,
+          0.3,
+          0
+        ]
+      ],
+      "offsets": [
+        0.12,
+        0.12,
+        0.12
+      ],
+      "full_lap": true,
+      "laps": 3,
+      "lap_planning": true,
+      "speed_cap": 3,
+      "sim_avoid_min": 2.7,
+      "sim_avoid_max": 3.0,
+      "trace_avoid": true
+    },
+    {
+      "name": "same-side-43771-2.7",
+      "map": "berlin",
+      "layout": 0,
+      "start": 37,
+      "count": 3,
+      "seed": 43771,
+      "stations": [
+        26.690554154453388,
+        29.889523778480207,
+        33.088563625787806
+      ],
+      "shapes": [
+        [
+          0.3,
+          0.3,
+          0
+        ],
+        [
+          0.3,
+          0.3,
+          0
+        ],
+        [
+          0.3,
+          0.3,
+          0
+        ]
+      ],
+      "offsets": [
+        0.12,
+        0.12,
+        0.12
+      ],
+      "full_lap": true,
+      "laps": 3,
+      "lap_planning": true,
+      "speed_cap": 3,
+      "sim_avoid_min": 2.7,
+      "sim_avoid_max": 3.0,
+      "trace_avoid": true
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "output":"/workspace/data/cycling-probe-v1","lidar_range_m":18,"samples":2048,"horizon":40,
+  "steer_sigma":0.035,"speed_sigma":0.3,"temperature":0.5,
+  "episodes":[
+    {"name":"avoid-cycle-5001","mode":"avoid","seed":5001,"speed_cap":2.5,"laps":2,"max_steps":1800,"cycling_obstacles":true,"minimum_passes":2},
+    {"name":"avoid-cycle-5002","mode":"avoid","seed":5002,"speed_cap":2.5,"laps":2,"max_steps":1800,"cycling_obstacles":true,"minimum_passes":2,"start_index":180}
+  ]
+}

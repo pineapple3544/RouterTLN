@@ -1,0 +1,12 @@
+{
+  "collision_frames": 0,
+  "invalid_commands": 36,
+  "iterations": 567,
+  "max_ms": 2.816631,
+  "max_speed": 2.2,
+  "mppi_steps": 0,
+  "p50_ms": 1.392558,
+  "p95_ms": 2.429352,
+  "p99_ms": 2.624475,
+  "progress_m": 20.093357
+}

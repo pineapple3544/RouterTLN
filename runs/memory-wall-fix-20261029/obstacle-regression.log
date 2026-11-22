@@ -1,0 +1,45 @@
+/home/misys/forza_ws/race_stack/base_system/f110_simulator/f1tenth_gym/gym/f110_gym/envs/base_classes.py:96: UserWarning: Chosen integrator is RK4. This is different from previous versions of the gym.
+  warnings.warn(f"Chosen integrator is RK4. This is different from previous versions of the gym.")
+spawn id=1 index=219 distance=12.5904 wall=1 rear=0
+avoid-001 step=0 progress=0 speed=0.255553 valid=1 ms=37.5414
+avoid-001 step=100 progress=8.98526 speed=1.92368 valid=1 ms=35.7501
+avoid-001 step=200 progress=18.6694 speed=1.83143 valid=1 ms=36.0027
+spawn id=2 index=14 distance=10.9192 wall=1 rear=0
+avoid-001 step=300 progress=28.653 speed=1.99997 valid=1 ms=36.5968
+spawn id=3 index=156 distance=8.4503 wall=1 rear=0
+avoid-001 step=400 progress=38.8362 speed=1.55769 valid=1 ms=35.7809
+avoid-001 step=500 progress=48.5202 speed=1.83236 valid=1 ms=36.1062
+avoid-001 completed completed_encounters=3 records=514
+spawn id=1 index=347 distance=12.6012 wall=1 rear=0
+avoid-003 step=0 progress=0 speed=0.253779 valid=1 ms=36.163
+avoid-003 step=100 progress=8.38624 speed=1.84626 valid=1 ms=34.6023
+avoid-003 step=200 progress=18.4697 speed=1.77617 valid=1 ms=36.6228
+spawn id=2 index=164 distance=10.9983 wall=1 rear=0
+avoid-003 step=300 progress=27.1555 speed=1.66602 valid=1 ms=34.8396
+avoid-003 step=400 progress=36.1407 speed=1.81788 valid=1 ms=35.6089
+spawn id=3 index=351 distance=10.6159 wall=1 rear=0
+avoid-003 step=500 progress=45.2256 speed=1.75267 valid=1 ms=35.2986
+avoid-003 step=600 progress=54.1109 speed=1.6616 valid=1 ms=35.0872
+avoid-003 completed completed_encounters=3 records=664
+spawn id=1 index=309 distance=8.54188 wall=1 rear=0
+avoid-022 step=0 progress=0 speed=0.140041 valid=1 ms=37.7696
+avoid-022 step=100 progress=10.0768 speed=2.36626 valid=1 ms=37.7829
+avoid-022 step=200 progress=20.453 speed=2.19834 valid=1 ms=36.8271
+spawn id=2 index=95 distance=9.27831 wall=1 rear=0
+avoid-022 step=300 progress=30.8292 speed=1.51456 valid=1 ms=35.5119
+avoid-022 step=400 progress=39.3097 speed=1.69617 valid=1 ms=35.3414
+spawn id=3 index=321 distance=9.51553 wall=1 rear=0
+avoid-022 step=500 progress=48.688 speed=1.81896 valid=1 ms=35.9745
+avoid-022 step=600 progress=59.962 speed=1.66654 valid=1 ms=36.7026
+avoid-022 completed completed_encounters=3 records=650
+spawn id=1 index=407 distance=15.1873 wall=1 rear=0
+avoid-024 step=0 progress=0 speed=0.147554 valid=1 ms=35.9698
+avoid-024 step=100 progress=9.97707 speed=2.36447 valid=1 ms=35.7872
+avoid-024 step=200 progress=20.2535 speed=2.20438 valid=1 ms=35.7707
+spawn id=2 index=148 distance=10.0367 wall=1 rear=0
+avoid-024 step=300 progress=30.3304 speed=1.52934 valid=1 ms=36.5027
+spawn id=3 index=393 distance=10.4273 wall=1 rear=0
+avoid-024 step=400 progress=38.8108 speed=1.5452 valid=1 ms=35.5212
+avoid-024 step=500 progress=48.3887 speed=2.26041 valid=1 ms=36.8643
+avoid-024 step=600 progress=59.563 speed=1.95354 valid=1 ms=36.7664
+avoid-024 completed completed_encounters=3 records=615

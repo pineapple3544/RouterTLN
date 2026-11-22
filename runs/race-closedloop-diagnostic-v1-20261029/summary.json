@@ -1,0 +1,102 @@
+[
+  {
+    "candidate_rejected_steps": 1,
+    "checkpoint": "/workspace/models/race-teachers-expanded-v5.pt",
+    "collision": false,
+    "command_clipped_steps": 0,
+    "completed_laps": 2,
+    "control_dt": 0.05,
+    "control_ms": {
+      "count": 929,
+      "max": 29.800746,
+      "mean": 2.6549142152852507,
+      "median": 2.604094,
+      "min": 2.272703,
+      "p95": 3.004853
+    },
+    "controller": "tln_smppi_guarded",
+    "emergency_steps": 1,
+    "failure_diagnostic": {
+      "base_only_footprint_margin_0": 0.0,
+      "base_only_footprint_margin_004": 0.0,
+      "candidate_base_map_only": {
+        "final_speed": 0.04774785041809082,
+        "passes": true
+      },
+      "candidate_with_observed_memory": {
+        "footprint_cost": 1.0,
+        "passes": false,
+        "phase": "command",
+        "slip_rad": -0.004862699657678604,
+        "time_s": 0.01
+      },
+      "current_footprint_margin_0": 0.0,
+      "current_footprint_margin_004": 1.0,
+      "current_world_state": [
+        4.406032085418701,
+        4.682384014129639,
+        -0.03200000151991844,
+        1.9673881530761719,
+        3.0622963905334473,
+        -0.09301798045635223,
+        -0.005036389455199242
+      ],
+      "nominal_valid_base_map_only": true,
+      "nominal_valid_observed_memory": false,
+      "observation_time": 46.39999999999934,
+      "step": 928
+    },
+    "fallback_entries": 1,
+    "fallback_steps": 1,
+    "id": "new-start-0-tln_smppi_guarded",
+    "inference_ms": {
+      "count": 929,
+      "max": 1.381171,
+      "mean": 0.6829850333692142,
+      "median": 0.675298,
+      "min": 0.546853,
+      "p95": 0.82276
+    },
+    "lap_times_s": [
+      20.495603649023053,
+      20.539307646925742
+    ],
+    "model_error_max": 9.5367431640625e-07,
+    "obstacles": 0,
+    "peak_actual_speed_mps": 2.882094144821167,
+    "physics_dt": 0.01,
+    "progress_m": 95.25389887991011,
+    "reason": "no_feasible_plan",
+    "reference_error_m": {
+      "count": 929,
+      "max": 0.3309592256453894,
+      "mean": 0.11740335263293422,
+      "median": 0.10277001080423417,
+      "min": 5.384640105533549e-05,
+      "p95": 0.2635164397481825
+    },
+    "reference_error_rms_m": 0.14542976886883022,
+    "scenario": {
+      "evaluation_group": "new_seed_start_perturbation",
+      "laps": 3,
+      "map_dir": "/home/misys/forza_ws/race_stack/stack_master/maps/hyhall12",
+      "map_name": "hyhall12",
+      "map_stem": "hyhall12_orig",
+      "max_steps": 2400,
+      "mode": "race",
+      "name": "new-start-0",
+      "reverse_track": false,
+      "seed": 41000,
+      "speed_cap": 4.0,
+      "start_index": 23,
+      "start_lateral_m": 0.18,
+      "start_yaw_rad": -0.12
+    },
+    "simulation_seconds": 46.44999999999933,
+    "steps": 929,
+    "synchronous": true,
+    "trace": "/workspace/runs/race-closedloop-diagnostic-v1-20261029/new-start-0-tln_smppi_guarded.csv",
+    "track_length_m": 41.90372848510742,
+    "training_executed": false
+  }
+]

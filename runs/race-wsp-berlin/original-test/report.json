@@ -1,0 +1,63 @@
+{
+  "checkpoint": "/workspace/models/race-teachers-expanded-v5.pt",
+  "completed": true,
+  "lap_timing": "Polyline projected signed progress, interpolated full-loop crossings; standing-start first lap included. Incomplete laps excluded and failed runs reported separately.",
+  "runs": 14,
+  "scope": "Offline synchronous F110 Gym closed-loop, static walls and no added obstacles. Guard uses dynamic one-command plus braking check and SMPPI v5 with 0.3s return dwell, not the ROS fallback implementation. No real-time deadline enforcement.",
+  "tln_only": {
+    "all_completed_lap_times_s": {
+      "count": 30,
+      "max": 21.68063976314021,
+      "mean": 19.471283930602414,
+      "median": 20.37331877540826,
+      "min": 16.31998028986697,
+      "p95": 21.603510174354025
+    },
+    "candidate_rejected_steps": 31,
+    "collision_runs": 4,
+    "completed_runs": 10,
+    "completion_rate": 0.7142857142857143,
+    "fallback_fraction": 0.0,
+    "fallback_steps": 0,
+    "fully_completed_run_lap_times_s": {
+      "count": 30,
+      "max": 21.68063976314021,
+      "mean": 19.471283930602414,
+      "median": 20.37331877540826,
+      "min": 16.31998028986697,
+      "p95": 21.603510174354025
+    },
+    "maps": {
+      "berlin": {
+        "collisions": 4,
+        "completed": 0,
+        "runs": 4
+      },
+      "hyhall12": {
+        "collisions": 0,
+        "completed": 4,
+        "runs": 4
+      },
+      "teras": {
+        "collisions": 0,
+        "completed": 6,
+        "runs": 6
+      }
+    },
+    "peak_actual_speeds_mps": {
+      "count": 14,
+      "max": 3.6796207427978516,
+      "mean": 2.6426070587975636,
+      "median": 2.4849177598953247,
+      "min": 2.017369270324707,
+      "p95": 3.6796207427978516
+    },
+    "reasons": {
+      "collision": 4,
+      "completed": 10
+    },
+    "runs": 14,
+    "steps": 12118
+  },
+  "training_executed": false
+}

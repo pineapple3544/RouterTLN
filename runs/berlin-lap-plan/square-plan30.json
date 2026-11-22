@@ -1,0 +1,333 @@
+{
+  "teacher": false,
+  "cases": [
+    {
+      "name": "berlin-forward-2028",
+      "map": "berlin",
+      "layout": 0,
+      "count": 3,
+      "seed": 2028,
+      "start": 37,
+      "stations": [
+        5.697861897503426,
+        8.696939580342306,
+        11.696065825632402
+      ],
+      "offsets": [
+        0.083,
+        -0.083,
+        0.083
+      ],
+      "full_lap": true,
+      "laps": 3,
+      "speed_cap": 3,
+      "lap_planning": true,
+      "plan_lead_time": 0.25,
+      "plan_speed_fraction": 0.75,
+      "shapes": [
+        [
+          0.3,
+          0.3,
+          0
+        ],
+        [
+          0.3,
+          0.3,
+          0
+        ],
+        [
+          0.3,
+          0.3,
+          0
+        ]
+      ]
+    },
+    {
+      "name": "berlin-forward-7719",
+      "map": "berlin",
+      "layout": 0,
+      "count": 3,
+      "seed": 7719,
+      "start": 37,
+      "stations": [
+        5.697861897503426,
+        8.696939580342306,
+        11.696065825632402
+      ],
+      "offsets": [
+        0.083,
+        -0.083,
+        0.083
+      ],
+      "full_lap": true,
+      "laps": 3,
+      "speed_cap": 3,
+      "lap_planning": true,
+      "plan_lead_time": 0.25,
+      "plan_speed_fraction": 0.75,
+      "shapes": [
+        [
+          0.3,
+          0.3,
+          0
+        ],
+        [
+          0.3,
+          0.3,
+          0
+        ],
+        [
+          0.3,
+          0.3,
+          0
+        ]
+      ]
+    },
+    {
+      "name": "berlin-forward-9051",
+      "map": "berlin",
+      "layout": 0,
+      "count": 3,
+      "seed": 9051,
+      "start": 37,
+      "stations": [
+        5.697861897503426,
+        8.696939580342306,
+        11.696065825632402
+      ],
+      "offsets": [
+        0.083,
+        -0.083,
+        0.083
+      ],
+      "full_lap": true,
+      "laps": 3,
+      "speed_cap": 3,
+      "lap_planning": true,
+      "plan_lead_time": 0.25,
+      "plan_speed_fraction": 0.75,
+      "shapes": [
+        [
+          0.3,
+          0.3,
+          0
+        ],
+        [
+          0.3,
+          0.3,
+          0
+        ],
+        [
+          0.3,
+          0.3,
+          0
+        ]
+      ]
+    },
+    {
+      "name": "berlin-forward-9063",
+      "map": "berlin",
+      "layout": 0,
+      "count": 3,
+      "seed": 9063,
+      "start": 37,
+      "stations": [
+        5.697861897503426,
+        8.696939580342306,
+        11.696065825632402
+      ],
+      "offsets": [
+        0.083,
+        -0.083,
+        0.083
+      ],
+      "full_lap": true,
+      "laps": 3,
+      "speed_cap": 3,
+      "lap_planning": true,
+      "plan_lead_time": 0.25,
+      "plan_speed_fraction": 0.75,
+      "shapes": [
+        [
+          0.3,
+          0.3,
+          0
+        ],
+        [
+          0.3,
+          0.3,
+          0
+        ],
+        [
+          0.3,
+          0.3,
+          0
+        ]
+      ]
+    },
+    {
+      "name": "berlin-forward-31017",
+      "map": "berlin",
+      "layout": 0,
+      "count": 3,
+      "seed": 31017,
+      "start": 37,
+      "stations": [
+        5.697861897503426,
+        8.696939580342306,
+        11.696065825632402
+      ],
+      "offsets": [
+        0.083,
+        -0.083,
+        0.083
+      ],
+      "full_lap": true,
+      "laps": 3,
+      "speed_cap": 3,
+      "lap_planning": true,
+      "plan_lead_time": 0.25,
+      "plan_speed_fraction": 0.75,
+      "shapes": [
+        [
+          0.3,
+          0.3,
+          0
+        ],
+        [
+          0.3,
+          0.3,
+          0
+        ],
+        [
+          0.3,
+          0.3,
+          0
+        ]
+      ]
+    },
+    {
+      "name": "berlin-forward-84215",
+      "map": "berlin",
+      "layout": 0,
+      "count": 3,
+      "seed": 84215,
+      "start": 37,
+      "stations": [
+        5.697861897503426,
+        8.696939580342306,
+        11.696065825632402
+      ],
+      "offsets": [
+        0.083,
+        -0.083,
+        0.083
+      ],
+      "full_lap": true,
+      "laps": 3,
+      "speed_cap": 3,
+      "lap_planning": true,
+      "plan_lead_time": 0.25,
+      "plan_speed_fraction": 0.75,
+      "shapes": [
+        [
+          0.3,
+          0.3,
+          0
+        ],
+        [
+          0.3,
+          0.3,
+          0
+        ],
+        [
+          0.3,
+          0.3,
+          0
+        ]
+      ]
+    },
+    {
+      "name": "berlin-forward-36002",
+      "map": "berlin",
+      "layout": 0,
+      "count": 3,
+      "seed": 36002,
+      "start": 37,
+      "stations": [
+        5.697861897503426,
+        8.696939580342306,
+        11.696065825632402
+      ],
+      "offsets": [
+        0.083,
+        -0.083,
+        0.083
+      ],
+      "full_lap": true,
+      "laps": 3,
+      "speed_cap": 3,
+      "lap_planning": true,
+      "plan_lead_time": 0.25,
+      "plan_speed_fraction": 0.75,
+      "shapes": [
+        [
+          0.3,
+          0.3,
+          0
+        ],
+        [
+          0.3,
+          0.3,
+          0
+        ],
+        [
+          0.3,
+          0.3,
+          0
+        ]
+      ]
+    },
+    {
+      "name": "berlin-forward-43771",
+      "map": "berlin",
+      "layout": 0,
+      "count": 3,
+      "seed": 43771,
+      "start": 37,
+      "stations": [
+        5.697861897503426,
+        8.696939580342306,
+        11.696065825632402
+      ],
+      "offsets": [
+        0.083,
+        -0.083,
+        0.083
+      ],
+      "full_lap": true,
+      "laps": 3,
+      "speed_cap": 3,
+      "lap_planning": true,
+      "plan_lead_time": 0.25,
+      "plan_speed_fraction": 0.75,
+      "shapes": [
+        [
+          0.3,
+          0.3,
+          0
+        ],
+        [
+          0.3,
+          0.3,
+          0
+        ],
+        [
+          0.3,
+          0.3,
+          0
+        ]
+      ]
+    }
+  ]
+}

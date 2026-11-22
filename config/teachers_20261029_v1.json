@@ -1,0 +1,191 @@
+{
+  "steer_sigma": 0.035,
+  "output": "/workspace/data/teachers-20261029-v1",
+  "horizon": 40,
+  "samples": 2048,
+  "speed_sigma": 0.3,
+  "temperature": 0.5,
+  "episodes": [
+    {
+      "seed": 3100,
+      "split": "train",
+      "mode": "race",
+      "name": "race-3100",
+      "speed_cap": 2.5,
+      "max_steps": 1800,
+      "laps": 2,
+      "start_index": 0
+    },
+    {
+      "seed": 3101,
+      "split": "train",
+      "mode": "race",
+      "name": "race-3101",
+      "speed_cap": 4,
+      "max_steps": 1800,
+      "laps": 2,
+      "start_index": 60
+    },
+    {
+      "seed": 3102,
+      "split": "train",
+      "mode": "race",
+      "name": "race-3102",
+      "speed_cap": 10,
+      "max_steps": 1800,
+      "laps": 2,
+      "start_index": 120
+    },
+    {
+      "seed": 3103,
+      "split": "train",
+      "mode": "race",
+      "name": "race-3103",
+      "speed_cap": 2.5,
+      "max_steps": 1800,
+      "laps": 2,
+      "start_index": 180
+    },
+    {
+      "seed": 3104,
+      "split": "train",
+      "mode": "race",
+      "name": "race-3104",
+      "speed_cap": 4,
+      "max_steps": 1800,
+      "laps": 2,
+      "start_index": 240
+    },
+    {
+      "seed": 3105,
+      "split": "validation",
+      "mode": "race",
+      "name": "race-3105",
+      "speed_cap": 10,
+      "max_steps": 1800,
+      "laps": 2,
+      "start_index": 300
+    },
+    {
+      "start_index": 0,
+      "split": "train",
+      "laps": 2,
+      "obstacle_indices": [
+        80
+      ],
+      "seed": 4100,
+      "speed_cap": 2.5,
+      "obstacle_size": 0.2,
+      "mode": "avoid",
+      "max_steps": 1800,
+      "name": "avoid-4100"
+    },
+    {
+      "start_index": 35,
+      "split": "train",
+      "laps": 2,
+      "obstacle_indices": [
+        130,
+        310
+      ],
+      "seed": 4101,
+      "speed_cap": 4,
+      "obstacle_size": 0.25,
+      "mode": "avoid",
+      "max_steps": 1800,
+      "name": "avoid-4101"
+    },
+    {
+      "start_index": 70,
+      "split": "train",
+      "laps": 2,
+      "obstacle_indices": [
+        60,
+        200,
+        340
+      ],
+      "seed": 4102,
+      "speed_cap": 2.5,
+      "obstacle_size": 0.25,
+      "mode": "avoid",
+      "max_steps": 1800,
+      "name": "avoid-4102"
+    },
+    {
+      "start_index": 105,
+      "split": "train",
+      "laps": 2,
+      "obstacle_indices": [
+        110,
+        280
+      ],
+      "seed": 4103,
+      "speed_cap": 4,
+      "obstacle_size": 0.2,
+      "mode": "avoid",
+      "max_steps": 1800,
+      "name": "avoid-4103"
+    },
+    {
+      "start_index": 140,
+      "split": "train",
+      "laps": 2,
+      "obstacle_indices": [
+        160,
+        350
+      ],
+      "seed": 4104,
+      "speed_cap": 2.5,
+      "obstacle_size": 0.25,
+      "mode": "avoid",
+      "max_steps": 1800,
+      "name": "avoid-4104"
+    },
+    {
+      "start_index": 175,
+      "split": "train",
+      "laps": 2,
+      "obstacle_indices": [
+        70,
+        230
+      ],
+      "seed": 4105,
+      "speed_cap": 4,
+      "obstacle_size": 0.25,
+      "mode": "avoid",
+      "max_steps": 1800,
+      "name": "avoid-4105"
+    },
+    {
+      "start_index": 210,
+      "split": "validation",
+      "laps": 2,
+      "obstacle_indices": [
+        120,
+        270,
+        370
+      ],
+      "seed": 4106,
+      "speed_cap": 2.5,
+      "obstacle_size": 0.2,
+      "mode": "avoid",
+      "max_steps": 1800,
+      "name": "avoid-4106"
+    },
+    {
+      "start_index": 245,
+      "split": "validation",
+      "laps": 2,
+      "obstacle_indices": [
+        180,
+        330
+      ],
+      "seed": 4107,
+      "speed_cap": 4,
+      "obstacle_size": 0.25,
+      "mode": "avoid",
+      "max_steps": 1800,
+      "name": "avoid-4107"
+    }
+  ]
+}

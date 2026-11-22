@@ -1,0 +1,8 @@
+{
+  "output":"/workspace/data/teacher-probe-v3","samples":2048,"horizon":40,
+  "steer_sigma":0.035,"speed_sigma":0.3,"temperature":0.5,
+  "episodes":[
+    {"name":"race-400-seed1002","mode":"race","seed":1002,"speed_cap":4,"laps":1,"max_steps":1200},
+    {"name":"avoid-400-seed2002","mode":"avoid","seed":2002,"speed_cap":4,"laps":1,"obstacle_indices":[100,300],"max_steps":1200}
+  ]
+}

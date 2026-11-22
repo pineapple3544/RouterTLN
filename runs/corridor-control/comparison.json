@@ -1,0 +1,42 @@
+{
+  "reference": {
+    "before": {
+      "total": 36,
+      "started": 35,
+      "completed": 2,
+      "early_returns": 0,
+      "collisions": 0,
+      "stopped": 34
+    },
+    "after": {
+      "total": 36,
+      "started": 36,
+      "completed": 30,
+      "early_returns": 0,
+      "collisions": 0,
+      "stopped": 6
+    },
+    "gained": 28,
+    "lost": 0
+  },
+  "holdout": {
+    "before": {
+      "total": 24,
+      "started": 24,
+      "completed": 1,
+      "early_returns": 0,
+      "collisions": 0,
+      "stopped": 23
+    },
+    "after": {
+      "total": 24,
+      "started": 24,
+      "completed": 18,
+      "early_returns": 0,
+      "collisions": 0,
+      "stopped": 6
+    },
+    "gained": 17,
+    "lost": 0
+  }
+}

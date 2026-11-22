@@ -1,0 +1,269 @@
+{
+  "batch_size": 64,
+  "best_epoch": 19,
+  "best_validation_loss": 0.001000471601041767,
+  "checkpoint": "/workspace/models/race-teachers-expanded-v5.pt",
+  "checkpoint_reload_verified": true,
+  "epochs": 20,
+  "expert": "race",
+  "history": [
+    {
+      "epoch": 1,
+      "saved_best": true,
+      "train_loss": 0.019292982703215243,
+      "validation": {
+        "loss": 0.0062763459963516115,
+        "speed_mae_mps": 0.3146447984667194,
+        "steer_mae_rad": 0.0437796700738878
+      }
+    },
+    {
+      "epoch": 2,
+      "saved_best": true,
+      "train_loss": 0.0050386401036751184,
+      "validation": {
+        "loss": 0.0038177720385079604,
+        "speed_mae_mps": 0.2831700886720257,
+        "steer_mae_rad": 0.02848492580112845
+      }
+    },
+    {
+      "epoch": 3,
+      "saved_best": true,
+      "train_loss": 0.0034643130014993,
+      "validation": {
+        "loss": 0.002755265011612984,
+        "speed_mae_mps": 0.26744897807698537,
+        "steer_mae_rad": 0.022074854480082208
+      }
+    },
+    {
+      "epoch": 4,
+      "saved_best": true,
+      "train_loss": 0.0025176448444797564,
+      "validation": {
+        "loss": 0.002085798832817498,
+        "speed_mae_mps": 0.2551057162085387,
+        "steer_mae_rad": 0.01731631267537338
+      }
+    },
+    {
+      "epoch": 5,
+      "saved_best": true,
+      "train_loss": 0.001961847857792264,
+      "validation": {
+        "loss": 0.0018077656437650007,
+        "speed_mae_mps": 0.246783717371312,
+        "steer_mae_rad": 0.015042672114827469
+      }
+    },
+    {
+      "epoch": 6,
+      "saved_best": true,
+      "train_loss": 0.0016818170659005634,
+      "validation": {
+        "loss": 0.0015487984008764044,
+        "speed_mae_mps": 0.2363731895551644,
+        "steer_mae_rad": 0.013665338158977776
+      }
+    },
+    {
+      "epoch": 7,
+      "saved_best": true,
+      "train_loss": 0.0015044910237901827,
+      "validation": {
+        "loss": 0.0015201508730626227,
+        "speed_mae_mps": 0.23419050739329408,
+        "steer_mae_rad": 0.01295791226258854
+      }
+    },
+    {
+      "epoch": 8,
+      "saved_best": true,
+      "train_loss": 0.0013750007711913809,
+      "validation": {
+        "loss": 0.0013807835293872806,
+        "speed_mae_mps": 0.2213896209592774,
+        "steer_mae_rad": 0.012804583259980658
+      }
+    },
+    {
+      "epoch": 9,
+      "saved_best": true,
+      "train_loss": 0.0012928926424528525,
+      "validation": {
+        "loss": 0.0013258568464735356,
+        "speed_mae_mps": 0.2214824417704355,
+        "steer_mae_rad": 0.012427546188534602
+      }
+    },
+    {
+      "epoch": 10,
+      "saved_best": true,
+      "train_loss": 0.0012058067469419642,
+      "validation": {
+        "loss": 0.001308790054790877,
+        "speed_mae_mps": 0.21654011115052235,
+        "steer_mae_rad": 0.012311530562507651
+      }
+    },
+    {
+      "epoch": 11,
+      "saved_best": true,
+      "train_loss": 0.0011268669638398777,
+      "validation": {
+        "loss": 0.0012543023103274533,
+        "speed_mae_mps": 0.20261857580709072,
+        "steer_mae_rad": 0.013610943476095727
+      }
+    },
+    {
+      "epoch": 12,
+      "saved_best": true,
+      "train_loss": 0.0011011137945186249,
+      "validation": {
+        "loss": 0.0011616331723142206,
+        "speed_mae_mps": 0.20976406344470833,
+        "steer_mae_rad": 0.012306285620377555
+      }
+    },
+    {
+      "epoch": 13,
+      "saved_best": true,
+      "train_loss": 0.001048761879269739,
+      "validation": {
+        "loss": 0.0011320834837108117,
+        "speed_mae_mps": 0.20125012203733184,
+        "steer_mae_rad": 0.012424028830687238
+      }
+    },
+    {
+      "epoch": 14,
+      "saved_best": false,
+      "train_loss": 0.0009898556834064172,
+      "validation": {
+        "loss": 0.0013014392391715848,
+        "speed_mae_mps": 0.22567940439637785,
+        "steer_mae_rad": 0.012283406057178077
+      }
+    },
+    {
+      "epoch": 15,
+      "saved_best": true,
+      "train_loss": 0.0009583841209737853,
+      "validation": {
+        "loss": 0.0010481984351060013,
+        "speed_mae_mps": 0.18929594130613808,
+        "steer_mae_rad": 0.012204523006564815
+      }
+    },
+    {
+      "epoch": 16,
+      "saved_best": false,
+      "train_loss": 0.0009356963366909807,
+      "validation": {
+        "loss": 0.0011729061513311612,
+        "speed_mae_mps": 0.19375903496808408,
+        "steer_mae_rad": 0.013588081884394029
+      }
+    },
+    {
+      "epoch": 17,
+      "saved_best": true,
+      "train_loss": 0.0008997266847113987,
+      "validation": {
+        "loss": 0.0010445434137129471,
+        "speed_mae_mps": 0.1882768954196858,
+        "steer_mae_rad": 0.012419021383875219
+      }
+    },
+    {
+      "epoch": 18,
+      "saved_best": true,
+      "train_loss": 0.0008993167829818881,
+      "validation": {
+        "loss": 0.0010007985135389742,
+        "speed_mae_mps": 0.18703408142774341,
+        "steer_mae_rad": 0.011890533311590692
+      }
+    },
+    {
+      "epoch": 19,
+      "saved_best": true,
+      "train_loss": 0.0008820037486684299,
+      "validation": {
+        "loss": 0.001000471601041767,
+        "speed_mae_mps": 0.18502039756555688,
+        "steer_mae_rad": 0.011929363749194623
+      }
+    },
+    {
+      "epoch": 20,
+      "saved_best": false,
+      "train_loss": 0.0008385079622609619,
+      "validation": {
+        "loss": 0.001012768310206009,
+        "speed_mae_mps": 0.1894497116003552,
+        "steer_mae_rad": 0.012047388094951214
+      }
+    }
+  ],
+  "initial_validation": {
+    "loss": 0.09390132225313945,
+    "speed_mae_mps": 2.822613989647735,
+    "steer_mae_rad": 0.07190137398270108
+  },
+  "learning_rate": 0.0001,
+  "loss": "SmoothL1 mean over normalized steering/speed",
+  "optimizer": "Adam",
+  "optimizer_state_saved": false,
+  "paths": {
+    "test_episodes": [
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/race-005.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/race-011.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/race-017.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/race-023.elds",
+      "/workspace/data/teachers-expanded-v5-balanced-20261029/accepted/balanced-race-01.elds",
+      "/workspace/data/teachers-expanded-v5-balanced-20261029/accepted/balanced-race-03.elds"
+    ],
+    "train_episodes": [
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/race-000.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/race-001.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/race-003.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/race-004.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/race-006.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/race-007.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/race-009.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/race-010.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/race-012.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/race-013.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/race-015.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/race-016.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/race-018.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/race-019.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/race-021.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/race-022.elds"
+    ],
+    "validation_episodes": [
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/race-002.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/race-008.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/race-014.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/race-020.elds",
+      "/workspace/data/teachers-expanded-v5-balanced-20261029/accepted/balanced-race-00.elds",
+      "/workspace/data/teachers-expanded-v5-balanced-20261029/accepted/balanced-race-02.elds"
+    ]
+  },
+  "reloaded_validation": {
+    "loss": 0.001000471601041767,
+    "speed_mae_mps": 0.18502039756555688,
+    "steer_mae_rad": 0.011929363749194623
+  },
+  "seed": 2026,
+  "selection": "strictly lowest validation loss; ties keep first",
+  "status": "completed",
+  "test_evaluated": false,
+  "train_records": 12773,
+  "training_executed": true,
+  "training_seconds": 20.998783829,
+  "validation_records": 4829
+}

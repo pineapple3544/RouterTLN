@@ -1,0 +1,37 @@
+tag,model,low,high,exposed,passed,collision,contact_kind,last_v_before_contact,reason,first_reject_m,v_at_reject,peak_flying_avoid,laps,planned_entries
+base-1.2,original,1.2,1.6,True,True,False,,,finish,,,1.649541,"[29.275, 24.345, 25.6]",2
+base-1.5,original,1.5,1.9,False,False,False,,,no_corridor,4.998162,1.233526,,[],0
+base-1.8,original,1.8,2.2,True,True,False,,,finish,,,1.8,"[29.38, 21.18, 22.54]",2
+base-2.1,original,2.1,2.5,True,True,False,,,finish,,,2.1,"[30.145, 21.735, 20.895]",2
+base-2.4,original,2.4,2.8,True,True,False,,,finish,,,2.4,"[29.255, 20.305, 19.9]",2
+base-2.7,original,2.7,3,True,True,False,,,finish,,,2.7,"[28.535, 18.48, 17.89]",2
+ceiling-ros-6.0,original,6.0,6.4,True,False,False,,,braking_footprint,53.082577,5.641296,5.584846,[31.575],1
+ceiling-ros-7.0,original,7.0,7.4,True,False,False,,,braking_footprint,52.582657,5.816149,5.694994,[32.42],1
+ceiling-ros-8.0,original,8.0,8.4,True,False,False,,,braking_footprint,52.582657,5.833788,5.643588,[31.225],1
+ceiling-ros-9.0,original,9.0,9.4,False,False,False,,,no_corridor,4.998162,1.447782,,[],0
+ceiling-ros-9.6,original,9.6,10.0,True,False,False,,,braking_footprint,52.582657,5.738678,5.643579,[30.485],1
+ceiling-ros-retry-9.0,original,9.0,9.4,False,False,False,,,braking_footprint,4.898225,1.209681,,[],0
+exposed-3.9,original,3.9,4.2,True,False,False,,,no_corridor,54.581764,3.893425,3.892752,[29.585],1
+exposed-4.2,original,4.2,4.5,True,False,False,,,no_corridor,54.381832,4.184834,4.183282,[29.575],1
+extended-3.0,original,3.0,3.3,True,True,False,,,finish,,,3.0,"[27.545, 17.97, 17.875]",2
+extended-3.3,original,3.3,3.6,True,False,False,,,braking_footprint,62.679337,3.300000,3.3,[27.43],1
+extended-3.6,original,3.6,3.9,True,False,False,,,braking_footprint,61.479687,3.600000,3.6,[27.34],0
+extended-3.9,original,3.9,4.2,False,False,False,,,no_corridor,4.998162,1.193851,,[],0
+extended-4.2,original,4.2,4.5,False,False,False,,,braking_footprint,4.898225,1.188962,,[],0
+extended-4.5,original,4.5,4.8,True,False,False,,,no_corridor,54.381832,4.477437,4.475127,[27.41],1
+impact-wsp-ros-4.9,high-WSP,4.9,5.3,True,False,False,,,braking_footprint,52.182823,4.303819,4.209996,[30.6],1
+impact-wsp-ros-5.4,high-WSP,5.4,5.8,True,False,False,,,braking_footprint,52.082851,4.629726,4.508505,[32.855],1
+preview-2.7,preview,2.7,3,True,True,False,,,finish,,,2.7,"[28.04, 19.73, 20.13]",2
+preview-3.0,preview,3.0,3.3,False,False,False,,,no_corridor,4.998162,1.407543,,[],0
+preview-repeat-2.7,preview,2.7,3,True,True,False,,,finish,,,2.7,"[29.7, 19.395, 20.325]",2
+repeat-1.5,original,1.5,1.9,True,True,False,,,finish,,,1.649604,"[27.14, 21.63, 22.07]",2
+repeat-2.7,original,2.7,3,False,False,False,,,no_corridor,5.198084,1.249594,,[],0
+repeat-3.0,original,3.0,3.3,True,True,False,,,finish,,,3.0,"[28.015, 17.875, 17.82]",2
+wall-ros-4.8,original,4.8,5.2,True,False,False,,,braking_footprint,52.182819,4.260583,4.175693,[28.885],1
+wall-ros-4.9,original,4.9,5.3,True,False,False,,,no_corridor,54.181904,4.857063,4.850306,[28.56],1
+wall-ros-5.4,original,5.4,5.8,True,False,False,,,no_corridor,54.181911,5.332581,5.32197,[29.95],1
+wsp-2.7,damp,2.7,3,True,False,False,,,braking_footprint,53.282303,2.684838,2.683286,[26.445],1
+wsp-3.0,damp,3.0,3.3,True,False,False,,,braking_footprint,111.763069,3.000000,3.0,"[27.34, 17.55]",0
+wsp-3.3,damp,3.3,3.6,True,False,False,,,braking_footprint,62.779312,3.300000,3.3,[26.85],1
+wsp-repeat-2.7,damp,2.7,3,True,False,False,,,braking_footprint,53.482212,2.691132,2.690224,[26.6],1
+wsp-repeat-3.0,damp,3.0,3.3,False,False,False,,,no_corridor,4.798275,1.381628,,[],0

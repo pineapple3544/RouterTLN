@@ -1,0 +1,19 @@
+{
+  "checkpoint": "/workspace/models/race-teachers-expanded-v5.pt",
+  "output": "/workspace/runs/race-wsp-berlin/diagnosis",
+  "controllers": [
+    "tln_only"
+  ],
+  "scenarios": [
+    {
+      "name": "berlin-forward",
+      "map_name": "berlin",
+      "map_dir": "/workspace/maps/berlin",
+      "map_stem": "berlin",
+      "seed": 2026,
+      "speed_cap": 3,
+      "laps": 1
+    }
+  ],
+  "shadow_teacher": true
+}

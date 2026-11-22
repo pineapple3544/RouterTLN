@@ -1,0 +1,26 @@
+{
+  "output": "/workspace/runs/memory-wall-fix-20261029/baseline",
+  "scenarios": [
+    {
+      "map_name": "hyhall12",
+      "max_steps": 2400,
+      "mode": "race",
+      "reverse_track": false,
+      "start_lateral_m": 0.18,
+      "seed": 41000,
+      "speed_cap": 4.0,
+      "start_yaw_rad": -0.12,
+      "map_stem": "hyhall12_orig",
+      "start_index": 23,
+      "evaluation_group": "new_seed_start_perturbation",
+      "laps": 3,
+      "map_dir": "/home/misys/forza_ws/race_stack/stack_master/maps/hyhall12",
+      "name": "new-start-0"
+    }
+  ],
+  "controllers": [
+    "tln_smppi_guarded"
+  ],
+  "checkpoint": "/workspace/models/race-teachers-expanded-v5.pt",
+  "record_scans": true
+}

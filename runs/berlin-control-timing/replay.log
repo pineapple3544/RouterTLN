@@ -1,0 +1,2 @@
+models/race-berlin-wsp.pt samples=633 max_steer_error_rad=5.96046448e-08 max_speed_error_mps=1.1920929e-06 cuda_mean_ms=0.54758 cpu_mean_ms=0.20315
+models/avoid-corridor-v2.pt samples=133 max_steer_error_rad=2.98023224e-08 max_speed_error_mps=7.15255737e-07 cuda_mean_ms=0.60061 cpu_mean_ms=0.22157

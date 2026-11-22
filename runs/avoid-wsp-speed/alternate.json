@@ -1,0 +1,125 @@
+{
+  "teacher": false,
+  "cases": [
+    {
+      "name": "alternate-0",
+      "map": "berlin",
+      "layout": 0,
+      "count": 3,
+      "seed": 8200,
+      "start": 0,
+      "stations": [
+        5.73,
+        8.73,
+        11.73
+      ],
+      "offsets": [
+        0.083,
+        -0.083,
+        0.083
+      ],
+      "full_lap": true,
+      "speed_cap": 4
+    },
+    {
+      "name": "alternate-100",
+      "map": "berlin",
+      "layout": 0,
+      "count": 3,
+      "seed": 8201,
+      "start": 100,
+      "stations": [
+        5.73,
+        8.73,
+        11.73
+      ],
+      "offsets": [
+        0.083,
+        -0.083,
+        0.083
+      ],
+      "full_lap": true,
+      "speed_cap": 4
+    },
+    {
+      "name": "alternate-180",
+      "map": "berlin",
+      "layout": 0,
+      "count": 3,
+      "seed": 8202,
+      "start": 180,
+      "stations": [
+        5.73,
+        8.73,
+        11.73
+      ],
+      "offsets": [
+        0.083,
+        -0.083,
+        0.083
+      ],
+      "full_lap": true,
+      "speed_cap": 4
+    },
+    {
+      "name": "alternate-280",
+      "map": "berlin",
+      "layout": 0,
+      "count": 3,
+      "seed": 8203,
+      "start": 280,
+      "stations": [
+        5.73,
+        8.73,
+        11.73
+      ],
+      "offsets": [
+        0.083,
+        -0.083,
+        0.083
+      ],
+      "full_lap": true,
+      "speed_cap": 4
+    },
+    {
+      "name": "alternate-335",
+      "map": "berlin",
+      "layout": 0,
+      "count": 3,
+      "seed": 8204,
+      "start": 335,
+      "stations": [
+        5.73,
+        8.73,
+        11.73
+      ],
+      "offsets": [
+        0.083,
+        -0.083,
+        0.083
+      ],
+      "full_lap": true,
+      "speed_cap": 4
+    },
+    {
+      "name": "alternate-410",
+      "map": "berlin",
+      "layout": 0,
+      "count": 3,
+      "seed": 8205,
+      "start": 410,
+      "stations": [
+        5.73,
+        8.73,
+        11.73
+      ],
+      "offsets": [
+        0.083,
+        -0.083,
+        0.083
+      ],
+      "full_lap": true,
+      "speed_cap": 4
+    }
+  ]
+}

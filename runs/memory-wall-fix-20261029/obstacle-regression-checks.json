@@ -1,0 +1,55 @@
+{
+  "runs": 4,
+  "completed_runs": 4,
+  "collisions": 0,
+  "invalid_plans": 0,
+  "obstacles_spawned": 12,
+  "obstacles_passed": 12,
+  "spawn_visibility_distance_checks": true,
+  "original_episode_parameters_unchanged": true,
+  "metrics_only": true,
+  "training_executed": false,
+  "scope": "SVG-MPPI memory regression, not Avoid TLN",
+  "results": [
+    {
+      "name": "avoid-001",
+      "reason": "completed",
+      "obstacles_passed": 3,
+      "collisions": 0,
+      "invalid_plans": 0,
+      "min_obstacle_separating_axis_gap_m": 0.1667858064174652,
+      "records": 514,
+      "mean_teacher_ms": 36.38924026489258
+    },
+    {
+      "name": "avoid-003",
+      "reason": "completed",
+      "obstacles_passed": 3,
+      "collisions": 0,
+      "invalid_plans": 0,
+      "min_obstacle_separating_axis_gap_m": 0.0792846828699112,
+      "records": 664,
+      "mean_teacher_ms": 35.645790100097656
+    },
+    {
+      "name": "avoid-022",
+      "reason": "completed",
+      "obstacles_passed": 3,
+      "collisions": 0,
+      "invalid_plans": 0,
+      "min_obstacle_separating_axis_gap_m": 0.08639168739318848,
+      "records": 650,
+      "mean_teacher_ms": 35.93708801269531
+    },
+    {
+      "name": "avoid-024",
+      "reason": "completed",
+      "obstacles_passed": 3,
+      "collisions": 0,
+      "invalid_plans": 0,
+      "min_obstacle_separating_axis_gap_m": 0.08549918234348297,
+      "records": 615,
+      "mean_teacher_ms": 36.23406219482422
+    }
+  ]
+}

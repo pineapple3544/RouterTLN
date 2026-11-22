@@ -1,0 +1,5 @@
+[INFO] [1795352633.091014062] [el_native_controller]: section router: Race/Avoid TLN and latched STOP
+[INFO] [1795352633.120461211] [el_native_controller]: step=0 mode=0 v=0.00 target=1.80 progress=0.0 ms=2.04
+[INFO] [1795352634.239576384] [el_native_controller]: step=40 mode=0 v=2.92 target=3.00 progress=1.8 ms=1.69
+[INFO] [1795352635.464684685] [el_native_controller]: step=80 mode=0 v=3.00 target=3.00 progress=4.4 ms=2.31
+[WARN] [1795352636.399139262] [el_native_controller]: sensor_timeout: scan age 161.9 ms, odometry age 161.8 ms

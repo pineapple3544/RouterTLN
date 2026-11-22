@@ -1,0 +1,110 @@
+{
+  "episodes": [
+    {
+      "mode": "race",
+      "start_index": 0,
+      "laps": 2,
+      "speed_cap": 4,
+      "seed": 12001,
+      "name": "race4",
+      "max_steps": 1800
+    },
+    {
+      "mode": "race",
+      "start_index": 180,
+      "laps": 2,
+      "speed_cap": 10,
+      "seed": 12002,
+      "name": "race10",
+      "max_steps": 1800
+    },
+    {
+      "speed_cap": 2.5,
+      "mode": "avoid",
+      "start_index": 0,
+      "name": "avoid-0",
+      "laps": 1,
+      "obstacle_indices": [
+        100
+      ],
+      "seed": 12100,
+      "max_steps": 1400,
+      "obstacle_size": 0.25
+    },
+    {
+      "speed_cap": 2.5,
+      "mode": "avoid",
+      "start_index": 0,
+      "name": "avoid-1",
+      "laps": 1,
+      "obstacle_indices": [
+        174
+      ],
+      "seed": 12101,
+      "max_steps": 1400,
+      "obstacle_size": 0.25
+    },
+    {
+      "speed_cap": 2.5,
+      "mode": "avoid",
+      "start_index": 0,
+      "name": "avoid-2",
+      "laps": 1,
+      "obstacle_indices": [
+        265
+      ],
+      "seed": 12102,
+      "max_steps": 1400,
+      "obstacle_size": 0.25
+    },
+    {
+      "speed_cap": 2.5,
+      "mode": "avoid",
+      "start_index": 0,
+      "name": "avoid-3",
+      "laps": 1,
+      "obstacle_indices": [
+        300
+      ],
+      "seed": 12103,
+      "max_steps": 1400,
+      "obstacle_size": 0.25
+    },
+    {
+      "speed_cap": 2.5,
+      "mode": "avoid",
+      "start_index": 0,
+      "name": "avoid-4",
+      "laps": 1,
+      "obstacle_indices": [
+        100,
+        300
+      ],
+      "seed": 12104,
+      "max_steps": 1400,
+      "obstacle_size": 0.25
+    },
+    {
+      "speed_cap": 2.5,
+      "mode": "avoid",
+      "start_index": 0,
+      "name": "avoid-5",
+      "laps": 1,
+      "obstacle_indices": [
+        60,
+        200,
+        340
+      ],
+      "seed": 12105,
+      "max_steps": 1400,
+      "obstacle_size": 0.25
+    }
+  ],
+  "temperature": 0.5,
+  "horizon": 40,
+  "speed_sigma": 0.3,
+  "output": "/workspace/runs/teacher-improvement/baseline",
+  "lidar_range_m": 18,
+  "steer_sigma": 0.035,
+  "samples": 2048
+}

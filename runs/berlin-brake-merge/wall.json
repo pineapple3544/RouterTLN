@@ -1,0 +1,89 @@
+{
+  "teacher": false,
+  "cases": [
+    {
+      "name": "original-2028-4.9",
+      "map": "berlin",
+      "layout": 0,
+      "start": 37,
+      "count": 3,
+      "seed": 2028,
+      "stations": [
+        5.697861897503426,
+        8.696939580342306,
+        11.696065825632402
+      ],
+      "shapes": [
+        [
+          0.3,
+          0.3,
+          0
+        ],
+        [
+          0.3,
+          0.3,
+          0
+        ],
+        [
+          0.3,
+          0.3,
+          0
+        ]
+      ],
+      "offsets": [
+        0.083,
+        -0.083,
+        0.083
+      ],
+      "full_lap": true,
+      "laps": 3,
+      "lap_planning": true,
+      "speed_cap": 5.3,
+      "sim_avoid_min": 4.9,
+      "sim_avoid_max": 5.3,
+      "trace_avoid": true
+    },
+    {
+      "name": "original-7719-4.9",
+      "map": "berlin",
+      "layout": 0,
+      "start": 37,
+      "count": 3,
+      "seed": 7719,
+      "stations": [
+        5.697861897503426,
+        8.696939580342306,
+        11.696065825632402
+      ],
+      "shapes": [
+        [
+          0.3,
+          0.3,
+          0
+        ],
+        [
+          0.3,
+          0.3,
+          0
+        ],
+        [
+          0.3,
+          0.3,
+          0
+        ]
+      ],
+      "offsets": [
+        0.083,
+        -0.083,
+        0.083
+      ],
+      "full_lap": true,
+      "laps": 3,
+      "lap_planning": true,
+      "speed_cap": 5.3,
+      "sim_avoid_min": 4.9,
+      "sim_avoid_max": 5.3,
+      "trace_avoid": true
+    }
+  ]
+}

@@ -1,0 +1,63 @@
+{
+  "lidar_range_m": 18,
+  "samples": 2048,
+  "speed_sigma": 0.3,
+  "temperature": 0.5,
+  "episodes": [
+    {
+      "split": "train",
+      "speed_cap": 2.5,
+      "start_index": 0,
+      "rear_only": true,
+      "cycling_obstacles": true,
+      "max_steps": 1900,
+      "name": "avoid-rear-8100",
+      "mode": "avoid",
+      "minimum_passes": 1,
+      "laps": 2,
+      "seed": 8100
+    },
+    {
+      "split": "train",
+      "speed_cap": 2.5,
+      "start_index": 30,
+      "rear_only": true,
+      "cycling_obstacles": true,
+      "max_steps": 1900,
+      "name": "avoid-rear-8101",
+      "mode": "avoid",
+      "minimum_passes": 1,
+      "laps": 2,
+      "seed": 8101
+    },
+    {
+      "split": "train",
+      "speed_cap": 2.5,
+      "start_index": 60,
+      "rear_only": true,
+      "cycling_obstacles": true,
+      "max_steps": 1900,
+      "name": "avoid-rear-8102",
+      "mode": "avoid",
+      "minimum_passes": 1,
+      "laps": 2,
+      "seed": 8102
+    },
+    {
+      "split": "validation",
+      "speed_cap": 2.5,
+      "start_index": 90,
+      "rear_only": true,
+      "cycling_obstacles": true,
+      "max_steps": 1900,
+      "name": "avoid-rear-8103",
+      "mode": "avoid",
+      "minimum_passes": 1,
+      "laps": 2,
+      "seed": 8103
+    }
+  ],
+  "steer_sigma": 0.035,
+  "horizon": 40,
+  "output": "/workspace/data/teachers-18m-rear-v1"
+}

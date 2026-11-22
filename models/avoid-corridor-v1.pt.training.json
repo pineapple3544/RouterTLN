@@ -1,0 +1,260 @@
+{
+  "batch_size": 64,
+  "best_epoch": 16,
+  "best_validation_loss": 0.014828422953976234,
+  "checkpoint": "/workspace/models/avoid-corridor-v1.pt",
+  "checkpoint_reload_verified": true,
+  "corridor_guided": true,
+  "epochs": 16,
+  "expert": "avoid",
+  "history": [
+    {
+      "epoch": 1,
+      "saved_best": true,
+      "train_loss": 0.025646001225160135,
+      "validation": {
+        "loss": 0.025779460290712968,
+        "speed_mae_mps": 0.26901345477144945,
+        "steer_mae_rad": 0.08999025056068134
+      }
+    },
+    {
+      "epoch": 2,
+      "saved_best": true,
+      "train_loss": 0.02287049152104643,
+      "validation": {
+        "loss": 0.024025061265571142,
+        "speed_mae_mps": 0.2638438922581655,
+        "steer_mae_rad": 0.08746383245465812
+      }
+    },
+    {
+      "epoch": 3,
+      "saved_best": true,
+      "train_loss": 0.02036500633967972,
+      "validation": {
+        "loss": 0.02304060877925092,
+        "speed_mae_mps": 0.27124125442225416,
+        "steer_mae_rad": 0.0832333583389301
+      }
+    },
+    {
+      "epoch": 4,
+      "saved_best": true,
+      "train_loss": 0.018815016363102843,
+      "validation": {
+        "loss": 0.021617341996995013,
+        "speed_mae_mps": 0.26357677466121204,
+        "steer_mae_rad": 0.08036913528256073
+      }
+    },
+    {
+      "epoch": 5,
+      "saved_best": true,
+      "train_loss": 0.017669118726979936,
+      "validation": {
+        "loss": 0.020523232405593617,
+        "speed_mae_mps": 0.2997984452416463,
+        "steer_mae_rad": 0.07873586193545835
+      }
+    },
+    {
+      "epoch": 6,
+      "saved_best": true,
+      "train_loss": 0.016782931373679973,
+      "validation": {
+        "loss": 0.019644027998300225,
+        "speed_mae_mps": 0.29684213637141227,
+        "steer_mae_rad": 0.07696083031585656
+      }
+    },
+    {
+      "epoch": 7,
+      "saved_best": true,
+      "train_loss": 0.015974670428977496,
+      "validation": {
+        "loss": 0.018149423109360668,
+        "speed_mae_mps": 0.2569837793616876,
+        "steer_mae_rad": 0.07270487784174917
+      }
+    },
+    {
+      "epoch": 8,
+      "saved_best": true,
+      "train_loss": 0.015388009101957005,
+      "validation": {
+        "loss": 0.017409366648757925,
+        "speed_mae_mps": 0.2605793374944228,
+        "steer_mae_rad": 0.06969728365049258
+      }
+    },
+    {
+      "epoch": 9,
+      "saved_best": true,
+      "train_loss": 0.014901946099446593,
+      "validation": {
+        "loss": 0.01677540731553775,
+        "speed_mae_mps": 0.25871488128098524,
+        "steer_mae_rad": 0.06839002351912242
+      }
+    },
+    {
+      "epoch": 10,
+      "saved_best": true,
+      "train_loss": 0.01457830672262744,
+      "validation": {
+        "loss": 0.016224582755758502,
+        "speed_mae_mps": 0.25849413522433884,
+        "steer_mae_rad": 0.06569558563977664
+      }
+    },
+    {
+      "epoch": 11,
+      "saved_best": true,
+      "train_loss": 0.01427831317060066,
+      "validation": {
+        "loss": 0.015878988284065008,
+        "speed_mae_mps": 0.252422623436384,
+        "steer_mae_rad": 0.06470015884464625
+      }
+    },
+    {
+      "epoch": 12,
+      "saved_best": true,
+      "train_loss": 0.014081652629207039,
+      "validation": {
+        "loss": 0.015507904594645851,
+        "speed_mae_mps": 0.25326065164200406,
+        "steer_mae_rad": 0.06302648225255647
+      }
+    },
+    {
+      "epoch": 13,
+      "saved_best": true,
+      "train_loss": 0.01390081748011552,
+      "validation": {
+        "loss": 0.015273309601311628,
+        "speed_mae_mps": 0.2559105431494986,
+        "steer_mae_rad": 0.06149256907685481
+      }
+    },
+    {
+      "epoch": 14,
+      "saved_best": false,
+      "train_loss": 0.013772399186816995,
+      "validation": {
+        "loss": 0.015287172595398349,
+        "speed_mae_mps": 0.28003511920807855,
+        "steer_mae_rad": 0.060369520571642306
+      }
+    },
+    {
+      "epoch": 15,
+      "saved_best": true,
+      "train_loss": 0.013658886415957703,
+      "validation": {
+        "loss": 0.014915554629302196,
+        "speed_mae_mps": 0.2515338352166107,
+        "steer_mae_rad": 0.0596905377612737
+      }
+    },
+    {
+      "epoch": 16,
+      "saved_best": true,
+      "train_loss": 0.013571634606741666,
+      "validation": {
+        "loss": 0.014828422953976234,
+        "speed_mae_mps": 0.25964730861568336,
+        "steer_mae_rad": 0.058938840661147865
+      }
+    }
+  ],
+  "initial_checkpoint": "/workspace/models/avoid-chain-v2.pt",
+  "initial_validation": {
+    "loss": 0.027871384251275996,
+    "speed_mae_mps": 0.2544366360001803,
+    "steer_mae_rad": 0.09367881420913342
+  },
+  "learning_rate": 0.00015,
+  "loss": "SmoothL1 mean over normalized steering/speed",
+  "optimizer": "Adam",
+  "optimizer_state_saved": false,
+  "paths": {
+    "test_episodes": [],
+    "train_episodes": [
+      "/workspace/data/avoid-corridor-replay/train-000.elds",
+      "/workspace/data/avoid-corridor-replay/train-001.elds",
+      "/workspace/data/avoid-corridor-replay/train-002.elds",
+      "/workspace/data/avoid-corridor-replay/train-003.elds",
+      "/workspace/data/avoid-corridor-replay/train-004.elds",
+      "/workspace/data/avoid-corridor-replay/train-005.elds",
+      "/workspace/data/avoid-corridor-replay/train-006.elds",
+      "/workspace/data/avoid-corridor-replay/train-007.elds",
+      "/workspace/data/avoid-corridor-replay/train-008.elds",
+      "/workspace/data/avoid-corridor-replay/train-009.elds",
+      "/workspace/data/avoid-corridor-replay/train-010.elds",
+      "/workspace/data/avoid-corridor-replay/train-011.elds",
+      "/workspace/data/avoid-corridor-replay/train-012.elds",
+      "/workspace/data/avoid-corridor-replay/train-013.elds",
+      "/workspace/data/avoid-corridor-replay/train-014.elds",
+      "/workspace/data/avoid-corridor-replay/train-015.elds",
+      "/workspace/data/avoid-corridor-replay/train-016.elds",
+      "/workspace/data/avoid-corridor-replay/train-017.elds",
+      "/workspace/data/avoid-corridor-replay/train-018.elds",
+      "/workspace/data/avoid-corridor-replay/train-019.elds",
+      "/workspace/data/avoid-corridor-replay/train-020.elds",
+      "/workspace/data/avoid-corridor-replay/train-021.elds",
+      "/workspace/data/avoid-corridor-replay/train-023.elds",
+      "/workspace/data/avoid-corridor-replay/train-024.elds",
+      "/workspace/data/avoid-corridor-replay/train-025.elds",
+      "/workspace/data/avoid-corridor-replay/train-026.elds",
+      "/workspace/data/avoid-corridor-replay/train-027.elds",
+      "/workspace/data/avoid-corridor-replay/train-028.elds",
+      "/workspace/data/avoid-corridor-replay/train-029.elds",
+      "/workspace/data/avoid-corridor-replay/train-031.elds",
+      "/workspace/data/avoid-corridor-replay/train-032.elds",
+      "/workspace/data/avoid-corridor-replay/train-033.elds",
+      "/workspace/data/avoid-corridor-replay/train-034.elds",
+      "/workspace/data/avoid-corridor-replay/train-035.elds",
+      "/workspace/data/avoid-corridor-replay/train-036.elds",
+      "/workspace/data/avoid-corridor-replay/train-037.elds",
+      "/workspace/data/avoid-corridor-replay/train-038.elds",
+      "/workspace/data/avoid-corridor-replay/train-039.elds",
+      "/workspace/data/avoid-corridor-replay/train-040.elds",
+      "/workspace/data/avoid-corridor-replay/train-041.elds",
+      "/workspace/data/avoid-corridor-replay/train-042.elds",
+      "/workspace/data/avoid-corridor-replay/train-043.elds",
+      "/workspace/data/avoid-corridor-replay/train-044.elds",
+      "/workspace/data/avoid-corridor-replay/train-045.elds",
+      "/workspace/data/avoid-corridor-replay/train-046.elds",
+      "/workspace/data/avoid-corridor-replay/train-047.elds"
+    ],
+    "validation_episodes": [
+      "/workspace/data/avoid-corridor-replay/validation-000.elds",
+      "/workspace/data/avoid-corridor-replay/validation-001.elds",
+      "/workspace/data/avoid-corridor-replay/validation-002.elds",
+      "/workspace/data/avoid-corridor-replay/validation-003.elds",
+      "/workspace/data/avoid-corridor-replay/validation-004.elds",
+      "/workspace/data/avoid-corridor-replay/validation-005.elds",
+      "/workspace/data/avoid-corridor-replay/validation-006.elds",
+      "/workspace/data/avoid-corridor-replay/validation-007.elds",
+      "/workspace/data/avoid-corridor-replay/validation-008.elds",
+      "/workspace/data/avoid-corridor-replay/validation-009.elds",
+      "/workspace/data/avoid-corridor-replay/validation-010.elds",
+      "/workspace/data/avoid-corridor-replay/validation-011.elds"
+    ]
+  },
+  "reloaded_validation": {
+    "loss": 0.014828422953976234,
+    "speed_mae_mps": 0.25964730861568336,
+    "steer_mae_rad": 0.058938840661147865
+  },
+  "seed": 2026,
+  "selection": "strictly lowest validation loss; ties keep first",
+  "status": "completed",
+  "test_evaluated": false,
+  "train_records": 6158,
+  "training_executed": true,
+  "training_seconds": 8.148057625,
+  "validation_records": 1638
+}

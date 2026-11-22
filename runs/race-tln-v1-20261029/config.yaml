@@ -1,0 +1,39 @@
+# Race training run. Test episodes never enter training/model selection.
+expert: race
+train_episodes:
+  - /workspace/data/teachers-expanded-v5-20261029/accepted/race-000.elds
+  - /workspace/data/teachers-expanded-v5-20261029/accepted/race-001.elds
+  - /workspace/data/teachers-expanded-v5-20261029/accepted/race-003.elds
+  - /workspace/data/teachers-expanded-v5-20261029/accepted/race-004.elds
+  - /workspace/data/teachers-expanded-v5-20261029/accepted/race-006.elds
+  - /workspace/data/teachers-expanded-v5-20261029/accepted/race-007.elds
+  - /workspace/data/teachers-expanded-v5-20261029/accepted/race-009.elds
+  - /workspace/data/teachers-expanded-v5-20261029/accepted/race-010.elds
+  - /workspace/data/teachers-expanded-v5-20261029/accepted/race-012.elds
+  - /workspace/data/teachers-expanded-v5-20261029/accepted/race-013.elds
+  - /workspace/data/teachers-expanded-v5-20261029/accepted/race-015.elds
+  - /workspace/data/teachers-expanded-v5-20261029/accepted/race-016.elds
+  - /workspace/data/teachers-expanded-v5-20261029/accepted/race-018.elds
+  - /workspace/data/teachers-expanded-v5-20261029/accepted/race-019.elds
+  - /workspace/data/teachers-expanded-v5-20261029/accepted/race-021.elds
+  - /workspace/data/teachers-expanded-v5-20261029/accepted/race-022.elds
+validation_episodes:
+  - /workspace/data/teachers-expanded-v5-20261029/accepted/race-002.elds
+  - /workspace/data/teachers-expanded-v5-20261029/accepted/race-008.elds
+  - /workspace/data/teachers-expanded-v5-20261029/accepted/race-014.elds
+  - /workspace/data/teachers-expanded-v5-20261029/accepted/race-020.elds
+  - /workspace/data/teachers-expanded-v5-balanced-20261029/accepted/balanced-race-00.elds
+  - /workspace/data/teachers-expanded-v5-balanced-20261029/accepted/balanced-race-02.elds
+test_episodes:
+  - /workspace/data/teachers-expanded-v5-20261029/accepted/race-005.elds
+  - /workspace/data/teachers-expanded-v5-20261029/accepted/race-011.elds
+  - /workspace/data/teachers-expanded-v5-20261029/accepted/race-017.elds
+  - /workspace/data/teachers-expanded-v5-20261029/accepted/race-023.elds
+  - /workspace/data/teachers-expanded-v5-balanced-20261029/accepted/balanced-race-01.elds
+  - /workspace/data/teachers-expanded-v5-balanced-20261029/accepted/balanced-race-03.elds
+epochs: 20
+batch_size: 64
+learning_rate: 0.0001
+checkpoint: /workspace/models/race-teachers-expanded-v5.pt
+seed: 2026
+

@@ -1,0 +1,156 @@
+{
+  "checkpoint": "/workspace/models/race-teachers-expanded-v5.pt",
+  "completed": true,
+  "lap_timing": "Polyline projected signed progress, interpolated full-loop crossings; standing-start first lap included. Incomplete laps excluded and failed runs reported separately.",
+  "runs": 30,
+  "scope": "Offline synchronous F110 Gym closed-loop, static walls and no added obstacles. Guard uses dynamic one-command plus braking check and SMPPI v5 with 0.3s return dwell, not the ROS fallback implementation. No real-time deadline enforcement.",
+  "smppi": {
+    "all_completed_lap_times_s": {
+      "count": 30,
+      "max": 21.55456095470941,
+      "mean": 19.40104918629932,
+      "median": 20.302786871350907,
+      "min": 15.98291289741659,
+      "p95": 21.416277452541635
+    },
+    "candidate_rejected_steps": 0,
+    "collision_runs": 0,
+    "completed_runs": 10,
+    "completion_rate": 1.0,
+    "fallback_fraction": 0.0,
+    "fallback_steps": 0,
+    "fully_completed_run_lap_times_s": {
+      "count": 30,
+      "max": 21.55456095470941,
+      "mean": 19.40104918629932,
+      "median": 20.302786871350907,
+      "min": 15.98291289741659,
+      "p95": 21.416277452541635
+    },
+    "maps": {
+      "hyhall12": {
+        "collisions": 0,
+        "completed": 4,
+        "runs": 4
+      },
+      "teras": {
+        "collisions": 0,
+        "completed": 6,
+        "runs": 6
+      }
+    },
+    "peak_actual_speeds_mps": {
+      "count": 10,
+      "max": 4.83837890625,
+      "mean": 3.4571383476257322,
+      "median": 3.4932388067245483,
+      "min": 2.4997568130493164,
+      "p95": 4.83837890625
+    },
+    "reasons": {
+      "completed": 10
+    },
+    "runs": 10,
+    "steps": 11646
+  },
+  "tln_only": {
+    "all_completed_lap_times_s": {
+      "count": 30,
+      "max": 21.68063976314021,
+      "mean": 19.471283930602414,
+      "median": 20.37331877540826,
+      "min": 16.31998028986697,
+      "p95": 21.603510174354025
+    },
+    "candidate_rejected_steps": 37,
+    "collision_runs": 0,
+    "completed_runs": 10,
+    "completion_rate": 1.0,
+    "fallback_fraction": 0.0,
+    "fallback_steps": 0,
+    "fully_completed_run_lap_times_s": {
+      "count": 30,
+      "max": 21.68063976314021,
+      "mean": 19.471283930602414,
+      "median": 20.37331877540826,
+      "min": 16.31998028986697,
+      "p95": 21.603510174354025
+    },
+    "maps": {
+      "hyhall12": {
+        "collisions": 0,
+        "completed": 4,
+        "runs": 4
+      },
+      "teras": {
+        "collisions": 0,
+        "completed": 6,
+        "runs": 6
+      }
+    },
+    "peak_actual_speeds_mps": {
+      "count": 10,
+      "max": 3.6796207427978516,
+      "mean": 2.8131515264511107,
+      "median": 2.7752411365509033,
+      "min": 2.2905054092407227,
+      "p95": 3.6796207427978516
+    },
+    "reasons": {
+      "completed": 10
+    },
+    "runs": 10,
+    "steps": 11687
+  },
+  "tln_smppi_guarded": {
+    "all_completed_lap_times_s": {
+      "count": 29,
+      "max": 21.96166734600837,
+      "mean": 19.490282914045494,
+      "median": 20.445204047904525,
+      "min": 16.31998028986697,
+      "p95": 21.830156030520843
+    },
+    "candidate_rejected_steps": 8,
+    "collision_runs": 0,
+    "completed_runs": 9,
+    "completion_rate": 0.9,
+    "fallback_fraction": 0.003415958658141368,
+    "fallback_steps": 39,
+    "fully_completed_run_lap_times_s": {
+      "count": 27,
+      "max": 21.96166734600837,
+      "mean": 19.41419604486558,
+      "median": 20.38985920288914,
+      "min": 16.31998028986697,
+      "p95": 21.830156030520843
+    },
+    "maps": {
+      "hyhall12": {
+        "collisions": 0,
+        "completed": 3,
+        "runs": 4
+      },
+      "teras": {
+        "collisions": 0,
+        "completed": 6,
+        "runs": 6
+      }
+    },
+    "peak_actual_speeds_mps": {
+      "count": 10,
+      "max": 3.6796207427978516,
+      "mean": 2.8058013200759886,
+      "median": 2.7523131370544434,
+      "min": 2.2905054092407227,
+      "p95": 3.6796207427978516
+    },
+    "reasons": {
+      "completed": 9,
+      "no_feasible_plan": 1
+    },
+    "runs": 10,
+    "steps": 11417
+  },
+  "training_executed": false
+}
