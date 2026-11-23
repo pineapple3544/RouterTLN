@@ -1,0 +1,950 @@
+{
+  "pilot": {
+    "reference": {
+      "max_first_lap_delta_s": 0.0,
+      "first_lap_count": 16,
+      "trials": 16,
+      "clean": 15,
+      "base_clean": 15,
+      "lost": [],
+      "gained": [],
+      "paired": 15,
+      "base_flying_s": 17.77792524555112,
+      "flying_s": 17.77792524555112,
+      "collision": 0,
+      "failures": {
+        "random-9699447": "no_corridor"
+      },
+      "cap": 3.0,
+      "preview": 0,
+      "label": "reference"
+    },
+    "race35-no-preview": {
+      "max_first_lap_delta_s": 4.236095464094092e-05,
+      "first_lap_count": 16,
+      "trials": 16,
+      "clean": 14,
+      "base_clean": 15,
+      "lost": [
+        "random-1846076"
+      ],
+      "gained": [],
+      "paired": 14,
+      "base_flying_s": 17.787054022609563,
+      "flying_s": 16.615025123006863,
+      "collision": 0,
+      "failures": {
+        "random-9699447": "dynamic_braking_footprint",
+        "random-1846076": "no_corridor"
+      },
+      "cap": 3.5,
+      "preview": 0,
+      "label": "race35-no-preview"
+    },
+    "race35-preview": {
+      "max_first_lap_delta_s": 4.236095464094092e-05,
+      "first_lap_count": 16,
+      "trials": 16,
+      "clean": 14,
+      "base_clean": 15,
+      "lost": [
+        "random-1846076"
+      ],
+      "gained": [],
+      "paired": 14,
+      "base_flying_s": 17.787054022609563,
+      "flying_s": 16.656811774678662,
+      "collision": 0,
+      "failures": {
+        "random-9699447": "dynamic_braking_footprint",
+        "random-1846076": "no_corridor"
+      },
+      "cap": 3.5,
+      "preview": 0.18,
+      "label": "race35-preview"
+    },
+    "race40-no-preview": {
+      "max_first_lap_delta_s": 4.236095464094092e-05,
+      "first_lap_count": 16,
+      "trials": 16,
+      "clean": 6,
+      "base_clean": 15,
+      "lost": [
+        "random-1846076",
+        "random-2238863",
+        "random-5365165",
+        "random-5494840",
+        "random-7204784",
+        "random-7753308",
+        "random-8789736",
+        "random-9701112",
+        "random-9865006"
+      ],
+      "gained": [],
+      "paired": 6,
+      "base_flying_s": 17.85533102696804,
+      "flying_s": 16.119492694883682,
+      "collision": 4,
+      "failures": {
+        "random-9699447": "braking_footprint",
+        "random-5365165": "braking_footprint",
+        "random-9865006": "dynamic_braking_footprint",
+        "random-7753308": "dynamic_braking_footprint",
+        "random-9701112": "braking_footprint",
+        "random-5494840": "braking_footprint",
+        "random-2238863": "braking_footprint",
+        "random-1846076": "braking_footprint",
+        "random-8789736": "braking_footprint",
+        "random-7204784": "braking_footprint"
+      },
+      "cap": 4.0,
+      "preview": 0,
+      "label": "race40-no-preview"
+    },
+    "race40-preview": {
+      "max_first_lap_delta_s": 4.236095464094092e-05,
+      "first_lap_count": 16,
+      "trials": 16,
+      "clean": 16,
+      "base_clean": 15,
+      "lost": [],
+      "gained": [
+        "random-9699447"
+      ],
+      "paired": 15,
+      "base_flying_s": 17.77792524555112,
+      "flying_s": 16.231000325392934,
+      "collision": 0,
+      "failures": {},
+      "cap": 4.0,
+      "preview": 0.18,
+      "label": "race40-preview"
+    },
+    "race45-preview": {
+      "max_first_lap_delta_s": 4.236095464094092e-05,
+      "first_lap_count": 16,
+      "trials": 16,
+      "clean": 9,
+      "base_clean": 15,
+      "lost": [
+        "random-1846076",
+        "random-2238863",
+        "random-3121698",
+        "random-7753308",
+        "random-8309180",
+        "random-9865006"
+      ],
+      "gained": [],
+      "paired": 9,
+      "base_flying_s": 17.65864889122925,
+      "flying_s": 15.932710675955105,
+      "collision": 4,
+      "failures": {
+        "random-9699447": "braking_footprint",
+        "random-9865006": "braking_footprint",
+        "random-7753308": "dynamic_braking_footprint",
+        "random-8309180": "braking_footprint",
+        "random-2238863": "braking_footprint",
+        "random-3121698": "braking_footprint",
+        "random-1846076": "dynamic_braking_footprint"
+      },
+      "cap": 4.5,
+      "preview": 0.18,
+      "label": "race45-preview"
+    }
+  },
+  "offline": {
+    "base": {
+      "clean": 289,
+      "zero_laps": 6,
+      "first_lap": 294,
+      "collisions": 0,
+      "paired": 289,
+      "paired_base_mean_flying_s": 18.16164994716243,
+      "paired_mean_flying_s": 18.16164994716243,
+      "paired_base_best_flying_s": 18.0902701450141,
+      "paired_best_flying_s": 18.0902701450141,
+      "gained": [],
+      "lost": [],
+      "max_scout_delta_s": 0.0,
+      "failure_causes": {
+        "no_corridor": 6,
+        "localization_lost": 3,
+        "dynamic_braking_footprint": 1,
+        "braking_footprint": 1
+      },
+      "zero_lap_same_layouts": true,
+      "contacts": []
+    },
+    "race4": {
+      "clean": 275,
+      "zero_laps": 6,
+      "first_lap": 294,
+      "collisions": 4,
+      "paired": 273,
+      "paired_base_mean_flying_s": 18.152554411915865,
+      "paired_mean_flying_s": 16.4807845273677,
+      "paired_base_best_flying_s": 18.07864502640939,
+      "paired_best_flying_s": 16.382532948662032,
+      "gained": [
+        "random-267892105",
+        "random-518665224"
+      ],
+      "lost": [
+        "random-101339484",
+        "random-119290127",
+        "random-134113763",
+        "random-163636469",
+        "random-279618837",
+        "random-317664071",
+        "random-354370270",
+        "random-377077449",
+        "random-408293336",
+        "random-618029349",
+        "random-644353383",
+        "random-656035532",
+        "random-663493114",
+        "random-715371879",
+        "random-878978468",
+        "random-924396053"
+      ],
+      "max_scout_delta_s": 0.0008626978487775716,
+      "failure_causes": {
+        "no_corridor": 8,
+        "localization_lost": 4,
+        "braking_footprint": 11,
+        "dynamic_braking_footprint": 2
+      },
+      "zero_lap_same_layouts": true,
+      "contacts": [
+        {
+          "layout": "random-377077449",
+          "completed_laps": 1,
+          "kind": "wall",
+          "progress_m": 87.36148956081374,
+          "first_refusal": {
+            "previous_mode": 0,
+            "progress_m": 86.99371206178796,
+            "reason": "braking_footprint",
+            "router_avoiding": false,
+            "speed_mps": 3.081247091293335
+          }
+        },
+        {
+          "layout": "random-134113763",
+          "completed_laps": 1,
+          "kind": "wall",
+          "progress_m": 87.54912208989774,
+          "first_refusal": {
+            "previous_mode": 0,
+            "progress_m": 87.17088422748144,
+            "reason": "braking_footprint",
+            "router_avoiding": false,
+            "speed_mps": 3.1042518615722656
+          }
+        },
+        {
+          "layout": "random-317664071",
+          "completed_laps": 1,
+          "kind": "wall",
+          "progress_m": 87.58349385324128,
+          "first_refusal": {
+            "previous_mode": 0,
+            "progress_m": 86.90111348610083,
+            "reason": "dynamic_braking_footprint",
+            "router_avoiding": false,
+            "speed_mps": 3.933774948120117
+          }
+        },
+        {
+          "layout": "random-618029349",
+          "completed_laps": 1,
+          "kind": "wall",
+          "progress_m": 87.40195880709649,
+          "first_refusal": {
+            "previous_mode": 0,
+            "progress_m": 86.70609912029033,
+            "reason": "dynamic_braking_footprint",
+            "router_avoiding": false,
+            "speed_mps": 3.984659194946289
+          }
+        }
+      ]
+    },
+    "race35": {
+      "clean": 289,
+      "zero_laps": 6,
+      "first_lap": 294,
+      "collisions": 0,
+      "paired": 287,
+      "paired_base_mean_flying_s": 18.162386900374777,
+      "paired_mean_flying_s": 16.879465467236926,
+      "paired_base_best_flying_s": 18.090601540176515,
+      "paired_best_flying_s": 16.794718032716386,
+      "gained": [
+        "random-117659724",
+        "random-267892105"
+      ],
+      "lost": [
+        "random-351979622",
+        "random-562935709"
+      ],
+      "max_scout_delta_s": 0.0008626978487775716,
+      "failure_causes": {
+        "localization_lost": 4,
+        "no_corridor": 6,
+        "braking_footprint": 1
+      },
+      "zero_lap_same_layouts": true,
+      "contacts": []
+    },
+    "race4long": {
+      "clean": 283,
+      "zero_laps": 6,
+      "first_lap": 294,
+      "collisions": 1,
+      "paired": 281,
+      "paired_base_mean_flying_s": 18.1570184853901,
+      "paired_mean_flying_s": 16.674232378453304,
+      "paired_base_best_flying_s": 18.08439856008612,
+      "paired_best_flying_s": 16.572230498688917,
+      "gained": [
+        "random-267892105",
+        "random-518665224"
+      ],
+      "lost": [
+        "random-163636469",
+        "random-259802529",
+        "random-326557067",
+        "random-344598355",
+        "random-625657002",
+        "random-703626066",
+        "random-793604513",
+        "random-924396053"
+      ],
+      "max_scout_delta_s": 0.0008626978487775716,
+      "failure_causes": {
+        "localization_lost": 3,
+        "no_corridor": 7,
+        "braking_footprint": 6,
+        "dynamic_braking_footprint": 1
+      },
+      "zero_lap_same_layouts": true,
+      "contacts": [
+        {
+          "layout": "random-625657002",
+          "completed_laps": 1,
+          "kind": "wall",
+          "progress_m": 86.96428100788808,
+          "first_refusal": {
+            "previous_mode": 0,
+            "progress_m": 86.17260179524021,
+            "reason": "dynamic_braking_footprint",
+            "router_avoiding": false,
+            "speed_mps": 4.012801170349121
+          }
+        }
+      ]
+    }
+  },
+  "ros": [
+    {
+      "laps": 10,
+      "consecutive_clean": 10,
+      "lap_s": [
+        23.679507165983523,
+        15.294571892576641,
+        15.255829193356476,
+        15.227651147783035,
+        15.141735475055611,
+        15.268492385035643,
+        15.213854843506851,
+        15.214719421954214,
+        15.242306401785754,
+        15.192593694544485
+      ],
+      "best_s": 15.141735475055611,
+      "mean_flying_s": 15.227972717288745,
+      "first_lap_s": 23.679507165983523,
+      "peak_mps": 3.999993597584155,
+      "p95_mps": 3.999849099391702,
+      "collision": false,
+      "stopped": false,
+      "emergency": null,
+      "elapsed_s": 160.73126162158223,
+      "judge_samples": 16158,
+      "first_plan_ready": "0",
+      "variant": "adaptive",
+      "count": 1,
+      "seed": 43939214,
+      "runner_exit": 0,
+      "cap_mps": 4.0
+    },
+    {
+      "laps": 10,
+      "consecutive_clean": 10,
+      "lap_s": [
+        23.637215398273838,
+        16.944369201333757,
+        16.89973514139274,
+        16.904254780758492,
+        16.907513012392883,
+        16.875589269060583,
+        16.894529870947736,
+        16.873458069465414,
+        16.866530253650126,
+        16.87912343109201
+      ],
+      "best_s": 16.866530253650126,
+      "mean_flying_s": 16.89390033667708,
+      "first_lap_s": 23.637215398273838,
+      "peak_mps": 2.9999999999999956,
+      "p95_mps": 2.9999999999999956,
+      "collision": false,
+      "stopped": false,
+      "emergency": null,
+      "elapsed_s": 175.68231842836758,
+      "judge_samples": 17668,
+      "first_plan_ready": "0",
+      "variant": "base",
+      "count": 1,
+      "seed": 43939214,
+      "runner_exit": 0,
+      "cap_mps": 3.0
+    },
+    {
+      "laps": 10,
+      "consecutive_clean": 10,
+      "lap_s": [
+        23.06356993576992,
+        15.30320782355193,
+        15.309681534097763,
+        15.37872974243146,
+        15.238882234461926,
+        15.203900197826442,
+        15.204029946704395,
+        15.193309599388158,
+        15.20411506001983,
+        15.255440686258225
+      ],
+      "best_s": 15.193309599388158,
+      "mean_flying_s": 15.254588536082236,
+      "first_lap_s": 23.06356993576992,
+      "peak_mps": 3.9999936061526764,
+      "p95_mps": 3.999729559415006,
+      "collision": false,
+      "stopped": false,
+      "emergency": null,
+      "elapsed_s": 160.35486676051005,
+      "judge_samples": 16060,
+      "first_plan_ready": "0",
+      "variant": "adaptive",
+      "count": 3,
+      "seed": 49140402,
+      "runner_exit": 0,
+      "cap_mps": 4.0
+    },
+    {
+      "laps": 10,
+      "consecutive_clean": 10,
+      "lap_s": [
+        23.158755925374862,
+        16.538828426946566,
+        16.502644567797688,
+        16.490690961651126,
+        16.470737720075704,
+        16.479306827171968,
+        16.47310636964903,
+        16.497199712153815,
+        16.47453914916332,
+        16.49251630096478
+      ],
+      "best_s": 16.470737720075704,
+      "mean_flying_s": 16.491063337286,
+      "first_lap_s": 23.158755925374862,
+      "peak_mps": 2.9999999999999956,
+      "p95_mps": 2.9999999999999956,
+      "collision": false,
+      "stopped": false,
+      "emergency": null,
+      "elapsed_s": 171.57832596094886,
+      "judge_samples": 17160,
+      "first_plan_ready": "0",
+      "variant": "base",
+      "count": 3,
+      "seed": 49140402,
+      "runner_exit": 0,
+      "cap_mps": 3.0
+    },
+    {
+      "laps": 9,
+      "consecutive_clean": 9,
+      "lap_s": [
+        31.736254835315776,
+        17.676193523388065,
+        17.65365442942857,
+        17.60596007827189,
+        17.591097102002095,
+        17.61651283736137,
+        17.63467939965267,
+        17.60535741692729,
+        17.616962826126837
+      ],
+      "best_s": 17.591097102002095,
+      "mean_flying_s": 17.62505220164485,
+      "first_lap_s": 31.736254835315776,
+      "peak_mps": 3.949621078940439,
+      "p95_mps": 3.4015368323434254,
+      "collision": false,
+      "stopped": false,
+      "emergency": null,
+      "elapsed_s": 179.99998546600182,
+      "judge_samples": 18001,
+      "first_plan_ready": "0",
+      "variant": "adaptive",
+      "count": 5,
+      "seed": 66874438,
+      "runner_exit": 0,
+      "cap_mps": 4.0
+    },
+    {
+      "laps": 8,
+      "consecutive_clean": 8,
+      "lap_s": [
+        31.913639934558887,
+        18.742544195254595,
+        18.712945977815252,
+        18.755948046171397,
+        18.703188535950176,
+        18.648457380415493,
+        18.769227755961765,
+        18.706327974341548
+      ],
+      "best_s": 18.648457380415493,
+      "mean_flying_s": 18.71980569513003,
+      "first_lap_s": 31.913639934558887,
+      "peak_mps": 2.9999121449347332,
+      "p95_mps": 2.9873566048247584,
+      "collision": false,
+      "stopped": false,
+      "emergency": null,
+      "elapsed_s": 179.99998561599932,
+      "judge_samples": 18001,
+      "first_plan_ready": "0",
+      "variant": "base",
+      "count": 5,
+      "seed": 66874438,
+      "runner_exit": 0,
+      "cap_mps": 3.0
+    },
+    {
+      "laps": 10,
+      "consecutive_clean": 10,
+      "lap_s": [
+        23.733116554605658,
+        15.93770082210176,
+        15.870815407433838,
+        15.874327646524762,
+        15.946122056077002,
+        15.87953626293529,
+        15.8786167561193,
+        15.958618820648553,
+        15.879580892036756,
+        15.876604141722055
+      ],
+      "best_s": 15.870815407433838,
+      "mean_flying_s": 15.900213645066591,
+      "first_lap_s": 23.733116554605658,
+      "peak_mps": 3.4999999205886456,
+      "p95_mps": 3.4999964533839716,
+      "collision": false,
+      "stopped": false,
+      "emergency": null,
+      "elapsed_s": 166.83503936020497,
+      "judge_samples": 16753,
+      "first_plan_ready": "0",
+      "variant": "adaptive",
+      "count": 1,
+      "seed": 43939214,
+      "runner_exit": 0,
+      "cap_mps": 3.5
+    },
+    {
+      "laps": 10,
+      "consecutive_clean": 10,
+      "lap_s": [
+        23.10351647277639,
+        15.849968399958016,
+        15.802941281301173,
+        15.770630863939004,
+        15.765964149359206,
+        15.796189361255529,
+        15.76930101718608,
+        15.760955161429592,
+        15.793093609619973,
+        15.793896745344682
+      ],
+      "best_s": 15.760955161429592,
+      "mean_flying_s": 15.789215621043695,
+      "first_lap_s": 23.10351647277639,
+      "peak_mps": 3.499999968547934,
+      "p95_mps": 3.4999995861499116,
+      "collision": false,
+      "stopped": false,
+      "emergency": null,
+      "elapsed_s": 165.20645706216965,
+      "judge_samples": 16555,
+      "first_plan_ready": "0",
+      "variant": "adaptive",
+      "count": 3,
+      "seed": 49140402,
+      "runner_exit": 0,
+      "cap_mps": 3.5
+    },
+    {
+      "laps": 9,
+      "consecutive_clean": 9,
+      "lap_s": [
+        31.999203647650575,
+        17.88315126564339,
+        17.81859269261986,
+        17.83681670758233,
+        17.777633546327706,
+        17.84837574692574,
+        17.799585535474762,
+        17.804781596485554,
+        17.842993707654387
+      ],
+      "best_s": 17.777633546327706,
+      "mean_flying_s": 17.826491349839216,
+      "first_lap_s": 31.999203647650575,
+      "peak_mps": 3.4951969234796736,
+      "p95_mps": 3.2932987080502256,
+      "collision": false,
+      "stopped": false,
+      "emergency": null,
+      "elapsed_s": 179.9899963909993,
+      "judge_samples": 18001,
+      "first_plan_ready": "0",
+      "variant": "adaptive",
+      "count": 5,
+      "seed": 66874438,
+      "runner_exit": 0,
+      "cap_mps": 3.5
+    }
+  ],
+  "traces": {
+    "wall-after-random-8309180": {
+      "outcome": {
+        "clean": 1,
+        "laps": 3,
+        "lap1_s": 30.218256882368678,
+        "lap2_s": 17.174345443152575,
+        "lap3_s": 16.993245698929456,
+        "termination": "completed",
+        "first_refusal": null,
+        "refusal_s_m": null,
+        "refusal_previous_mode": null,
+        "contact": null,
+        "peak_mps": 3.999506950378418
+      },
+      "planned_avoid_frames": 778,
+      "corridor_below_floor": 606,
+      "issued_below_floor": 0,
+      "first_preview_in_82_87m": {
+        "progress_m": 83.32376004302196,
+        "v": 4.094010353088379,
+        "requested": 4.0,
+        "issued": 3.2940104007720947
+      },
+      "contact_record": null
+    },
+    "wall-before-random-8309180": {
+      "outcome": {
+        "clean": 0,
+        "laps": 1,
+        "lap1_s": 30.218256882368678,
+        "lap2_s": null,
+        "lap3_s": null,
+        "termination": "collision",
+        "first_refusal": "dynamic_braking_footprint",
+        "refusal_s_m": 86.49379262350476,
+        "refusal_previous_mode": 0,
+        "contact": "wall",
+        "peak_mps": 3.9996955394744873
+      },
+      "planned_avoid_frames": 526,
+      "corridor_below_floor": 417,
+      "issued_below_floor": 523,
+      "first_preview_in_82_87m": null,
+      "contact_record": {
+        "gym_collision": true,
+        "kind": "wall",
+        "lap": 2,
+        "pre_step_v": 1.5270954370498657,
+        "s": 87.20374995436191,
+        "sat_gap": 0.31042489409446716,
+        "t": 47.969999999999025,
+        "v": 0.0
+      }
+    },
+    "split-random-1846076": {
+      "outcome": {
+        "clean": 0,
+        "laps": 1,
+        "lap1_s": 26.36397178195929,
+        "lap2_s": null,
+        "lap3_s": null,
+        "termination": "stopped",
+        "first_refusal": "no_corridor",
+        "refusal_s_m": 67.753155942394,
+        "refusal_previous_mode": 1,
+        "contact": null,
+        "peak_mps": 3.499908685684204
+      },
+      "planned_avoid_frames": 115,
+      "corridor_below_floor": 96,
+      "issued_below_floor": 0,
+      "first_preview_in_82_87m": null,
+      "contact_record": null
+    },
+    "old-random-1846076": {
+      "outcome": {
+        "clean": 1,
+        "laps": 3,
+        "lap1_s": 26.36397178195929,
+        "lap2_s": 19.025105455899396,
+        "lap3_s": 19.01004788048354,
+        "termination": "completed",
+        "first_refusal": null,
+        "refusal_s_m": null,
+        "refusal_previous_mode": null,
+        "contact": null,
+        "peak_mps": 3.5
+      },
+      "planned_avoid_frames": 621,
+      "corridor_below_floor": 595,
+      "issued_below_floor": 595,
+      "first_preview_in_82_87m": null,
+      "contact_record": null
+    },
+    "paired-wall-0": {
+      "outcome": {
+        "clean": 0,
+        "laps": 1,
+        "lap1_s": 29.761431909175872,
+        "lap2_s": null,
+        "lap3_s": null,
+        "termination": "collision",
+        "first_refusal": "dynamic_braking_footprint",
+        "refusal_s_m": 86.05778219071283,
+        "refusal_previous_mode": 0,
+        "contact": "wall",
+        "peak_mps": 3.9999990463256836
+      },
+      "planned_avoid_frames": 337,
+      "corridor_below_floor": 266,
+      "issued_below_floor": 0,
+      "first_preview_in_82_87m": null,
+      "contact_record": {
+        "gym_collision": true,
+        "kind": "wall",
+        "lap": 2,
+        "pre_step_v": 0.16761155426502228,
+        "s": 86.87601020848871,
+        "sat_gap": 0.5293283462524414,
+        "t": 43.77999999999986,
+        "v": 0.0
+      }
+    },
+    "paired-wall-0.18": {
+      "outcome": {
+        "clean": 1,
+        "laps": 3,
+        "lap1_s": 29.761431909175872,
+        "lap2_s": 16.63450037566285,
+        "lap3_s": 16.985472660358646,
+        "termination": "completed",
+        "first_refusal": null,
+        "refusal_s_m": null,
+        "refusal_previous_mode": null,
+        "contact": null,
+        "peak_mps": 3.9999985694885254
+      },
+      "planned_avoid_frames": 707,
+      "corridor_below_floor": 547,
+      "issued_below_floor": 0,
+      "first_preview_in_82_87m": {
+        "progress_m": 85.65658640236742,
+        "v": 4.033592700958252,
+        "requested": 4.0,
+        "issued": 3.2335927486419678
+      },
+      "contact_record": null
+    }
+  },
+  "sha256": {
+    "controller": "57d34d6d8f9b84a534a1fd4e8c8317a9c8c8ffa1eee8416f01b839487becdc4c",
+    "evaluator": "4c9d9db2fdeb9fdf3f7f31c2fae6cedcbd5bc565869760412b5121d12b944f4d",
+    "race-berlin-wsp.pt": "da9f0c1783ed46552558f1c8a4f877dab6f487b88427201fd9b7c5f1ac858e10",
+    "avoid-corridor-v2.pt": "6754bf58549b40854652abd1f4d26af833453905342e8ecec5c4dc8982ec673f",
+    "pilot.json": "48684da1cf736b0243f2ce00ce12ae24e5b54026a762f7da2755f82b69fb6ed8",
+    "evaluation.json": "31904eef7c2a46d2741df056c8919405cb53b086830abcb8efaf69b0303ede01",
+    "ros-layouts.json": "05b25f02d1cc4a159bcae102577462b7ee78f488b777e787c608ca589a5e7ed2"
+  },
+  "common": {
+    "n": 265,
+    "mean_flying_s": {
+      "base": 18.14562555848125,
+      "race4": 16.48455763591615,
+      "race35": 16.878958952284943,
+      "race4long": 16.670066282653934
+    },
+    "mean_best_s": {
+      "base": 18.070270727373245,
+      "race4": 16.38565290581378,
+      "race35": 16.791550563063176,
+      "race4long": 16.56783576121805
+    }
+  },
+  "wall_followup": {
+    "random-134113763": {
+      "first_in_window": {
+        "s_m": 84.09830405708118,
+        "v": 4.016269207000732,
+        "target": 3.2162692546844482,
+        "braking": true
+      },
+      "last_in_window": {
+        "s_m": 87.11352374455933,
+        "v": 3.2656760215759277,
+        "target": 2.4656760692596436,
+        "braking": true
+      },
+      "last_Race_command": {
+        "s_m": 87.11352374455933,
+        "v": 3.2656760215759277,
+        "target": 2.4656760692596436,
+        "braking": true
+      },
+      "preview_030": {
+        "clean": 1,
+        "laps": 3,
+        "lap1_s": 29.00637410677528,
+        "lap2_s": 16.909233812570985,
+        "lap3_s": 16.948432953222735,
+        "termination": "completed",
+        "first_refusal": null,
+        "refusal_s_m": null,
+        "refusal_previous_mode": null,
+        "contact": null,
+        "peak_mps": 3.9992353916168213
+      }
+    },
+    "random-317664071": {
+      "first_in_window": {
+        "s_m": 83.88559670680212,
+        "v": 4.003462791442871,
+        "target": 3.203462839126587,
+        "braking": true
+      },
+      "last_in_window": {
+        "s_m": 84.45885890188939,
+        "v": 2.8064956665039062,
+        "target": 2.006495714187622,
+        "braking": true
+      },
+      "last_Race_command": {
+        "s_m": 86.78351862238111,
+        "v": 3.8784804344177246,
+        "target": 4.0,
+        "braking": false
+      },
+      "preview_030": {
+        "clean": 1,
+        "laps": 3,
+        "lap1_s": 29.612658265800665,
+        "lap2_s": 17.458570938585577,
+        "lap3_s": 17.21479726859026,
+        "termination": "completed",
+        "first_refusal": null,
+        "refusal_s_m": null,
+        "refusal_previous_mode": null,
+        "contact": null,
+        "peak_mps": 3.999615430831909
+      }
+    },
+    "random-377077449": {
+      "first_in_window": {
+        "s_m": 84.03982468380656,
+        "v": 4.026744842529297,
+        "target": 3.2267448902130127,
+        "braking": true
+      },
+      "last_in_window": {
+        "s_m": 86.90830471656724,
+        "v": 3.278395175933838,
+        "target": 2.4783952236175537,
+        "braking": true
+      },
+      "last_Race_command": {
+        "s_m": 86.90830471656724,
+        "v": 3.278395175933838,
+        "target": 2.4783952236175537,
+        "braking": true
+      },
+      "preview_030": {
+        "clean": 1,
+        "laps": 3,
+        "lap1_s": 26.331544322001225,
+        "lap2_s": 15.876289444242051,
+        "lap3_s": 15.89452142994135,
+        "termination": "completed",
+        "first_refusal": null,
+        "refusal_s_m": null,
+        "refusal_previous_mode": null,
+        "contact": null,
+        "peak_mps": 3.9999840259552
+      }
+    },
+    "random-618029349": {
+      "first_in_window": null,
+      "last_in_window": null,
+      "last_Race_command": {
+        "s_m": 86.58633315719007,
+        "v": 3.9200491905212402,
+        "target": 4.0,
+        "braking": false
+      },
+      "preview_030": {
+        "clean": 1,
+        "laps": 3,
+        "lap1_s": 29.295447512055148,
+        "lap2_s": 16.571760511970652,
+        "lap3_s": 16.327995161781892,
+        "termination": "completed",
+        "first_refusal": null,
+        "refusal_s_m": null,
+        "refusal_previous_mode": null,
+        "contact": null,
+        "peak_mps": 3.9998254776000977
+      }
+    }
+  },
+  "pilot_mode_times_s": {
+    "paired_layouts": 14,
+    "metric": "mean time per flying lap using mode transition timestamps, same three-way successful layouts",
+    "base": {
+      "Race": 10.123,
+      "Avoid": 7.696
+    },
+    "shared_speed_3_5": {
+      "Race": 8.934,
+      "Avoid": 10.376
+    },
+    "race_only_4_0_preview_0_18": {
+      "Race": 8.254,
+      "Avoid": 8.008
+    }
+  }
+}

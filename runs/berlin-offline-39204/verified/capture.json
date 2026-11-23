@@ -1,0 +1,37 @@
+{
+  "device": "cpu",
+  "teacher": false,
+  "cases": [
+    {
+      "map": "berlin",
+      "layout": 0,
+      "count": 3,
+      "full_lap": true,
+      "lap_planning": true,
+      "start": 37,
+      "stations": [
+        19.293757587369917,
+        23.59173262391897,
+        27.89015644939439
+      ],
+      "offsets": [
+        -0.0411,
+        0.06,
+        0.0702
+      ],
+      "speed_cap": 3.0,
+      "sim_avoid_min": 2.7,
+      "sim_avoid_max": 3.0,
+      "laps": 3,
+      "seed": 12345,
+      "name": "39204",
+      "ros_finish": true,
+      "checkpoint": {
+        "save": "/workspace/runs/berlin-offline-39204/verified/approach.cbor",
+        "from_m": 111,
+        "lookback_s": 0.65,
+        "ticks": "/workspace/runs/berlin-offline-39204/verified/original-ticks.jsonl"
+      }
+    }
+  ]
+}

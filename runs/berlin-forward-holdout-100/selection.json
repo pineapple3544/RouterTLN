@@ -1,0 +1,24 @@
+{
+  "failures": [
+    "random-1246898",
+    "random-1846076",
+    "random-1890754",
+    "random-2238863",
+    "random-2913788",
+    "random-5218547",
+    "random-5557202",
+    "random-5557822",
+    "random-7625705",
+    "random-7784311",
+    "random-7829068",
+    "random-8181110",
+    "random-9422776",
+    "random-9699447",
+    "random-9701112",
+    "random-9865006"
+  ],
+  "lowest_margin": [
+    "random-9006203"
+  ],
+  "lowest_margin_m": 0.10640233755111694
+}

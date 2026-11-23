@@ -1,0 +1,36 @@
+[1/4] Building CXX object CMakeFiles/el_eval_race.dir/src/eval_race.cpp.o
+[2/4] Linking CXX executable el_eval_race
+[3/4] Building CXX object CMakeFiles/el_eval_avoid.dir/src/eval_avoid.cpp.o
+[4/4] Linking CXX executable el_eval_avoid
+Internal ctest changing into directory: /build
+Test project /build
+      Start  1: best_checkpoint_regression
+ 1/13 Test  #1: best_checkpoint_regression ..........   Passed    0.45 sec
+      Start  2: teacher_regression
+ 2/13 Test  #2: teacher_regression ..................   Passed    0.39 sec
+      Start  3: native_regression
+ 3/13 Test  #3: native_regression ...................   Passed    0.24 sec
+      Start  4: training_environment_forward_only
+ 4/13 Test  #4: training_environment_forward_only ...   Passed    1.11 sec
+      Start  5: corridor_entry_original
+ 5/13 Test  #5: corridor_entry_original .............   Passed    0.09 sec
+      Start  6: corridor_entry_distributed
+ 6/13 Test  #6: corridor_entry_distributed ..........   Passed    0.09 sec
+      Start  7: corridor_entry_seed39103
+ 7/13 Test  #7: corridor_entry_seed39103 ............   Passed    0.08 sec
+      Start  8: corridor_entry_seed39104
+ 8/13 Test  #8: corridor_entry_seed39104 ............   Passed    0.09 sec
+      Start  9: corridor_entry_random-4135410
+ 9/13 Test  #9: corridor_entry_random-4135410 .......   Passed    0.11 sec
+      Start 10: corridor_entry_random-6695374
+10/13 Test #10: corridor_entry_random-6695374 .......   Passed    0.09 sec
+      Start 11: corridor_entry_random-9157059
+11/13 Test #11: corridor_entry_random-9157059 .......   Passed    0.09 sec
+      Start 12: corridor_entry_random-9285660
+12/13 Test #12: corridor_entry_random-9285660 .......   Passed    0.09 sec
+      Start 13: scan_localizer_sensor_only
+13/13 Test #13: scan_localizer_sensor_only ..........   Passed    0.15 sec
+
+100% tests passed, 0 tests failed out of 13
+
+Total Test time (real) =   3.09 sec

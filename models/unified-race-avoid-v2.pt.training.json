@@ -1,0 +1,317 @@
+{
+  "batch_size": 64,
+  "best_epoch": 15,
+  "best_validation_loss": 0.00353320063460052,
+  "checkpoint": "/workspace/models/unified-race-avoid-v2.pt",
+  "checkpoint_reload_verified": true,
+  "corridor_guided": true,
+  "epochs": 16,
+  "expert": "unified",
+  "history": [
+    {
+      "epoch": 1,
+      "records_seen": 18931,
+      "saved_best": true,
+      "train_loss": 0.007109884853889958,
+      "validation": {
+        "loss": 0.006039220525001643,
+        "speed_mae_mps": 0.18663231281698148,
+        "steer_mae_rad": 0.03021333896894442
+      }
+    },
+    {
+      "epoch": 2,
+      "records_seen": 18931,
+      "saved_best": true,
+      "train_loss": 0.006613601770504462,
+      "validation": {
+        "loss": 0.005622981770600054,
+        "speed_mae_mps": 0.18746186177402813,
+        "steer_mae_rad": 0.029806614895406685
+      }
+    },
+    {
+      "epoch": 3,
+      "records_seen": 18931,
+      "saved_best": true,
+      "train_loss": 0.005999802269858579,
+      "validation": {
+        "loss": 0.005202832978294544,
+        "speed_mae_mps": 0.18680304763526143,
+        "steer_mae_rad": 0.03021022832723606
+      }
+    },
+    {
+      "epoch": 4,
+      "records_seen": 18931,
+      "saved_best": true,
+      "train_loss": 0.005384767235464189,
+      "validation": {
+        "loss": 0.004696564078005528,
+        "speed_mae_mps": 0.18805793084887387,
+        "steer_mae_rad": 0.027359585104317498
+      }
+    },
+    {
+      "epoch": 5,
+      "records_seen": 18931,
+      "saved_best": true,
+      "train_loss": 0.004894614915451698,
+      "validation": {
+        "loss": 0.004396826913198668,
+        "speed_mae_mps": 0.18302675080258823,
+        "steer_mae_rad": 0.026917875607562654
+      }
+    },
+    {
+      "epoch": 6,
+      "records_seen": 18931,
+      "saved_best": true,
+      "train_loss": 0.004551453574196387,
+      "validation": {
+        "loss": 0.004105444218410669,
+        "speed_mae_mps": 0.18102344330005637,
+        "steer_mae_rad": 0.02467929838207677
+      }
+    },
+    {
+      "epoch": 7,
+      "records_seen": 18931,
+      "saved_best": true,
+      "train_loss": 0.004303568594937348,
+      "validation": {
+        "loss": 0.004071041653691704,
+        "speed_mae_mps": 0.1969829314603344,
+        "steer_mae_rad": 0.023921888684201534
+      }
+    },
+    {
+      "epoch": 8,
+      "records_seen": 18931,
+      "saved_best": true,
+      "train_loss": 0.004115478275244154,
+      "validation": {
+        "loss": 0.003863779322705928,
+        "speed_mae_mps": 0.1800387253049022,
+        "steer_mae_rad": 0.02310461981395711
+      }
+    },
+    {
+      "epoch": 9,
+      "records_seen": 18931,
+      "saved_best": true,
+      "train_loss": 0.003967386051615632,
+      "validation": {
+        "loss": 0.0037384865046943966,
+        "speed_mae_mps": 0.17748456696592455,
+        "steer_mae_rad": 0.022085910243819923
+      }
+    },
+    {
+      "epoch": 10,
+      "records_seen": 18931,
+      "saved_best": true,
+      "train_loss": 0.003860600546236953,
+      "validation": {
+        "loss": 0.003687073909088198,
+        "speed_mae_mps": 0.17751176749533656,
+        "steer_mae_rad": 0.021659295290169363
+      }
+    },
+    {
+      "epoch": 11,
+      "records_seen": 18931,
+      "saved_best": true,
+      "train_loss": 0.0037908862226186967,
+      "validation": {
+        "loss": 0.0036727308819473115,
+        "speed_mae_mps": 0.17762065454522555,
+        "steer_mae_rad": 0.021610010859216766
+      }
+    },
+    {
+      "epoch": 12,
+      "records_seen": 18931,
+      "saved_best": true,
+      "train_loss": 0.0037230766149718686,
+      "validation": {
+        "loss": 0.0035975586836054477,
+        "speed_mae_mps": 0.17539227918511624,
+        "steer_mae_rad": 0.021113924284668514
+      }
+    },
+    {
+      "epoch": 13,
+      "records_seen": 18931,
+      "saved_best": false,
+      "train_loss": 0.0036748479674917336,
+      "validation": {
+        "loss": 0.003610505535662173,
+        "speed_mae_mps": 0.17500496494064047,
+        "steer_mae_rad": 0.021726948331142294
+      }
+    },
+    {
+      "epoch": 14,
+      "records_seen": 18931,
+      "saved_best": true,
+      "train_loss": 0.003638052258290845,
+      "validation": {
+        "loss": 0.0035505243442457307,
+        "speed_mae_mps": 0.1787531003067957,
+        "steer_mae_rad": 0.02068510171119887
+      }
+    },
+    {
+      "epoch": 15,
+      "records_seen": 18931,
+      "saved_best": true,
+      "train_loss": 0.003587331388996745,
+      "validation": {
+        "loss": 0.00353320063460052,
+        "speed_mae_mps": 0.1745549935138408,
+        "steer_mae_rad": 0.02069903744811784
+      }
+    },
+    {
+      "epoch": 16,
+      "records_seen": 18931,
+      "saved_best": false,
+      "train_loss": 0.0035840542249423457,
+      "validation": {
+        "loss": 0.003575880854023944,
+        "speed_mae_mps": 0.1831793174947158,
+        "steer_mae_rad": 0.020501570759111565
+      }
+    }
+  ],
+  "initial_checkpoint": "/workspace/runs/unified-race-avoid-v2/base.pt",
+  "initial_validation": {
+    "loss": 0.00638594800356942,
+    "speed_mae_mps": 0.19142212631050984,
+    "steer_mae_rad": 0.030377567070647923
+  },
+  "learning_rate": 0.00015,
+  "loss": "SmoothL1 mean over normalized steering/speed",
+  "optimizer": "Adam",
+  "optimizer_state_saved": false,
+  "paths": {
+    "test_episodes": [
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/race-005.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/race-011.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/race-017.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/race-023.elds",
+      "/workspace/data/teachers-expanded-v5-balanced-20261029/accepted/balanced-race-01.elds",
+      "/workspace/data/teachers-expanded-v5-balanced-20261029/accepted/balanced-race-03.elds"
+    ],
+    "train_episodes": [
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/race-000.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/race-001.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/race-003.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/race-004.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/race-006.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/race-007.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/race-009.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/race-010.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/race-012.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/race-013.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/race-015.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/race-016.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/race-018.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/race-019.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/race-021.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/race-022.elds",
+      "/workspace/data/avoid-corridor-replay-v2/train-000.elds",
+      "/workspace/data/avoid-corridor-replay-v2/train-001.elds",
+      "/workspace/data/avoid-corridor-replay-v2/train-002.elds",
+      "/workspace/data/avoid-corridor-replay-v2/train-003.elds",
+      "/workspace/data/avoid-corridor-replay-v2/train-004.elds",
+      "/workspace/data/avoid-corridor-replay-v2/train-005.elds",
+      "/workspace/data/avoid-corridor-replay-v2/train-006.elds",
+      "/workspace/data/avoid-corridor-replay-v2/train-007.elds",
+      "/workspace/data/avoid-corridor-replay-v2/train-008.elds",
+      "/workspace/data/avoid-corridor-replay-v2/train-009.elds",
+      "/workspace/data/avoid-corridor-replay-v2/train-010.elds",
+      "/workspace/data/avoid-corridor-replay-v2/train-011.elds",
+      "/workspace/data/avoid-corridor-replay-v2/train-012.elds",
+      "/workspace/data/avoid-corridor-replay-v2/train-013.elds",
+      "/workspace/data/avoid-corridor-replay-v2/train-014.elds",
+      "/workspace/data/avoid-corridor-replay-v2/train-015.elds",
+      "/workspace/data/avoid-corridor-replay-v2/train-016.elds",
+      "/workspace/data/avoid-corridor-replay-v2/train-017.elds",
+      "/workspace/data/avoid-corridor-replay-v2/train-018.elds",
+      "/workspace/data/avoid-corridor-replay-v2/train-019.elds",
+      "/workspace/data/avoid-corridor-replay-v2/train-020.elds",
+      "/workspace/data/avoid-corridor-replay-v2/train-021.elds",
+      "/workspace/data/avoid-corridor-replay-v2/train-023.elds",
+      "/workspace/data/avoid-corridor-replay-v2/train-024.elds",
+      "/workspace/data/avoid-corridor-replay-v2/train-025.elds",
+      "/workspace/data/avoid-corridor-replay-v2/train-026.elds",
+      "/workspace/data/avoid-corridor-replay-v2/train-027.elds",
+      "/workspace/data/avoid-corridor-replay-v2/train-028.elds",
+      "/workspace/data/avoid-corridor-replay-v2/train-029.elds",
+      "/workspace/data/avoid-corridor-replay-v2/train-031.elds",
+      "/workspace/data/avoid-corridor-replay-v2/train-032.elds",
+      "/workspace/data/avoid-corridor-replay-v2/train-033.elds",
+      "/workspace/data/avoid-corridor-replay-v2/train-034.elds",
+      "/workspace/data/avoid-corridor-replay-v2/train-035.elds",
+      "/workspace/data/avoid-corridor-replay-v2/train-036.elds",
+      "/workspace/data/avoid-corridor-replay-v2/train-037.elds",
+      "/workspace/data/avoid-corridor-replay-v2/train-038.elds",
+      "/workspace/data/avoid-corridor-replay-v2/train-039.elds",
+      "/workspace/data/avoid-corridor-replay-v2/train-040.elds",
+      "/workspace/data/avoid-corridor-replay-v2/train-041.elds",
+      "/workspace/data/avoid-corridor-replay-v2/train-042.elds",
+      "/workspace/data/avoid-corridor-replay-v2/train-043.elds",
+      "/workspace/data/avoid-corridor-replay-v2/train-044.elds",
+      "/workspace/data/avoid-corridor-replay-v2/train-045.elds",
+      "/workspace/data/avoid-corridor-replay-v2/train-046.elds",
+      "/workspace/data/avoid-corridor-replay-v2/train-047.elds"
+    ],
+    "validation_episodes": [
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/race-002.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/race-008.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/race-014.elds",
+      "/workspace/data/teachers-expanded-v5-20261029/accepted/race-020.elds",
+      "/workspace/data/teachers-expanded-v5-balanced-20261029/accepted/balanced-race-00.elds",
+      "/workspace/data/teachers-expanded-v5-balanced-20261029/accepted/balanced-race-02.elds",
+      "/workspace/data/avoid-corridor-replay-v2/validation-000.elds",
+      "/workspace/data/avoid-corridor-replay-v2/validation-001.elds",
+      "/workspace/data/avoid-corridor-replay-v2/validation-002.elds",
+      "/workspace/data/avoid-corridor-replay-v2/validation-003.elds",
+      "/workspace/data/avoid-corridor-replay-v2/validation-004.elds",
+      "/workspace/data/avoid-corridor-replay-v2/validation-005.elds",
+      "/workspace/data/avoid-corridor-replay-v2/validation-006.elds",
+      "/workspace/data/avoid-corridor-replay-v2/validation-007.elds",
+      "/workspace/data/avoid-corridor-replay-v2/validation-008.elds",
+      "/workspace/data/avoid-corridor-replay-v2/validation-009.elds",
+      "/workspace/data/avoid-corridor-replay-v2/validation-010.elds",
+      "/workspace/data/avoid-corridor-replay-v2/validation-011.elds"
+    ]
+  },
+  "reloaded_validation": {
+    "loss": 0.00353320063460052,
+    "speed_mae_mps": 0.1745549935138408,
+    "steer_mae_rad": 0.02069903744811784
+  },
+  "seed": 2026,
+  "selection": "strictly lowest validation loss; ties keep first",
+  "status": "completed",
+  "test_evaluated": false,
+  "train_records": 18931,
+  "training_executed": true,
+  "training_seconds": 36.392343274,
+  "validation_by_mode": {
+    "avoid": {
+      "loss": 0.011552072169517322,
+      "speed_mae_mps": 0.22682815826565064,
+      "steer_mae_rad": 0.046764464197869116
+    },
+    "race": {
+      "loss": 0.000813194089312165,
+      "speed_mae_mps": 0.15682391145012595,
+      "steer_mae_rad": 0.011857625089784815
+    }
+  },
+  "validation_records": 6467
+}

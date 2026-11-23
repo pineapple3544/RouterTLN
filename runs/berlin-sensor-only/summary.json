@@ -1,0 +1,36 @@
+{
+  "offline": {
+    "trials": 300,
+    "accepted": 289,
+    "failure_reasons": {
+      "dynamic_braking_footprint": 1,
+      "localization_lost": 3,
+      "no_corridor": 6,
+      "braking_footprint": 1
+    },
+    "physical_collisions": 0,
+    "legacy_accepted": 294,
+    "newly_failed": 6,
+    "newly_passed": 1,
+    "accepted_median_lap_s": [
+      28.170156290639223,
+      18.204374559885963,
+      18.18115501355588
+    ]
+  },
+  "ros": {
+    "trials": 60,
+    "accepted": 58,
+    "both_repeats_passed": 29,
+    "collision_trials": 0,
+    "failure_reasons": {
+      "no_corridor": 2
+    },
+    "accepted_median_lap_s": [
+      28.702485554249506,
+      18.50940269235616,
+      18.45370392154291
+    ]
+  },
+  "manifest_sha256": "c1eaeff0251ca10ab6dbc46ec55b5e73bfe3044acef34f28c3ae1e5621946e9b"
+}

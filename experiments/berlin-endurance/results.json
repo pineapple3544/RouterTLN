@@ -1,0 +1,582 @@
+{
+  "pilot": {
+    "n": 15,
+    "paired": 15,
+    "before": {
+      "clean": 15,
+      "first": 15,
+      "contacts": 0,
+      "stops": 0,
+      "clean_through_three": 15,
+      "failed_after_three": [],
+      "consecutive_laps": 143,
+      "paired_best_s": 16.629169317789692,
+      "failures": {}
+    },
+    "after": {
+      "clean": 15,
+      "first": 15,
+      "contacts": 0,
+      "stops": 0,
+      "clean_through_three": 15,
+      "failed_after_three": [],
+      "consecutive_laps": 147,
+      "paired_best_s": 16.48539208155547,
+      "failures": {}
+    },
+    "max_first_lap_delta_s": 0.0,
+    "gained": [],
+    "lost": [],
+    "faster": 15,
+    "slower": 0,
+    "median_delta_s": -0.12461154702208432,
+    "fewer_laps": [],
+    "more_laps": [
+      "pilot-1-01",
+      "pilot-3-01",
+      "pilot-3-02",
+      "pilot-5-03"
+    ],
+    "by_count": {
+      "1": {
+        "n": 5,
+        "paired": 5,
+        "before": {
+          "clean": 5,
+          "first": 5,
+          "contacts": 0,
+          "stops": 0,
+          "clean_through_three": 5,
+          "failed_after_three": [],
+          "consecutive_laps": 51,
+          "paired_best_s": 15.661870509186826,
+          "failures": {}
+        },
+        "after": {
+          "clean": 5,
+          "first": 5,
+          "contacts": 0,
+          "stops": 0,
+          "clean_through_three": 5,
+          "failed_after_three": [],
+          "consecutive_laps": 52,
+          "paired_best_s": 15.444519013886689,
+          "failures": {}
+        },
+        "max_first_lap_delta_s": 0.0,
+        "gained": [],
+        "lost": [],
+        "faster": 5,
+        "slower": 0,
+        "median_delta_s": -0.24758296301736493,
+        "fewer_laps": [],
+        "more_laps": [
+          "pilot-1-01"
+        ]
+      },
+      "3": {
+        "n": 5,
+        "paired": 5,
+        "before": {
+          "clean": 5,
+          "first": 5,
+          "contacts": 0,
+          "stops": 0,
+          "clean_through_three": 5,
+          "failed_after_three": [],
+          "consecutive_laps": 47,
+          "paired_best_s": 16.828261391135328,
+          "failures": {}
+        },
+        "after": {
+          "clean": 5,
+          "first": 5,
+          "contacts": 0,
+          "stops": 0,
+          "clean_through_three": 5,
+          "failed_after_three": [],
+          "consecutive_laps": 49,
+          "paired_best_s": 16.716845906619156,
+          "failures": {}
+        },
+        "max_first_lap_delta_s": 0.0,
+        "gained": [],
+        "lost": [],
+        "faster": 5,
+        "slower": 0,
+        "median_delta_s": -0.11801589460060313,
+        "fewer_laps": [],
+        "more_laps": [
+          "pilot-3-01",
+          "pilot-3-02"
+        ]
+      },
+      "5": {
+        "n": 5,
+        "paired": 5,
+        "before": {
+          "clean": 5,
+          "first": 5,
+          "contacts": 0,
+          "stops": 0,
+          "clean_through_three": 5,
+          "failed_after_three": [],
+          "consecutive_laps": 45,
+          "paired_best_s": 17.397376053046926,
+          "failures": {}
+        },
+        "after": {
+          "clean": 5,
+          "first": 5,
+          "contacts": 0,
+          "stops": 0,
+          "clean_through_three": 5,
+          "failed_after_three": [],
+          "consecutive_laps": 46,
+          "paired_best_s": 17.29481132416057,
+          "failures": {}
+        },
+        "max_first_lap_delta_s": 0.0,
+        "gained": [],
+        "lost": [],
+        "faster": 5,
+        "slower": 0,
+        "median_delta_s": -0.09468557967859681,
+        "fewer_laps": [],
+        "more_laps": [
+          "pilot-5-03"
+        ]
+      }
+    }
+  },
+  "holdout": {
+    "n": 30,
+    "paired": 30,
+    "before": {
+      "clean": 30,
+      "first": 30,
+      "contacts": 0,
+      "stops": 0,
+      "clean_through_three": 30,
+      "failed_after_three": [],
+      "consecutive_laps": 290,
+      "paired_best_s": 16.699934452152256,
+      "failures": {}
+    },
+    "after": {
+      "clean": 30,
+      "first": 30,
+      "contacts": 0,
+      "stops": 0,
+      "clean_through_three": 30,
+      "failed_after_three": [],
+      "consecutive_laps": 294,
+      "paired_best_s": 16.55821768123536,
+      "failures": {}
+    },
+    "max_first_lap_delta_s": 0.0,
+    "gained": [],
+    "lost": [],
+    "faster": 29,
+    "slower": 1,
+    "median_delta_s": -0.11795889683667937,
+    "fewer_laps": [],
+    "more_laps": [
+      "holdout-1-04",
+      "holdout-1-05",
+      "holdout-1-06",
+      "holdout-1-08"
+    ],
+    "by_count": {
+      "1": {
+        "n": 10,
+        "paired": 10,
+        "before": {
+          "clean": 10,
+          "first": 10,
+          "contacts": 0,
+          "stops": 0,
+          "clean_through_three": 10,
+          "failed_after_three": [],
+          "consecutive_laps": 105,
+          "paired_best_s": 15.476302744723675,
+          "failures": {}
+        },
+        "after": {
+          "clean": 10,
+          "first": 10,
+          "contacts": 0,
+          "stops": 0,
+          "clean_through_three": 10,
+          "failed_after_three": [],
+          "consecutive_laps": 109,
+          "paired_best_s": 15.253588099656572,
+          "failures": {}
+        },
+        "max_first_lap_delta_s": 0.0,
+        "gained": [],
+        "lost": [],
+        "faster": 10,
+        "slower": 0,
+        "median_delta_s": -0.24458650259346015,
+        "fewer_laps": [],
+        "more_laps": [
+          "holdout-1-04",
+          "holdout-1-05",
+          "holdout-1-06",
+          "holdout-1-08"
+        ]
+      },
+      "3": {
+        "n": 10,
+        "paired": 10,
+        "before": {
+          "clean": 10,
+          "first": 10,
+          "contacts": 0,
+          "stops": 0,
+          "clean_through_three": 10,
+          "failed_after_three": [],
+          "consecutive_laps": 93,
+          "paired_best_s": 17.030430378306928,
+          "failures": {}
+        },
+        "after": {
+          "clean": 10,
+          "first": 10,
+          "contacts": 0,
+          "stops": 0,
+          "clean_through_three": 10,
+          "failed_after_three": [],
+          "consecutive_laps": 93,
+          "paired_best_s": 16.901667806003747,
+          "failures": {}
+        },
+        "max_first_lap_delta_s": 0.0,
+        "gained": [],
+        "lost": [],
+        "faster": 9,
+        "slower": 1,
+        "median_delta_s": -0.12008522271744937,
+        "fewer_laps": [],
+        "more_laps": []
+      },
+      "5": {
+        "n": 10,
+        "paired": 10,
+        "before": {
+          "clean": 10,
+          "first": 10,
+          "contacts": 0,
+          "stops": 0,
+          "clean_through_three": 10,
+          "failed_after_three": [],
+          "consecutive_laps": 92,
+          "paired_best_s": 17.59307023342616,
+          "failures": {}
+        },
+        "after": {
+          "clean": 10,
+          "first": 10,
+          "contacts": 0,
+          "stops": 0,
+          "clean_through_three": 10,
+          "failed_after_three": [],
+          "consecutive_laps": 92,
+          "paired_best_s": 17.51939713804576,
+          "failures": {}
+        },
+        "max_first_lap_delta_s": 0.0,
+        "gained": [],
+        "lost": [],
+        "faster": 10,
+        "slower": 0,
+        "median_delta_s": -0.07647721673439634,
+        "fewer_laps": [],
+        "more_laps": []
+      }
+    }
+  },
+  "matched": {
+    "n": 300,
+    "paired": 289,
+    "before": {
+      "clean": 292,
+      "first": 296,
+      "contacts": 0,
+      "stops": 8,
+      "clean_through_three": 293,
+      "failed_after_three": [
+        "new-3-091"
+      ],
+      "consecutive_laps": 2857,
+      "paired_best_s": 16.559731367166435,
+      "failures": {
+        "new-5-069": "no_corridor",
+        "new-5-037": "braking_footprint",
+        "new-5-086": "braking_footprint",
+        "new-5-056": "no_corridor",
+        "new-5-022": "braking_footprint",
+        "new-1-036": "dynamic_braking_footprint",
+        "new-5-045": "braking_footprint",
+        "new-3-091": "braking_footprint"
+      }
+    },
+    "after": {
+      "clean": 290,
+      "first": 296,
+      "contacts": 0,
+      "stops": 10,
+      "clean_through_three": 295,
+      "failed_after_three": [
+        "new-5-055",
+        "new-5-022",
+        "new-1-036",
+        "new-3-082",
+        "new-5-067"
+      ],
+      "consecutive_laps": 2879,
+      "paired_best_s": 16.41421910534902,
+      "failures": {
+        "new-5-069": "braking_footprint",
+        "new-5-086": "braking_footprint",
+        "new-5-037": "braking_footprint",
+        "new-5-056": "no_corridor",
+        "new-5-055": "braking_footprint",
+        "new-5-022": "braking_footprint",
+        "new-1-036": "braking_footprint",
+        "new-5-045": "braking_footprint",
+        "new-3-082": "dynamic_braking_footprint",
+        "new-5-067": "braking_footprint"
+      }
+    },
+    "max_first_lap_delta_s": 0.0,
+    "gained": [
+      "new-3-091"
+    ],
+    "lost": [
+      "new-3-082",
+      "new-5-055",
+      "new-5-067"
+    ],
+    "faster": 285,
+    "slower": 4,
+    "median_delta_s": -0.1354462857003469,
+    "fewer_laps": [
+      "new-3-082",
+      "new-5-055",
+      "new-5-067"
+    ],
+    "more_laps": [
+      "new-1-003",
+      "new-1-005",
+      "new-1-008",
+      "new-1-018",
+      "new-1-024",
+      "new-1-029",
+      "new-1-036",
+      "new-1-039",
+      "new-1-042",
+      "new-1-043",
+      "new-1-064",
+      "new-1-065",
+      "new-1-071",
+      "new-1-072",
+      "new-1-074",
+      "new-1-076",
+      "new-1-077",
+      "new-1-099",
+      "new-3-032",
+      "new-3-036",
+      "new-3-066",
+      "new-3-069",
+      "new-3-076",
+      "new-3-078",
+      "new-3-084",
+      "new-3-091",
+      "new-5-022",
+      "new-5-028"
+    ],
+    "by_count": {
+      "1": {
+        "n": 100,
+        "paired": 99,
+        "before": {
+          "clean": 99,
+          "first": 100,
+          "contacts": 0,
+          "stops": 1,
+          "clean_through_three": 99,
+          "failed_after_three": [],
+          "consecutive_laps": 1053,
+          "paired_best_s": 15.456241380499177,
+          "failures": {
+            "new-1-036": "dynamic_braking_footprint"
+          }
+        },
+        "after": {
+          "clean": 99,
+          "first": 100,
+          "contacts": 0,
+          "stops": 1,
+          "clean_through_three": 100,
+          "failed_after_three": [
+            "new-1-036"
+          ],
+          "consecutive_laps": 1071,
+          "paired_best_s": 15.240611823203187,
+          "failures": {
+            "new-1-036": "braking_footprint"
+          }
+        },
+        "max_first_lap_delta_s": 0.0,
+        "gained": [],
+        "lost": [],
+        "faster": 99,
+        "slower": 0,
+        "median_delta_s": -0.2246717446396076,
+        "fewer_laps": [],
+        "more_laps": [
+          "new-1-003",
+          "new-1-005",
+          "new-1-008",
+          "new-1-018",
+          "new-1-024",
+          "new-1-029",
+          "new-1-036",
+          "new-1-039",
+          "new-1-042",
+          "new-1-043",
+          "new-1-064",
+          "new-1-065",
+          "new-1-071",
+          "new-1-072",
+          "new-1-074",
+          "new-1-076",
+          "new-1-077",
+          "new-1-099"
+        ]
+      },
+      "3": {
+        "n": 100,
+        "paired": 98,
+        "before": {
+          "clean": 99,
+          "first": 100,
+          "contacts": 0,
+          "stops": 1,
+          "clean_through_three": 100,
+          "failed_after_three": [
+            "new-3-091"
+          ],
+          "consecutive_laps": 955,
+          "paired_best_s": 16.737019933810252,
+          "failures": {
+            "new-3-091": "braking_footprint"
+          }
+        },
+        "after": {
+          "clean": 99,
+          "first": 100,
+          "contacts": 0,
+          "stops": 1,
+          "clean_through_three": 100,
+          "failed_after_three": [
+            "new-3-082"
+          ],
+          "consecutive_laps": 959,
+          "paired_best_s": 16.60930382708014,
+          "failures": {
+            "new-3-082": "dynamic_braking_footprint"
+          }
+        },
+        "max_first_lap_delta_s": 0.0,
+        "gained": [
+          "new-3-091"
+        ],
+        "lost": [
+          "new-3-082"
+        ],
+        "faster": 97,
+        "slower": 1,
+        "median_delta_s": -0.12636485021821287,
+        "fewer_laps": [
+          "new-3-082"
+        ],
+        "more_laps": [
+          "new-3-032",
+          "new-3-036",
+          "new-3-066",
+          "new-3-069",
+          "new-3-076",
+          "new-3-078",
+          "new-3-084",
+          "new-3-091"
+        ]
+      },
+      "5": {
+        "n": 100,
+        "paired": 92,
+        "before": {
+          "clean": 94,
+          "first": 96,
+          "contacts": 0,
+          "stops": 6,
+          "clean_through_three": 94,
+          "failed_after_three": [],
+          "consecutive_laps": 849,
+          "paired_best_s": 17.558331684003008,
+          "failures": {
+            "new-5-069": "no_corridor",
+            "new-5-037": "braking_footprint",
+            "new-5-086": "braking_footprint",
+            "new-5-056": "no_corridor",
+            "new-5-022": "braking_footprint",
+            "new-5-045": "braking_footprint"
+          }
+        },
+        "after": {
+          "clean": 92,
+          "first": 96,
+          "contacts": 0,
+          "stops": 8,
+          "clean_through_three": 95,
+          "failed_after_three": [
+            "new-5-055",
+            "new-5-022",
+            "new-5-067"
+          ],
+          "consecutive_laps": 849,
+          "paired_best_s": 17.469314955379314,
+          "failures": {
+            "new-5-069": "braking_footprint",
+            "new-5-086": "braking_footprint",
+            "new-5-037": "braking_footprint",
+            "new-5-056": "no_corridor",
+            "new-5-055": "braking_footprint",
+            "new-5-022": "braking_footprint",
+            "new-5-045": "braking_footprint",
+            "new-5-067": "braking_footprint"
+          }
+        },
+        "max_first_lap_delta_s": 0.0,
+        "gained": [],
+        "lost": [
+          "new-5-055",
+          "new-5-067"
+        ],
+        "faster": 89,
+        "slower": 3,
+        "median_delta_s": -0.08574973486241078,
+        "fewer_laps": [
+          "new-5-055",
+          "new-5-067"
+        ],
+        "more_laps": [
+          "new-5-022",
+          "new-5-028"
+        ]
+      }
+    }
+  }
+}

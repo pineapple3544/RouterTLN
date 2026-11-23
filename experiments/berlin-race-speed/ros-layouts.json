@@ -1,0 +1,77 @@
+[
+  {
+    "name": "s43939214-n1",
+    "seed": 43939214,
+    "count": 1,
+    "index": 431,
+    "stride": 19,
+    "stations": [
+      39.38667184365477
+    ],
+    "offsets": [
+      0.0703
+    ],
+    "map": "berlin",
+    "layout": 0,
+    "start": 37,
+    "full_lap": true,
+    "lap_planning": true,
+    "ros_finish": true,
+    "laps": 10,
+    "duration_s": 180
+  },
+  {
+    "name": "s49140402-n3",
+    "seed": 49140402,
+    "count": 3,
+    "index": 352,
+    "stride": 15,
+    "stations": [
+      31.48903687170731,
+      32.98859289099072,
+      34.488150897696606
+    ],
+    "offsets": [
+      0.1651,
+      0.137,
+      0.066
+    ],
+    "map": "berlin",
+    "layout": 0,
+    "start": 37,
+    "full_lap": true,
+    "lap_planning": true,
+    "ros_finish": true,
+    "laps": 10,
+    "duration_s": 180
+  },
+  {
+    "name": "s66874438-n5",
+    "seed": 66874438,
+    "count": 5,
+    "index": 142,
+    "stride": 84,
+    "stations": [
+      10.49642134499974,
+      18.8938975969879,
+      27.290350054278786,
+      35.68779565922186,
+      44.085304108753846
+    ],
+    "offsets": [
+      -0.1171,
+      -0.1669,
+      -0.0243,
+      -0.1216,
+      0.0176
+    ],
+    "map": "berlin",
+    "layout": 0,
+    "start": 37,
+    "full_lap": true,
+    "lap_planning": true,
+    "ros_finish": true,
+    "laps": 10,
+    "duration_s": 180
+  }
+]

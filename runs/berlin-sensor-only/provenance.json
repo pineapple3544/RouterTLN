@@ -1,0 +1,40 @@
+{
+  "files": {
+    "src/node.cpp": "18d46268d6390fab938d7c7514b8c76dde0b19a0f7e5eed4ada3917c310b2d11",
+    "src/eval_avoid.cpp": "dbf32276ea6998710c78abcec88dcc498f386b41edd75e410f1ba5fa40484ef2",
+    "src/eval_race.cpp": "3fae213b4a4691718f03953e2a1c315974b68290d1d3e4dfb6c7b7d36fcd995f",
+    "src/offline_snapshot.hpp": "c123f96a047d96ac4df06b4d1e1c5478c28f6eb8649788bc6dbb5bf673289892",
+    "src/inspect.cpp": "bd0a172051cd941aff753fe5a352115faf3ec0677102e7aa9f8425e6b706a21a",
+    "include/el/scan_localizer.hpp": "cbeba9efe3ecd498ed5aa74b6dcfad8d76e7a3eb02618d33e34542af1e7b7f0c",
+    "include/el/section_router.hpp": "f69c7ce1e01214dbdd92ebed41a1bb1968fd0f6491616833611844da7aa803cc",
+    "include/el/avoid_corridor.hpp": "e746e0a89a87ff070fc22ff8ae1e0ae2989c9d98fd1d33a1a735a6b9bc181087",
+    "include/el/lap_plan.hpp": "128d053fa653278a8e1a54b0b88317c43131c4634d6d7c0cc3f153b6871579e4",
+    "src/core.cpp": "072c5845772fbfc6883935d171ab7f7694ef9b973e7048ce23198576e52401bd",
+    "include/el/policy.hpp": "ffad11c284cf2bb7592b01ec4078bb649e404858e2ce52e191f4358584980aa6",
+    "src/policy.cpp": "caaa8b1146f0c2ca232d2bbbf35bab910e8fc7c7711a4778d36dc03727c22208",
+    "include/el/network.hpp": "39ad8050dfc1f738384f2c99c6d9a3b4f4d5c860dcb66a7a54f30b6da26d2893",
+    "scripts/local_gym_bridge.py": "e5c1791e31751a76393a8beaf6b723e510b17fca81692a76521aadc7d80b4af5",
+    "scripts/score_drive.py": "9ab4b6ee7544ed313270da0d7a7811467b896746218e0fd2f36a20d1732954d3",
+    "scripts/smoke.sh": "b196855012844a0a2aafc12b6a6cc0bbe13a0053abe4cc2b858430137a11fa6f",
+    "maps/berlin/berlin.png": "602a42492f89f615a07b8cb3e1c53fedafacc891d6ee7579f08591ac1e415996",
+    "maps/berlin/berlin.yaml": "abaac583c0936cfe65ccfb2b59622fee52303bf77bfd142b14168dada3114f98",
+    "maps/berlin/global_waypoints.json": "54383bafeb40ead8dd615671c55285b1dac8821408734181805dcca76b2122ec",
+    "models/avoid-corridor-v2.pt": "6754bf58549b40854652abd1f4d26af833453905342e8ecec5c4dc8982ec673f",
+    "models/race-berlin-wsp.pt": "da9f0c1783ed46552558f1c8a4f877dab6f487b88427201fd9b7c5f1ac858e10",
+    "models/unified-race-avoid-v2.pt": "c1bbb648ec9dda9a38f50ffc57f6eed2df952a6d7841baf7f6babd3cd5e877b7",
+    "runs/berlin-blind-300/preregister.json": "c1eaeff0251ca10ab6dbc46ec55b5e73bfe3044acef34f28c3ae1e5621946e9b"
+  },
+  "executables": {
+    "controller": "e992bfff45f5f05c1c5c779be7492d72ddc8a7f18711029b17d1f19131dc1859",
+    "evaluator": "4ae80b8a8549d9467a48e0dec4a441acdacb6b0eb3980312f32fd9176c825d8f"
+  },
+  "container": "el-native-dev",
+  "python": "3.10.12",
+  "ros": "Humble",
+  "control_period_ms": 25,
+  "max_scan_age_ms": 150,
+  "lidar_offset_m": 0.27,
+  "scout_max_mps": 2.2,
+  "flying_avoid_min_mps": 2.7,
+  "speed_cap_mps": 3.0
+}

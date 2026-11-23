@@ -15,7 +15,26 @@ struct RouterSettings {
   float avoid_speed_cap=10.f;
   // Optional closed-loop stress test of Avoid on flying laps, in the local simulator.
   float sim_avoid_min=0, sim_avoid_max=0;
+  bool sim_section_speed_profile=false;
+  bool sim_race_only=false;
+  bool straight_boost=false;
+  bool race_sight_speed=false;
+  bool race_exit_speed=false;
+  bool race_lap_speed=false;
+  float race_brake_preview_s=.18f;
   void validate_sim_band(float cap, bool simulator) const {
+    if(race_lap_speed && (race_sight_speed || race_exit_speed))
+      throw std::runtime_error("choose either the scout speed plan or the earlier Race envelope");
+    if((race_lap_speed || race_sight_speed || race_exit_speed) && (!sim_race_only || straight_boost))
+      throw std::runtime_error("Race envelope requires Race-only planning without straight_boost");
+    if(straight_boost && !sim_race_only)throw std::runtime_error("straight boost requires Race-only speed profile");
+    if(sim_race_only && !sim_section_speed_profile)
+      throw std::runtime_error("Race-only speed control requires the section speed profile");
+    if(!(race_brake_preview_s>=0 && race_brake_preview_s<=.5f))
+      throw std::runtime_error("invalid Race braking preview duration");
+    if(sim_section_speed_profile && !(simulator && lap_planning && sim_avoid_min>0 &&
+                                     sim_avoid_max>sim_avoid_min && cap<=10.f))
+      throw std::runtime_error("adaptive speed requires a local simulator and a nonempty speed band");
     if (sim_avoid_min==0 && sim_avoid_max==0) return;
     if (!simulator || !lap_planning || !(sim_avoid_min>=0 && sim_avoid_max>0 &&
                                          sim_avoid_min<=sim_avoid_max && sim_avoid_max<=cap))

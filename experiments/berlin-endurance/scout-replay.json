@@ -1,0 +1,146 @@
+{
+  "new-3-004": {
+    "starting_state": {
+      "heading_error_rad": -0.013753294944763184,
+      "lateral_m": -0.0450601726770401,
+      "plan_ready": false,
+      "s": 16.03190079894577,
+      "stamp": 9.869999999999834,
+      "step": 395,
+      "v": 2.18072509765625,
+      "x": -0.38125064969062805,
+      "y": -8.3336820602417,
+      "yaw": 1.8877912759780884
+    },
+    "current": "completed",
+    "rejected": "stopped",
+    "rejected_first_rejection": {
+      "previous_mode": 1,
+      "progress_m": 21.117093583250348,
+      "reason": "braking_footprint",
+      "router_avoiding": true,
+      "speed_mps": 1.3965156078338623
+    },
+    "first_command_difference": {
+      "step": 456,
+      "progress_m": 19.432928860620777,
+      "same_pose": true,
+      "current": [
+        -0.30000001192092896,
+        1.166229486465454
+      ],
+      "rejected": [
+        -0.20000000298023224,
+        1.1468851566314697
+      ]
+    }
+  },
+  "new-5-015": {
+    "starting_state": {
+      "heading_error_rad": 0.15834927558898926,
+      "lateral_m": 0.7546501755714417,
+      "plan_ready": false,
+      "s": 16.001294281507086,
+      "stamp": 13.069999999999766,
+      "step": 523,
+      "v": 1.3664439916610718,
+      "x": -1.1294752359390259,
+      "y": -8.617098808288574,
+      "yaw": 2.059893846511841
+    },
+    "current": "completed",
+    "rejected": "stopped",
+    "rejected_first_rejection": {
+      "previous_mode": 1,
+      "progress_m": 20.589534581651126,
+      "reason": "braking_footprint",
+      "router_avoiding": true,
+      "speed_mps": 1.4047935009002686
+    },
+    "first_command_difference": {
+      "step": 635,
+      "progress_m": 19.162646138936765,
+      "same_pose": true,
+      "current": [
+        0.4000000059604645,
+        1.3077483177185059
+      ],
+      "rejected": [
+        0.4000000059604645,
+        1.5317481756210327
+      ]
+    }
+  },
+  "new-3-091": {
+    "starting_state": {
+      "heading_error_rad": -0.026389241218566895,
+      "lateral_m": -0.04456038028001785,
+      "plan_ready": false,
+      "s": 16.027876423708875,
+      "stamp": 7.24999999999989,
+      "step": 290,
+      "v": 2.200000047683716,
+      "x": -0.38041752576828003,
+      "y": -8.337647438049316,
+      "yaw": 1.8751553297042847
+    },
+    "current": "completed",
+    "rejected": "stopped",
+    "rejected_first_rejection": {
+      "previous_mode": 1,
+      "progress_m": 21.11609347835702,
+      "reason": "braking_footprint",
+      "router_avoiding": true,
+      "speed_mps": 1.0220874547958374
+    },
+    "first_command_difference": {
+      "step": 351,
+      "progress_m": 19.415402235830484,
+      "same_pose": true,
+      "current": [
+        -0.20000000298023224,
+        1.2069087028503418
+      ],
+      "rejected": [
+        -0.20000000298023224,
+        1.2327985763549805
+      ]
+    }
+  },
+  "new-5-041": {
+    "starting_state": {
+      "heading_error_rad": -0.03671419247984886,
+      "lateral_m": -0.054318804293870926,
+      "plan_ready": false,
+      "s": 16.025918329399865,
+      "stamp": 10.09999999999983,
+      "step": 404,
+      "v": 2.200000047683716,
+      "x": -0.3705301582813263,
+      "y": -8.336394309997559,
+      "yaw": 1.8648303747177124
+    },
+    "current": "completed",
+    "rejected": "stopped",
+    "rejected_first_rejection": {
+      "previous_mode": 1,
+      "progress_m": 20.948153558153756,
+      "reason": "braking_footprint",
+      "router_avoiding": true,
+      "speed_mps": 1.2192972898483276
+    },
+    "first_command_difference": {
+      "step": 472,
+      "progress_m": 19.72130834612642,
+      "same_pose": true,
+      "current": [
+        -0.30000001192092896,
+        0.9935189485549927
+      ],
+      "rejected": [
+        0.4000000059604645,
+        0.9935189485549927
+      ]
+    }
+  }
+}

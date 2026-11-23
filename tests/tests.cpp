@@ -2,6 +2,7 @@
 #include "el/dynamics.hpp"
 #include "el/avoid_corridor.hpp"
 #include "el/lap_plan.hpp"
+#include "el/race_speed.hpp"
 #include "el/mppi.hpp"
 #include "el/dataset.hpp"
 #include "el/scenarios.hpp"
@@ -22,6 +23,43 @@ void write_map(const std::string& dir){
 }
 Problem straight(){Problem p;for(int i=0;i<ref_n;++i)p.ref[i]={i*.15f,0,0,2.f,i*.15f};p.max_speed=2;return p;}
 int main(){try{
+  {
+    // A slow entry just after the lap seam must constrain the previous lap.
+    std::vector<float> speed2{4,36,36,36,36,36,36,36};
+    std::vector<float> ds(speed2.size(), .5f);
+    el::plan_cyclic_speeds(speed2,ds,2.f,3.f);
+    require(speed2[7]==7.f && speed2[6]==10.f, "brake before wrapped entry");
+    require(speed2[1]==6.f && speed2[2]==8.f, "limit acceleration after entry");
+    for (size_t i=0; i<speed2.size(); ++i) {
+      size_t next=(i+1)%speed2.size();
+      require(speed2[next]<=speed2[i]+2.f && speed2[i]<=speed2[next]+3.f,
+              "cyclic longitudinal reachability");
+    }
+  }
+  {
+    Scan sight;
+    sight.valid.fill(1);
+    sight.ranges.fill(8);
+    const float open = race_sight_speed_limit(sight, 6.f);
+    sight.ranges.fill(2);
+    const float narrow = race_sight_speed_limit(sight, 6.f);
+    require(open > narrow && narrow > 0, "Race speed follows visible braking distance");
+    require(.20f*narrow+narrow*narrow/12.f <= 2.f-.35f+.0001f, "latency and nose reserve");
+    sight.ranges[beams/2] = .2f;
+    require(race_sight_speed_limit(sight, 6.f) == 0, "obstruction inside nose reserve");
+    sight.valid[beams/2] = 0;
+    sight.ranges.fill(8);
+    require(race_sight_speed_limit(sight, 6.f) == 0, "invalid forward beam");
+    sight.valid.fill(1);
+    sight.angle_min = .01f;
+    require(race_sight_speed_limit(sight, 6.f) == 0, "missing half the forward scan");
+    RouterSettings profile;
+    profile.race_sight_speed = true;
+    bool rejected = false;
+    try { profile.validate_sim_band(5.f, true); }
+    catch (const std::runtime_error&) { rejected = true; }
+    require(rejected, "Race envelope requires a Race-only scout profile");
+  }
   {
     // Replay the five 10 ms ticks of the accelerating wall approach.
     DynamicState state{};
@@ -52,6 +90,31 @@ int main(){try{
     band.validate_sim_band(3,true);
     band.sim_avoid_min=3;
     require(rejected_band(3,true),"speed probe rejects reversed bounds");
+    // The same map can have different scout starts. Translate a remembered
+    // obstacle section into map stations, including a section crossing the seam.
+    std::vector<Waypoint> loop;
+    float station=0;
+    for(int i=0;i<=100;++i){
+      float angle=2*pi*i/100;
+      if(i)station+=2*10.f*sinf(pi/100);
+      loop.push_back({10*cosf(angle),10*sinf(angle),wrap(angle+pi/2),6,station});
+    }
+    LapPlan speed_plan;
+    RouterSettings profile;
+    auto limit=[&](int i,float relative,float cruise){
+      const auto& w=loop[i];
+      return speed_plan.race_speed(loop,i,relative,State{w.x,w.y,w.yaw},cruise,2.7f);
+    };
+    require(limit(0,0,5)==0,"no flying plan before successful scout");
+    // Starting halfway round puts the mapped start/finish inside this section.
+    const float origin=loop[50].s;
+    speed_plan.enter(loop[97].s-origin,1,2,2.2f,false);
+    speed_plan.returned(loop[3].s+station-origin);
+    for(size_t i=0;i<loop.size();++i)speed_plan.observe(i,loop.size(),0);
+    speed_plan.update(station+.1f,station,INFINITY,2,5,profile);
+    require(fabsf(limit(0,station+station-origin,5)-2.7f)<.001f,"wrapped scout obstacle binds");
+    require(limit(50,station,5)>4.9f,"clear section can accelerate");
+    require(limit(50,station,4)<=4.f,"new cruise cap rebuilds envelope");
     LapPlan plan;
     RouterSettings settings;
     auto update=[&](float pos,float ahead){return plan.update(pos,40.f,ahead,2.f,3.f,settings);};
@@ -112,6 +175,15 @@ int main(){try{
     png_image img{};img.version=PNG_IMAGE_VERSION;img.width=img.height=200;img.format=PNG_FORMAT_GRAY;
     require(png_image_write_to_file(&img,(dir+"/map.png").c_str(),0,pixels.data(),0,nullptr),"occlusion fixture");}
   Memory wall_map(dir+"/map.yaml");require(wall_map.wall_hides_disc(-3,0,3,0,.25),"wall must occlude whole obstacle projection");
+  {
+    State approaching{};
+    approaching.x=-.46f;
+    approaching.v=1.4f;
+    require(footprint(wall_map,approaching)<.5f,"physical rectangle still clear");
+    require(gym_front_blocked(wall_map,approaching),"forward lidar TTC envelope reaches wall");
+    approaching.yaw=pi;
+    require(!gym_front_blocked(wall_map,approaching),"lidar TTC envelope follows heading");
+  }
   require(!wall_map.base_free_disc(0,0,.3),"reject obstacle overlapping base wall");
   {Memory matched(dir+"/map.yaml");Scan ray;ray.pose.x=-1.27f;ray.explicit_angles=true;ray.valid[beams/2]=1;ray.angles[beams/2]=0;ray.range_max=18;
     // Sensor x=-1, mapped wall starts at -0.05: expected range 0.95 m.

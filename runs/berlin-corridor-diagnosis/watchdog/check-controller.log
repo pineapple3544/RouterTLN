@@ -1,0 +1,6 @@
+[INFO] [1795403832.117025032] [el_native_controller]: TLN inference device: cpu
+[INFO] [1795403832.141577079] [el_native_controller]: section router: Race/Avoid TLN and latched STOP
+[INFO] [1795403832.170067393] [el_native_controller]: step=0 mode=0 v=0.00 target=2.07 progress=0.0 ms=1.38
+[INFO] [1795403831.754635893] [el_native_controller]: step=40 mode=0 v=2.18 target=2.20 progress=1.7 ms=1.81
+[WARN] [1795403831.934143227] [el_native_controller]: sensor_timeout: scan age 152.4 ms, odometry age 152.4 ms
+[INFO] [1795403832.998206529] [el_native_controller]: step=80 mode=3 v=0.00 target=0.00 progress=2.1 ms=0.75

@@ -1,0 +1,26 @@
+[1/4] Building CXX object CMakeFiles/el_tests.dir/tests/tests.cpp.o
+[2/4] Linking CXX executable el_tests
+[3/4] Building CXX object CMakeFiles/el_replay_corridor.dir/tools/replay_corridor.cpp.o
+[4/4] Linking CXX executable el_replay_corridor
+Internal ctest changing into directory: /build
+Test project /build
+    Start 1: best_checkpoint_regression
+1/8 Test #1: best_checkpoint_regression ..........   Passed    0.41 sec
+    Start 2: teacher_regression
+2/8 Test #2: teacher_regression ..................   Passed    0.31 sec
+    Start 3: native_regression
+3/8 Test #3: native_regression ...................   Passed    0.20 sec
+    Start 4: training_environment_forward_only
+4/8 Test #4: training_environment_forward_only ...   Passed    0.95 sec
+    Start 5: corridor_entry_original
+5/8 Test #5: corridor_entry_original .............   Passed    0.08 sec
+    Start 6: corridor_entry_distributed
+6/8 Test #6: corridor_entry_distributed ..........   Passed    0.08 sec
+    Start 7: corridor_entry_seed39103
+7/8 Test #7: corridor_entry_seed39103 ............   Passed    0.09 sec
+    Start 8: corridor_entry_seed39104
+8/8 Test #8: corridor_entry_seed39104 ............   Passed    0.10 sec
+
+100% tests passed, 0 tests failed out of 8
+
+Total Test time (real) =   2.24 sec

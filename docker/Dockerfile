@@ -3,7 +3,7 @@ USER root
 ARG DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get install -y --no-install-recommends \
     cuda-toolkit-12-8 g++-11 gcc-11 ninja-build curl unzip \
-    libyaml-cpp-dev nlohmann-json3-dev libpng-dev python3.10-dev \
+    libyaml-cpp-dev nlohmann-json3-dev libpng-dev libeigen3-dev python3.10-dev python3-scipy \
     && rm -rf /var/lib/apt/lists/*
 ARG LIBTORCH_URL=https://download.pytorch.org/libtorch/cu128/libtorch-shared-with-deps-2.9.1%2Bcu128.zip
 RUN curl --fail --location --retry 3 "$LIBTORCH_URL" -o /tmp/libtorch.zip \

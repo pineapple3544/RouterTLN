@@ -75,3 +75,17 @@ add_test(NAME teacher_regression COMMAND el_teacher_tests)
 add_test(NAME native_regression COMMAND el_tests)
 add_test(NAME training_environment_forward_only COMMAND el_train --check)
 set_tests_properties(training_environment_forward_only PROPERTIES TIMEOUT 90)
+
+add_executable(el_replay_corridor tools/replay_corridor.cpp)
+target_link_libraries(el_replay_corridor PRIVATE el_core)
+foreach(layout original distributed seed39103 seed39104 random-4135410 random-6695374 random-9157059 random-9285660)
+  set(snapshot "${CMAKE_CURRENT_SOURCE_DIR}/tests/fixtures/corridor/${layout}")
+  add_test(NAME corridor_entry_${layout} COMMAND el_replay_corridor "${snapshot}/map.yaml"
+    "${CMAKE_CURRENT_SOURCE_DIR}/maps/berlin/global_waypoints.json" "${snapshot}/frame.json")
+endforeach()
+
+add_executable(el_scan_localizer_test tests/scan_localizer_test.cpp)
+target_link_libraries(el_scan_localizer_test PRIVATE el_core)
+add_test(NAME scan_localizer_sensor_only COMMAND el_scan_localizer_test
+  "${CMAKE_CURRENT_SOURCE_DIR}/maps/berlin/berlin.yaml"
+  "${CMAKE_CURRENT_SOURCE_DIR}/maps/berlin/global_waypoints.json")

@@ -1,0 +1,102 @@
+[
+  {
+    "file": "unwind-ros/group0/random-4135410-1.csv",
+    "hold_clear_turn": [],
+    "safe_alternative": [],
+    "max_pair_skew_ms": 0.0,
+    "max_scan_age_ms": 22.174236,
+    "max_compute_ms": 17.131124,
+    "timeout": false
+  },
+  {
+    "file": "unwind-ros/group0/random-4135410-2.csv",
+    "hold_clear_turn": [],
+    "safe_alternative": [],
+    "max_pair_skew_ms": 0.0,
+    "max_scan_age_ms": 23.473915,
+    "max_compute_ms": 15.082834,
+    "timeout": false
+  },
+  {
+    "file": "unwind-ros/group0/random-9157059-1.csv",
+    "hold_clear_turn": [
+      36.287621
+    ],
+    "safe_alternative": [],
+    "max_pair_skew_ms": 0.0,
+    "max_scan_age_ms": 22.614214,
+    "max_compute_ms": 17.738432,
+    "timeout": false
+  },
+  {
+    "file": "unwind-ros/group0/random-9157059-2.csv",
+    "hold_clear_turn": [
+      36.387581
+    ],
+    "safe_alternative": [],
+    "max_pair_skew_ms": 0.0,
+    "max_scan_age_ms": 22.818954,
+    "max_compute_ms": 13.313255,
+    "timeout": false
+  },
+  {
+    "file": "unwind-ros/group1/random-6695374-1.csv",
+    "hold_clear_turn": [],
+    "safe_alternative": [],
+    "max_pair_skew_ms": 0.0,
+    "max_scan_age_ms": 23.948311,
+    "max_compute_ms": 17.059307,
+    "timeout": false
+  },
+  {
+    "file": "unwind-ros/group1/random-6695374-2.csv",
+    "hold_clear_turn": [],
+    "safe_alternative": [],
+    "max_pair_skew_ms": 0.0,
+    "max_scan_age_ms": 23.692334,
+    "max_compute_ms": 14.197019,
+    "timeout": false
+  },
+  {
+    "file": "unwind-ros/group1/random-9285660-1.csv",
+    "hold_clear_turn": [],
+    "safe_alternative": [],
+    "max_pair_skew_ms": 0.0,
+    "max_scan_age_ms": 21.848304,
+    "max_compute_ms": 13.643517,
+    "timeout": false
+  },
+  {
+    "file": "unwind-ros/group1/random-9285660-2.csv",
+    "hold_clear_turn": [],
+    "safe_alternative": [],
+    "max_pair_skew_ms": 0.0,
+    "max_scan_age_ms": 20.482989,
+    "max_compute_ms": 13.580714,
+    "timeout": false
+  },
+  {
+    "file": "unwind-extra-9157059/random-9157059-1.csv",
+    "hold_clear_turn": [
+      36.287621,
+      36.387581
+    ],
+    "safe_alternative": [],
+    "max_pair_skew_ms": 0.0,
+    "max_scan_age_ms": 25.23165,
+    "max_compute_ms": 14.665844,
+    "timeout": false
+  },
+  {
+    "file": "unwind-extra-9157059/random-9157059-2.csv",
+    "hold_clear_turn": [
+      36.387581,
+      36.387581
+    ],
+    "safe_alternative": [],
+    "max_pair_skew_ms": 0.0,
+    "max_scan_age_ms": 22.070634,
+    "max_compute_ms": 16.326963,
+    "timeout": false
+  }
+]

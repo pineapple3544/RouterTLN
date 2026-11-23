@@ -25,6 +25,12 @@ EL_HD inline float drive_acceleration(float speed,float target){
   const float gain=speed>0 ? (error>0?4.755f:19.02f) : (error>0?.951f:3.804f);
   return gain*error;
 }
+inline State predict_command_tick(State state,Control command,float dt){
+  const float dv=command.speed-state.v;
+  float acceleration=clamp(dv/.15f,-6.f,4.f);
+  if(dv>0)acceleration=std::max(acceleration,clamp(drive_acceleration(state.v,command.speed),0.f,9.51f));
+  return advance_with_acceleration(state,command,dt,acceleration);
+}
 EL_HD inline DynamicState physics_step(DynamicState s,Control u,const Vehicle& p){
   float steer=s.delay[1];s.delay[1]=s.delay[0];s.delay[0]=u.steer;
   float error=steer-s.z[2],sv=fabsf(error)>1e-4f?copysignf(3.2f,error):0;

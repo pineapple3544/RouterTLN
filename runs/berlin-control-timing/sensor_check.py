@@ -26,7 +26,7 @@ with (out/'run.log').open('w') as log:
     bridges=[]
     for proc in Path('/proc').glob('[0-9]*'):
         try:
-            if ((proc/'comm').read_text().strip()=='gym_bridge' and
+            if (((proc/'comm').read_text().strip()=='gym_bridge' or b'/workspace/scripts/local_gym_bridge.py' in (proc/'cmdline').read_bytes().split(bytes([0]))) and
                 b'ROS_DOMAIN_ID=204' in (proc/'environ').read_bytes().split(bytes([0]))):
                 bridges.append(int(proc.name))
         except (OSError,ProcessLookupError):continue

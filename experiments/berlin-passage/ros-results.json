@@ -1,0 +1,99 @@
+[
+  {
+    "accepted": false,
+    "target_laps": 3,
+    "physical_laps": 1,
+    "lap_s": [
+      26.185040149059205
+    ],
+    "max_progress_m": 67.72829962626203,
+    "lap_length_m": 48.78392107065079,
+    "collision_samples": 0,
+    "stopped_samples_before_finish": 110,
+    "controller_fault": null,
+    "emergency": "no_corridor",
+    "runner_exit": 0,
+    "layout": "random-489928091",
+    "variant": "after",
+    "timing": {
+      "samples": 1296,
+      "compute_max_ms": 14.898688,
+      "compute_p99_ms": 9.528316259999999,
+      "over_25ms": 0,
+      "max_scan_age_ms": 25.34912
+    }
+  },
+  {
+    "accepted": true,
+    "target_laps": 3,
+    "physical_laps": 3,
+    "lap_s": [
+      28.93973767081843,
+      16.863534999036347,
+      16.811815618300898
+    ],
+    "max_progress_m": 147.0617581437872,
+    "lap_length_m": 48.78392107065079,
+    "collision_samples": 0,
+    "stopped_samples_before_finish": 0,
+    "controller_fault": null,
+    "emergency": null,
+    "runner_exit": 0,
+    "layout": "random-681276235",
+    "variant": "after",
+    "timing": {
+      "samples": 2505,
+      "compute_max_ms": 10.640419,
+      "compute_p99_ms": 7.02253414,
+      "over_25ms": 0,
+      "max_scan_age_ms": 21.824994
+    },
+    "near_race_cap_s_per_flying_lap": 4.974987999999939
+  },
+  {
+    "accepted": false,
+    "target_laps": 3,
+    "physical_laps": 1,
+    "lap_s": [
+      26.838402881152433
+    ],
+    "max_progress_m": 67.7047025645395,
+    "lap_length_m": 48.78392107065079,
+    "collision_samples": 0,
+    "stopped_samples_before_finish": 123,
+    "controller_fault": null,
+    "emergency": "no_corridor",
+    "runner_exit": 0,
+    "layout": "random-489928091",
+    "variant": "before",
+    "timing": {
+      "samples": 1325,
+      "compute_max_ms": 10.333264,
+      "compute_p99_ms": 8.76474704,
+      "over_25ms": 0,
+      "max_scan_age_ms": 19.490167
+    }
+  },
+  {
+    "accepted": false,
+    "target_laps": 3,
+    "physical_laps": 0,
+    "lap_s": [],
+    "max_progress_m": 21.19866660348657,
+    "lap_length_m": 48.78392107065079,
+    "collision_samples": 0,
+    "stopped_samples_before_finish": 133,
+    "controller_fault": null,
+    "emergency": "no_corridor",
+    "runner_exit": 0,
+    "layout": "random-681276235",
+    "variant": "before",
+    "timing": {
+      "samples": 519,
+      "compute_max_ms": 9.687605,
+      "compute_p99_ms": 8.0939126,
+      "over_25ms": 0,
+      "max_scan_age_ms": 17.866723
+    }
+  }
+]

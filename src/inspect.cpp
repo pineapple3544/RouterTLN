@@ -19,13 +19,17 @@ int main(int argc,char** argv){try{
     if(data.empty())throw std::runtime_error("empty episode");
     result={{"records",data.size()},{"valid_labels",valid},{"race",race},{"avoid",avoid},{"collision_frames",collisions},{"training_executed",false}};
   }else if(mode=="--metrics"){
-    std::ifstream f(argv[2]);if(!f)throw std::runtime_error("metrics open failed");std::string line;getline(f,line);std::vector<double> timings;int collision=0,invalid=0,mppi=0;double progress=0,max_speed=0;
+    std::ifstream f(argv[2]);if(!f)throw std::runtime_error("metrics open failed");std::string line;getline(f,line);std::vector<double> timings;bool all_contacts_scored=true;int collision=0,invalid=0,mppi=0;double progress=0,max_speed=0;
     while(getline(f,line)){if(line.empty())continue;std::stringstream s(line);std::string field;std::vector<double> row;
-      while(row.size()<14 && getline(s,field,','))row.push_back(std::stod(field));if(row.size()!=14)throw std::runtime_error("incomplete metric row");
+      while(row.size()<14 && getline(s,field,',')){
+        if(row.size()==11 && field.empty()){all_contacts_scored=false;row.push_back(0);}
+        else row.push_back(std::stod(field));
+      }
+      if(row.size()!=14)throw std::runtime_error("incomplete metric row");
       timings.push_back(row[8]);invalid+=row[7]==0;collision+=row[11]!=0;mppi+=row[5]==2;progress=row[13];max_speed=std::max(max_speed,row[4]);
     }
     if(timings.empty())throw std::runtime_error("no control iterations recorded");std::sort(timings.begin(),timings.end());
-    result={{"iterations",timings.size()},{"collision_frames",collision},{"invalid_commands",invalid},{"mppi_steps",mppi},{"progress_m",progress},{"max_speed",max_speed},
+    result={{"iterations",timings.size()},{"collision_observed",all_contacts_scored},{"collision_frames",all_contacts_scored?nlohmann::json(collision):nlohmann::json(nullptr)},{"invalid_commands",invalid},{"mppi_steps",mppi},{"progress_m",progress},{"max_speed",max_speed},
       {"p50_ms",timings[timings.size()/2]},{"p95_ms",timings[(timings.size()-1)*95/100]},{"p99_ms",timings[(timings.size()-1)*99/100]},{"max_ms",timings.back()}};
   }else throw std::runtime_error("unknown inspection mode");
   std::cout<<result.dump(2)<<'\n';return 0;

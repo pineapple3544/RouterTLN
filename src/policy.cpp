@@ -12,12 +12,15 @@ Policy::Policy(const std::string& checkpoint,InferenceDevice device):impl_(new I
   torch::load(impl_->model,checkpoint,torch::Device(torch::kCPU));auto schema=impl_->model->named_buffers()["schema"].to(torch::kCPU);
   auto expected=torch::tensor({3,beams,history,crop,context_size},torch::kInt32);
   auto guided=expected.clone();guided[0]=4;
-  impl_->model->guided=torch::equal(schema,guided);
+  auto shared=expected.clone();shared[0]=5;
+  impl_->model->shared_guided=torch::equal(schema,shared);
+  impl_->model->guided=impl_->model->shared_guided || torch::equal(schema,guided);
   if(!impl_->model->guided&&!torch::equal(schema,expected))throw std::runtime_error("checkpoint schema mismatch");
   impl_->model->to(impl_->device);impl_->model->eval();
   Observation warm;for(int i=0;i<3;++i)infer(warm);
 }
 bool Policy::uses_corridor()const{return impl_->model->guided;}
+bool Policy::is_unified()const{return impl_->model->shared_guided;}
 Policy::~Policy()=default;
 Control Policy::infer(const Observation& o,ControlTiming* timing){
   torch::NoGradGuard guard;

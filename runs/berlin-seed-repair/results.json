@@ -1,0 +1,1986 @@
+{
+  "conditions": {
+    "map": "Berlin forward",
+    "avoid": "avoid-corridor-v2.pt",
+    "avoid_sha256": "6754bf58549b40854652abd1f4d26af833453905342e8ecec5c4dc8982ec673f",
+    "sensor_limit_ms": 150,
+    "deadline_ms": 25,
+    "flying_avoid_command_mps": [
+      2.7,
+      3
+    ],
+    "race": "race-berlin-wsp.pt",
+    "laps": 3,
+    "repeats": 2,
+    "obstacles": 3
+  },
+  "cases": {
+    "random-39103": {
+      "group": "retest-known",
+      "placement": [
+        215,
+        23,
+        [
+          -0.0928,
+          0.1163,
+          0.1145
+        ]
+      ],
+      "trials": [
+        {
+          "tag": "random-39103-1",
+          "brakes_by_lap": [
+            0,
+            217,
+            218
+          ],
+          "finished": true,
+          "lap_times": [
+            25.3,
+            17.1,
+            16.95
+          ],
+          "plan_ready_m": 48.784,
+          "planned_entries": 2,
+          "brake_steps": 435,
+          "events": [
+            [
+              1,
+              "start",
+              13.795
+            ],
+            [
+              1,
+              "return",
+              23.892
+            ],
+            [
+              2,
+              "planned_start",
+              61.68
+            ],
+            [
+              2,
+              "return",
+              72.975
+            ],
+            [
+              3,
+              "planned_start",
+              110.463
+            ],
+            [
+              3,
+              "return",
+              121.559
+            ]
+          ],
+          "collision": false,
+          "stopped": false,
+          "failure": null,
+          "end_progress": 146.352,
+          "flying_avoid_samples": 358,
+          "avoid_samples_per_flying_lap": [
+            181,
+            177
+          ],
+          "command_range": [
+            2.7,
+            2.7
+          ],
+          "actual_range": [
+            1.652044,
+            2.7
+          ],
+          "actual_mean": 2.647,
+          "first_bad_tick_ms": null,
+          "accepted": true,
+          "timeout": false,
+          "initial_plan": [
+            0,
+            0,
+            0
+          ],
+          "max_compute_ms": 8.223656,
+          "max_scan_age_ms": 17.307648
+        },
+        {
+          "tag": "random-39103-2",
+          "brakes_by_lap": [
+            0,
+            214,
+            216
+          ],
+          "finished": true,
+          "lap_times": [
+            25.23,
+            17.12,
+            17.08
+          ],
+          "plan_ready_m": 48.784,
+          "planned_entries": 2,
+          "brake_steps": 430,
+          "events": [
+            [
+              1,
+              "start",
+              13.795
+            ],
+            [
+              1,
+              "return",
+              23.692
+            ],
+            [
+              2,
+              "planned_start",
+              61.68
+            ],
+            [
+              2,
+              "return",
+              72.875
+            ],
+            [
+              3,
+              "planned_start",
+              110.463
+            ],
+            [
+              3,
+              "return",
+              121.759
+            ]
+          ],
+          "collision": false,
+          "stopped": false,
+          "failure": null,
+          "end_progress": 146.352,
+          "flying_avoid_samples": 363,
+          "avoid_samples_per_flying_lap": [
+            181,
+            182
+          ],
+          "command_range": [
+            2.7,
+            2.7
+          ],
+          "actual_range": [
+            1.652018,
+            2.7
+          ],
+          "actual_mean": 2.649,
+          "first_bad_tick_ms": null,
+          "accepted": true,
+          "timeout": false,
+          "initial_plan": [
+            0,
+            0,
+            0
+          ],
+          "max_compute_ms": 16.737434,
+          "max_scan_age_ms": 19.281526
+        }
+      ],
+      "accepted": 2,
+      "lap_counts": [
+        2,
+        2,
+        2
+      ],
+      "mean_lap_s": [
+        25.265,
+        17.11,
+        17.015
+      ],
+      "first_run_trace": {
+        "frames": 674,
+        "wide_frames": 354,
+        "refined_frames": 1,
+        "steering_correction_over_0.01_rad": 343
+      }
+    },
+    "random-39104": {
+      "group": "retest-known",
+      "placement": [
+        296,
+        37,
+        [
+          0.0035,
+          0.0877,
+          0.0319
+        ]
+      ],
+      "trials": [
+        {
+          "tag": "random-39104-1",
+          "brakes_by_lap": [
+            0,
+            338,
+            338
+          ],
+          "finished": true,
+          "lap_times": [
+            27.97,
+            17.9,
+            17.83
+          ],
+          "plan_ready_m": 48.784,
+          "planned_entries": 2,
+          "brake_steps": 676,
+          "events": [
+            [
+              1,
+              "start",
+              22.492
+            ],
+            [
+              1,
+              "return",
+              39.387
+            ],
+            [
+              2,
+              "planned_start",
+              70.476
+            ],
+            [
+              2,
+              "return",
+              88.67
+            ],
+            [
+              3,
+              "planned_start",
+              119.26
+            ],
+            [
+              3,
+              "return",
+              137.354
+            ]
+          ],
+          "collision": false,
+          "stopped": false,
+          "failure": null,
+          "end_progress": 146.352,
+          "flying_avoid_samples": 610,
+          "avoid_samples_per_flying_lap": [
+            306,
+            304
+          ],
+          "command_range": [
+            2.7,
+            2.7
+          ],
+          "actual_range": [
+            1.650697,
+            2.7
+          ],
+          "actual_mean": 2.669,
+          "first_bad_tick_ms": null,
+          "accepted": true,
+          "timeout": false,
+          "initial_plan": [
+            0,
+            0,
+            0
+          ],
+          "max_compute_ms": 6.209133,
+          "max_scan_age_ms": 16.293161
+        },
+        {
+          "tag": "random-39104-2",
+          "brakes_by_lap": [
+            0,
+            227,
+            227
+          ],
+          "finished": true,
+          "lap_times": [
+            24.18,
+            16.5,
+            16.45
+          ],
+          "plan_ready_m": 48.784,
+          "planned_entries": 2,
+          "brake_steps": 454,
+          "events": [
+            [
+              1,
+              "start",
+              22.492
+            ],
+            [
+              1,
+              "return",
+              35.088
+            ],
+            [
+              2,
+              "planned_start",
+              70.476
+            ],
+            [
+              2,
+              "return",
+              83.972
+            ],
+            [
+              3,
+              "planned_start",
+              119.26
+            ],
+            [
+              3,
+              "return",
+              132.856
+            ]
+          ],
+          "collision": false,
+          "stopped": false,
+          "failure": null,
+          "end_progress": 146.352,
+          "flying_avoid_samples": 376,
+          "avoid_samples_per_flying_lap": [
+            187,
+            189
+          ],
+          "command_range": [
+            2.7,
+            2.7
+          ],
+          "actual_range": [
+            1.650454,
+            2.7
+          ],
+          "actual_mean": 2.65,
+          "first_bad_tick_ms": null,
+          "accepted": true,
+          "timeout": false,
+          "initial_plan": [
+            0,
+            0,
+            0
+          ],
+          "max_compute_ms": 7.671141,
+          "max_scan_age_ms": 16.347107
+        }
+      ],
+      "accepted": 2,
+      "lap_counts": [
+        2,
+        2,
+        2
+      ],
+      "mean_lap_s": [
+        26.075,
+        17.2,
+        17.14
+      ],
+      "first_run_trace": {
+        "frames": 1156,
+        "wide_frames": 1156,
+        "refined_frames": 0,
+        "steering_correction_over_0.01_rad": 326
+      }
+    },
+    "random-39201": {
+      "group": "retest-new",
+      "placement": [
+        184,
+        120,
+        [
+          0.0451,
+          -0.0619,
+          0.0917
+        ]
+      ],
+      "trials": [
+        {
+          "tag": "random-39201-1",
+          "brakes_by_lap": [
+            0,
+            479,
+            481
+          ],
+          "finished": true,
+          "lap_times": [
+            29.47,
+            18.33,
+            18.27
+          ],
+          "plan_ready_m": 48.784,
+          "planned_entries": 4,
+          "brake_steps": 960,
+          "events": [
+            [
+              1,
+              "start",
+              10.696
+            ],
+            [
+              1,
+              "return",
+              16.295
+            ],
+            [
+              1,
+              "start",
+              22.792
+            ],
+            [
+              1,
+              "return",
+              40.386
+            ],
+            [
+              2,
+              "planned_start",
+              58.581
+            ],
+            [
+              2,
+              "return",
+              65.478
+            ],
+            [
+              2,
+              "planned_start",
+              70.676
+            ],
+            [
+              2,
+              "return",
+              89.37
+            ],
+            [
+              3,
+              "planned_start",
+              107.364
+            ],
+            [
+              3,
+              "return",
+              114.162
+            ],
+            [
+              3,
+              "planned_start",
+              119.46
+            ],
+            [
+              3,
+              "return",
+              138.254
+            ]
+          ],
+          "collision": false,
+          "stopped": false,
+          "failure": null,
+          "end_progress": 146.352,
+          "flying_avoid_samples": 822,
+          "avoid_samples_per_flying_lap": [
+            410,
+            412
+          ],
+          "command_range": [
+            2.7,
+            2.7
+          ],
+          "actual_range": [
+            1.651302,
+            2.7
+          ],
+          "actual_mean": 2.655,
+          "first_bad_tick_ms": null,
+          "accepted": true,
+          "timeout": false,
+          "initial_plan": [
+            0,
+            0,
+            0
+          ],
+          "max_compute_ms": 7.666647,
+          "max_scan_age_ms": 16.060159
+        },
+        {
+          "tag": "random-39201-2",
+          "brakes_by_lap": [
+            0,
+            481,
+            484
+          ],
+          "finished": true,
+          "lap_times": [
+            29.57,
+            18.33,
+            18.3
+          ],
+          "plan_ready_m": 48.784,
+          "planned_entries": 4,
+          "brake_steps": 965,
+          "events": [
+            [
+              1,
+              "start",
+              10.696
+            ],
+            [
+              1,
+              "return",
+              16.395
+            ],
+            [
+              1,
+              "start",
+              22.792
+            ],
+            [
+              1,
+              "return",
+              40.386
+            ],
+            [
+              2,
+              "planned_start",
+              58.581
+            ],
+            [
+              2,
+              "return",
+              65.379
+            ],
+            [
+              2,
+              "planned_start",
+              70.676
+            ],
+            [
+              2,
+              "return",
+              89.37
+            ],
+            [
+              3,
+              "planned_start",
+              107.364
+            ],
+            [
+              3,
+              "return",
+              114.162
+            ],
+            [
+              3,
+              "planned_start",
+              119.46
+            ],
+            [
+              3,
+              "return",
+              138.154
+            ]
+          ],
+          "collision": false,
+          "stopped": false,
+          "failure": null,
+          "end_progress": 146.352,
+          "flying_avoid_samples": 820,
+          "avoid_samples_per_flying_lap": [
+            410,
+            410
+          ],
+          "command_range": [
+            2.7,
+            2.7
+          ],
+          "actual_range": [
+            1.652025,
+            2.7
+          ],
+          "actual_mean": 2.654,
+          "first_bad_tick_ms": null,
+          "accepted": true,
+          "timeout": false,
+          "initial_plan": [
+            0,
+            0,
+            0
+          ],
+          "max_compute_ms": 7.637232,
+          "max_scan_age_ms": 16.447132
+        }
+      ],
+      "accepted": 2,
+      "lap_counts": [
+        2,
+        2,
+        2
+      ],
+      "mean_lap_s": [
+        29.52,
+        18.33,
+        18.285
+      ],
+      "first_run_trace": {
+        "frames": 1538,
+        "wide_frames": 1538,
+        "refined_frames": 0,
+        "steering_correction_over_0.01_rad": 557
+      }
+    },
+    "random-39202": {
+      "group": "retest-new",
+      "placement": [
+        207,
+        129,
+        [
+          -0.0943,
+          0.0787,
+          0.0318
+        ]
+      ],
+      "trials": [
+        {
+          "tag": "random-39202-1",
+          "brakes_by_lap": [
+            0,
+            481,
+            481
+          ],
+          "finished": true,
+          "lap_times": [
+            26.9,
+            17.9,
+            17.85
+          ],
+          "plan_ready_m": 48.784,
+          "planned_entries": 6,
+          "brake_steps": 962,
+          "events": [
+            [
+              1,
+              "start",
+              12.996
+            ],
+            [
+              1,
+              "return",
+              18.394
+            ],
+            [
+              1,
+              "start",
+              25.891
+            ],
+            [
+              1,
+              "return",
+              32.789
+            ],
+            [
+              1,
+              "start",
+              38.887
+            ],
+            [
+              1,
+              "return",
+              47.784
+            ],
+            [
+              2,
+              "planned_start",
+              60.88
+            ],
+            [
+              2,
+              "return",
+              67.378
+            ],
+            [
+              2,
+              "planned_start",
+              73.775
+            ],
+            [
+              2,
+              "return",
+              82.272
+            ],
+            [
+              2,
+              "planned_start",
+              86.771
+            ],
+            [
+              2,
+              "return",
+              97.168
+            ],
+            [
+              3,
+              "planned_start",
+              109.664
+            ],
+            [
+              3,
+              "return",
+              116.262
+            ],
+            [
+              3,
+              "planned_start",
+              122.559
+            ],
+            [
+              3,
+              "return",
+              130.956
+            ],
+            [
+              3,
+              "planned_start",
+              135.555
+            ],
+            [
+              3,
+              "return",
+              145.852
+            ]
+          ],
+          "collision": false,
+          "stopped": false,
+          "failure": null,
+          "end_progress": 146.352,
+          "flying_avoid_samples": 773,
+          "avoid_samples_per_flying_lap": [
+            387,
+            386
+          ],
+          "command_range": [
+            2.7,
+            2.7
+          ],
+          "actual_range": [
+            1.651298,
+            2.7
+          ],
+          "actual_mean": 2.628,
+          "first_bad_tick_ms": null,
+          "accepted": true,
+          "timeout": false,
+          "initial_plan": [
+            0,
+            0,
+            0
+          ],
+          "max_compute_ms": 6.81689,
+          "max_scan_age_ms": 17.990953
+        },
+        {
+          "tag": "random-39202-2",
+          "brakes_by_lap": [
+            0,
+            482,
+            483
+          ],
+          "finished": true,
+          "lap_times": [
+            26.83,
+            17.92,
+            17.85
+          ],
+          "plan_ready_m": 48.784,
+          "planned_entries": 6,
+          "brake_steps": 965,
+          "events": [
+            [
+              1,
+              "start",
+              12.996
+            ],
+            [
+              1,
+              "return",
+              18.394
+            ],
+            [
+              1,
+              "start",
+              25.891
+            ],
+            [
+              1,
+              "return",
+              32.789
+            ],
+            [
+              1,
+              "start",
+              38.887
+            ],
+            [
+              1,
+              "return",
+              47.784
+            ],
+            [
+              2,
+              "planned_start",
+              60.88
+            ],
+            [
+              2,
+              "return",
+              67.478
+            ],
+            [
+              2,
+              "planned_start",
+              73.775
+            ],
+            [
+              2,
+              "return",
+              82.172
+            ],
+            [
+              2,
+              "planned_start",
+              86.771
+            ],
+            [
+              2,
+              "return",
+              97.068
+            ],
+            [
+              3,
+              "planned_start",
+              109.664
+            ],
+            [
+              3,
+              "return",
+              116.162
+            ],
+            [
+              3,
+              "planned_start",
+              122.559
+            ],
+            [
+              3,
+              "return",
+              131.056
+            ],
+            [
+              3,
+              "planned_start",
+              135.555
+            ],
+            [
+              3,
+              "return",
+              145.952
+            ]
+          ],
+          "collision": false,
+          "stopped": false,
+          "failure": null,
+          "end_progress": 146.352,
+          "flying_avoid_samples": 771,
+          "avoid_samples_per_flying_lap": [
+            385,
+            386
+          ],
+          "command_range": [
+            2.7,
+            2.7
+          ],
+          "actual_range": [
+            1.65175,
+            2.7
+          ],
+          "actual_mean": 2.628,
+          "first_bad_tick_ms": null,
+          "accepted": true,
+          "timeout": false,
+          "initial_plan": [
+            0,
+            0,
+            0
+          ],
+          "max_compute_ms": 6.686116,
+          "max_scan_age_ms": 15.897159
+        }
+      ],
+      "accepted": 2,
+      "lap_counts": [
+        2,
+        2,
+        2
+      ],
+      "mean_lap_s": [
+        26.865,
+        17.91,
+        17.85
+      ],
+      "first_run_trace": {
+        "frames": 1355,
+        "wide_frames": 1355,
+        "refined_frames": 0,
+        "steering_correction_over_0.01_rad": 624
+      }
+    },
+    "random-39203": {
+      "group": "retest-new",
+      "placement": [
+        142,
+        98,
+        [
+          -0.0076,
+          0.0337,
+          0.0111
+        ]
+      ],
+      "trials": [
+        {
+          "tag": "random-39203-1",
+          "brakes_by_lap": [
+            0,
+            561,
+            562
+          ],
+          "finished": true,
+          "lap_times": [
+            30.4,
+            18.7,
+            18.62
+          ],
+          "plan_ready_m": 48.784,
+          "planned_entries": 6,
+          "brake_steps": 1123,
+          "events": [
+            [
+              1,
+              "start",
+              6.498
+            ],
+            [
+              1,
+              "return",
+              12.096
+            ],
+            [
+              1,
+              "start",
+              16.195
+            ],
+            [
+              1,
+              "return",
+              21.892
+            ],
+            [
+              1,
+              "start",
+              26.091
+            ],
+            [
+              1,
+              "return",
+              40.086
+            ],
+            [
+              2,
+              "planned_start",
+              54.382
+            ],
+            [
+              2,
+              "return",
+              61.28
+            ],
+            [
+              2,
+              "planned_start",
+              64.079
+            ],
+            [
+              2,
+              "return",
+              70.676
+            ],
+            [
+              2,
+              "planned_start",
+              73.975
+            ],
+            [
+              2,
+              "return",
+              89.27
+            ],
+            [
+              3,
+              "planned_start",
+              103.166
+            ],
+            [
+              3,
+              "return",
+              109.964
+            ],
+            [
+              3,
+              "planned_start",
+              112.863
+            ],
+            [
+              3,
+              "return",
+              119.46
+            ],
+            [
+              3,
+              "planned_start",
+              122.759
+            ],
+            [
+              3,
+              "return",
+              138.154
+            ]
+          ],
+          "collision": false,
+          "stopped": false,
+          "failure": null,
+          "end_progress": 146.352,
+          "flying_avoid_samples": 919,
+          "avoid_samples_per_flying_lap": [
+            460,
+            459
+          ],
+          "command_range": [
+            2.7,
+            2.7
+          ],
+          "actual_range": [
+            1.652018,
+            2.7
+          ],
+          "actual_mean": 2.639,
+          "first_bad_tick_ms": null,
+          "accepted": true,
+          "timeout": false,
+          "initial_plan": [
+            0,
+            0,
+            0
+          ],
+          "max_compute_ms": 13.786586,
+          "max_scan_age_ms": 21.474509
+        },
+        {
+          "tag": "random-39203-2",
+          "brakes_by_lap": [
+            0,
+            562,
+            564
+          ],
+          "finished": true,
+          "lap_times": [
+            30.27,
+            18.7,
+            18.65
+          ],
+          "plan_ready_m": 48.784,
+          "planned_entries": 6,
+          "brake_steps": 1126,
+          "events": [
+            [
+              1,
+              "start",
+              6.498
+            ],
+            [
+              1,
+              "return",
+              12.096
+            ],
+            [
+              1,
+              "start",
+              16.195
+            ],
+            [
+              1,
+              "return",
+              21.992
+            ],
+            [
+              1,
+              "start",
+              26.091
+            ],
+            [
+              1,
+              "return",
+              40.186
+            ],
+            [
+              2,
+              "planned_start",
+              54.382
+            ],
+            [
+              2,
+              "return",
+              61.18
+            ],
+            [
+              2,
+              "planned_start",
+              64.079
+            ],
+            [
+              2,
+              "return",
+              70.676
+            ],
+            [
+              2,
+              "planned_start",
+              73.975
+            ],
+            [
+              2,
+              "return",
+              89.17
+            ],
+            [
+              3,
+              "planned_start",
+              103.166
+            ],
+            [
+              3,
+              "return",
+              110.064
+            ],
+            [
+              3,
+              "planned_start",
+              112.863
+            ],
+            [
+              3,
+              "return",
+              119.46
+            ],
+            [
+              3,
+              "planned_start",
+              122.759
+            ],
+            [
+              3,
+              "return",
+              138.054
+            ]
+          ],
+          "collision": false,
+          "stopped": false,
+          "failure": null,
+          "end_progress": 146.352,
+          "flying_avoid_samples": 915,
+          "avoid_samples_per_flying_lap": [
+            455,
+            460
+          ],
+          "command_range": [
+            2.7,
+            2.7
+          ],
+          "actual_range": [
+            1.651255,
+            2.7
+          ],
+          "actual_mean": 2.639,
+          "first_bad_tick_ms": null,
+          "accepted": true,
+          "timeout": false,
+          "initial_plan": [
+            0,
+            0,
+            0
+          ],
+          "max_compute_ms": 6.97214,
+          "max_scan_age_ms": 16.50185
+        }
+      ],
+      "accepted": 2,
+      "lap_counts": [
+        2,
+        2,
+        2
+      ],
+      "mean_lap_s": [
+        30.335,
+        18.7,
+        18.635
+      ],
+      "first_run_trace": {
+        "frames": 1709,
+        "wide_frames": 1709,
+        "refined_frames": 0,
+        "steering_correction_over_0.01_rad": 739
+      }
+    },
+    "random-39204": {
+      "group": "retest-new",
+      "placement": [
+        230,
+        43,
+        [
+          -0.0411,
+          0.06,
+          0.0702
+        ]
+      ],
+      "trials": [
+        {
+          "tag": "random-39204-1",
+          "brakes_by_lap": [
+            0,
+            457,
+            468
+          ],
+          "finished": true,
+          "lap_times": [
+            30.67,
+            18.38,
+            18.6
+          ],
+          "plan_ready_m": 48.784,
+          "planned_entries": 2,
+          "brake_steps": 925,
+          "events": [
+            [
+              1,
+              "start",
+              15.295
+            ],
+            [
+              1,
+              "return",
+              39.687
+            ],
+            [
+              2,
+              "planned_start",
+              63.179
+            ],
+            [
+              2,
+              "return",
+              88.67
+            ],
+            [
+              3,
+              "planned_start",
+              111.963
+            ],
+            [
+              3,
+              "return",
+              137.354
+            ]
+          ],
+          "collision": false,
+          "stopped": false,
+          "failure": null,
+          "end_progress": 146.352,
+          "flying_avoid_samples": 847,
+          "avoid_samples_per_flying_lap": [
+            418,
+            429
+          ],
+          "command_range": [
+            2.7,
+            2.7
+          ],
+          "actual_range": [
+            1.652374,
+            2.7
+          ],
+          "actual_mean": 2.678,
+          "first_bad_tick_ms": null,
+          "accepted": true,
+          "timeout": false,
+          "initial_plan": [
+            0,
+            0,
+            0
+          ],
+          "max_compute_ms": 10.557937,
+          "max_scan_age_ms": 17.027587
+        },
+        {
+          "tag": "random-39204-2",
+          "brakes_by_lap": [
+            0,
+            464,
+            105
+          ],
+          "finished": false,
+          "lap_times": [
+            30.88,
+            18.45
+          ],
+          "plan_ready_m": 48.784,
+          "planned_entries": 2,
+          "brake_steps": 569,
+          "events": [
+            [
+              1,
+              "start",
+              15.295
+            ],
+            [
+              1,
+              "return",
+              40.086
+            ],
+            [
+              2,
+              "planned_start",
+              63.179
+            ],
+            [
+              2,
+              "return",
+              88.77
+            ],
+            [
+              3,
+              "planned_start",
+              111.963
+            ]
+          ],
+          "collision": false,
+          "stopped": true,
+          "failure": [
+            3,
+            116.062,
+            "no_corridor"
+          ],
+          "end_progress": 116.362,
+          "flying_avoid_samples": 484,
+          "avoid_samples_per_flying_lap": [
+            420,
+            64
+          ],
+          "command_range": [
+            2.7,
+            2.7
+          ],
+          "actual_range": [
+            1.652027,
+            2.7
+          ],
+          "actual_mean": 2.661,
+          "first_bad_tick_ms": 1.270407,
+          "accepted": false,
+          "timeout": false,
+          "initial_plan": [
+            0,
+            0,
+            0
+          ],
+          "first_stop_sample": {
+            "progress_m": 116.061745,
+            "speed": 2.699547,
+            "compute_ms": 1.270407,
+            "scan_source_age_ms": 9.740676,
+            "odom_source_age_ms": 9.740676,
+            "x": -0.678276,
+            "y": -5.951301
+          },
+          "max_compute_ms": 7.967565,
+          "max_scan_age_ms": 17.310954
+        }
+      ],
+      "accepted": 1,
+      "lap_counts": [
+        2,
+        2,
+        1
+      ],
+      "mean_lap_s": [
+        30.775,
+        18.415,
+        18.6
+      ],
+      "first_run_trace": {
+        "frames": 1630,
+        "wide_frames": 1404,
+        "refined_frames": 57,
+        "steering_correction_over_0.01_rad": 558
+      }
+    },
+    "random-39301": {
+      "group": "fresh",
+      "placement": [
+        87,
+        119,
+        [
+          0.1193,
+          -0.0448,
+          -0.0849
+        ]
+      ],
+      "trials": [
+        {
+          "tag": "random-39301-1",
+          "brakes_by_lap": [
+            0,
+            603,
+            609
+          ],
+          "finished": true,
+          "lap_times": [
+            30.05,
+            19.02,
+            19.05
+          ],
+          "plan_ready_m": 48.784,
+          "planned_entries": 6,
+          "brake_steps": 1212,
+          "events": [
+            [
+              1,
+              "start",
+              1.1
+            ],
+            [
+              1,
+              "return",
+              6.698
+            ],
+            [
+              1,
+              "start",
+              12.996
+            ],
+            [
+              1,
+              "return",
+              18.394
+            ],
+            [
+              1,
+              "start",
+              24.891
+            ],
+            [
+              1,
+              "return",
+              41.286
+            ],
+            [
+              2,
+              "planned_start",
+              49.084
+            ],
+            [
+              2,
+              "return",
+              55.681
+            ],
+            [
+              2,
+              "planned_start",
+              60.88
+            ],
+            [
+              2,
+              "return",
+              67.378
+            ],
+            [
+              2,
+              "planned_start",
+              72.775
+            ],
+            [
+              2,
+              "return",
+              90.27
+            ],
+            [
+              3,
+              "planned_start",
+              97.868
+            ],
+            [
+              3,
+              "return",
+              104.565
+            ],
+            [
+              3,
+              "planned_start",
+              109.664
+            ],
+            [
+              3,
+              "return",
+              116.162
+            ],
+            [
+              3,
+              "planned_start",
+              121.559
+            ],
+            [
+              3,
+              "return",
+              139.354
+            ]
+          ],
+          "collision": false,
+          "stopped": false,
+          "failure": null,
+          "end_progress": 146.352,
+          "flying_avoid_samples": 991,
+          "avoid_samples_per_flying_lap": [
+            492,
+            499
+          ],
+          "command_range": [
+            2.7,
+            2.7
+          ],
+          "actual_range": [
+            1.598623,
+            2.7
+          ],
+          "actual_mean": 2.643,
+          "first_bad_tick_ms": null,
+          "accepted": true,
+          "timeout": false,
+          "initial_plan": [
+            0,
+            0,
+            0
+          ],
+          "max_compute_ms": 6.896849,
+          "max_scan_age_ms": 14.45915
+        },
+        {
+          "tag": "random-39301-2",
+          "brakes_by_lap": [
+            0,
+            602,
+            609
+          ],
+          "finished": true,
+          "lap_times": [
+            30.17,
+            19.0,
+            19.05
+          ],
+          "plan_ready_m": 48.784,
+          "planned_entries": 6,
+          "brake_steps": 1211,
+          "events": [
+            [
+              1,
+              "start",
+              1.1
+            ],
+            [
+              1,
+              "return",
+              6.698
+            ],
+            [
+              1,
+              "start",
+              12.996
+            ],
+            [
+              1,
+              "return",
+              18.394
+            ],
+            [
+              1,
+              "start",
+              24.891
+            ],
+            [
+              1,
+              "return",
+              41.286
+            ],
+            [
+              2,
+              "planned_start",
+              49.084
+            ],
+            [
+              2,
+              "return",
+              55.781
+            ],
+            [
+              2,
+              "planned_start",
+              60.88
+            ],
+            [
+              2,
+              "return",
+              67.478
+            ],
+            [
+              2,
+              "planned_start",
+              72.775
+            ],
+            [
+              2,
+              "return",
+              90.27
+            ],
+            [
+              3,
+              "planned_start",
+              97.868
+            ],
+            [
+              3,
+              "return",
+              104.565
+            ],
+            [
+              3,
+              "planned_start",
+              109.664
+            ],
+            [
+              3,
+              "return",
+              116.162
+            ],
+            [
+              3,
+              "planned_start",
+              121.559
+            ],
+            [
+              3,
+              "return",
+              139.054
+            ]
+          ],
+          "collision": false,
+          "stopped": false,
+          "failure": null,
+          "end_progress": 146.352,
+          "flying_avoid_samples": 989,
+          "avoid_samples_per_flying_lap": [
+            495,
+            494
+          ],
+          "command_range": [
+            2.7,
+            2.7
+          ],
+          "actual_range": [
+            1.598621,
+            2.7
+          ],
+          "actual_mean": 2.642,
+          "first_bad_tick_ms": null,
+          "accepted": true,
+          "timeout": false,
+          "initial_plan": [
+            0,
+            0,
+            0
+          ],
+          "max_compute_ms": 12.47565,
+          "max_scan_age_ms": 19.057978
+        }
+      ],
+      "accepted": 2,
+      "lap_counts": [
+        2,
+        2,
+        2
+      ],
+      "mean_lap_s": [
+        30.11,
+        19.01,
+        19.05
+      ],
+      "first_run_trace": {
+        "frames": 1799,
+        "wide_frames": 1797,
+        "refined_frames": 0,
+        "steering_correction_over_0.01_rad": 693
+      }
+    },
+    "random-39302": {
+      "group": "fresh",
+      "placement": [
+        165,
+        108,
+        [
+          0.1113,
+          -0.0224,
+          -0.087
+        ]
+      ],
+      "trials": [
+        {
+          "tag": "random-39302-1",
+          "brakes_by_lap": [
+            0,
+            532,
+            533
+          ],
+          "finished": true,
+          "lap_times": [
+            31.77,
+            18.73,
+            18.67
+          ],
+          "plan_ready_m": 48.784,
+          "planned_entries": 4,
+          "brake_steps": 1065,
+          "events": [
+            [
+              1,
+              "start",
+              8.797
+            ],
+            [
+              1,
+              "return",
+              14.395
+            ],
+            [
+              1,
+              "start",
+              19.594
+            ],
+            [
+              1,
+              "return",
+              39.986
+            ],
+            [
+              2,
+              "planned_start",
+              56.681
+            ],
+            [
+              2,
+              "return",
+              63.379
+            ],
+            [
+              2,
+              "planned_start",
+              67.478
+            ],
+            [
+              2,
+              "return",
+              89.27
+            ],
+            [
+              3,
+              "planned_start",
+              105.465
+            ],
+            [
+              3,
+              "return",
+              112.063
+            ],
+            [
+              3,
+              "planned_start",
+              116.262
+            ],
+            [
+              3,
+              "return",
+              138.154
+            ]
+          ],
+          "collision": false,
+          "stopped": false,
+          "failure": null,
+          "end_progress": 146.352,
+          "flying_avoid_samples": 925,
+          "avoid_samples_per_flying_lap": [
+            463,
+            462
+          ],
+          "command_range": [
+            2.7,
+            2.7
+          ],
+          "actual_range": [
+            1.652011,
+            2.7
+          ],
+          "actual_mean": 2.659,
+          "first_bad_tick_ms": null,
+          "accepted": true,
+          "timeout": false,
+          "initial_plan": [
+            0,
+            0,
+            0
+          ],
+          "max_compute_ms": 6.822013,
+          "max_scan_age_ms": 18.568462
+        },
+        {
+          "tag": "random-39302-2",
+          "brakes_by_lap": [
+            0,
+            531,
+            532
+          ],
+          "finished": true,
+          "lap_times": [
+            31.57,
+            18.72,
+            18.65
+          ],
+          "plan_ready_m": 48.784,
+          "planned_entries": 4,
+          "brake_steps": 1063,
+          "events": [
+            [
+              1,
+              "start",
+              8.797
+            ],
+            [
+              1,
+              "return",
+              14.295
+            ],
+            [
+              1,
+              "start",
+              19.594
+            ],
+            [
+              1,
+              "return",
+              40.086
+            ],
+            [
+              2,
+              "planned_start",
+              56.681
+            ],
+            [
+              2,
+              "return",
+              63.279
+            ],
+            [
+              2,
+              "planned_start",
+              67.478
+            ],
+            [
+              2,
+              "return",
+              89.27
+            ],
+            [
+              3,
+              "planned_start",
+              105.465
+            ],
+            [
+              3,
+              "return",
+              112.063
+            ],
+            [
+              3,
+              "planned_start",
+              116.262
+            ],
+            [
+              3,
+              "return",
+              138.254
+            ]
+          ],
+          "collision": false,
+          "stopped": false,
+          "failure": null,
+          "end_progress": 146.352,
+          "flying_avoid_samples": 924,
+          "avoid_samples_per_flying_lap": [
+            461,
+            463
+          ],
+          "command_range": [
+            2.7,
+            2.7
+          ],
+          "actual_range": [
+            1.652033,
+            2.7
+          ],
+          "actual_mean": 2.66,
+          "first_bad_tick_ms": null,
+          "accepted": true,
+          "timeout": false,
+          "initial_plan": [
+            0,
+            0,
+            0
+          ],
+          "max_compute_ms": 7.196562,
+          "max_scan_age_ms": 17.977217
+        }
+      ],
+      "accepted": 2,
+      "lap_counts": [
+        2,
+        2,
+        2
+      ],
+      "mean_lap_s": [
+        31.67,
+        18.725,
+        18.66
+      ],
+      "first_run_trace": {
+        "frames": 1780,
+        "wide_frames": 1780,
+        "refined_frames": 0,
+        "steering_correction_over_0.01_rad": 657
+      }
+    }
+  }
+}

@@ -1,0 +1,24 @@
+/el_native_controller
+  Subscribers:
+    /clock: rosgraph_msgs/msg/Clock
+    /parameter_events: rcl_interfaces/msg/ParameterEvent
+    /scan: sensor_msgs/msg/LaserScan
+  Publishers:
+    /drive: ackermann_msgs/msg/AckermannDriveStamped
+    /el/status: std_msgs/msg/String
+    /parameter_events: rcl_interfaces/msg/ParameterEvent
+    /rosout: rcl_interfaces/msg/Log
+  Service Servers:
+    /el/reset_memory: std_srvs/srv/Trigger
+    /el_native_controller/describe_parameters: rcl_interfaces/srv/DescribeParameters
+    /el_native_controller/get_parameter_types: rcl_interfaces/srv/GetParameterTypes
+    /el_native_controller/get_parameters: rcl_interfaces/srv/GetParameters
+    /el_native_controller/list_parameters: rcl_interfaces/srv/ListParameters
+    /el_native_controller/set_parameters: rcl_interfaces/srv/SetParameters
+    /el_native_controller/set_parameters_atomically: rcl_interfaces/srv/SetParametersAtomically
+  Service Clients:
+
+  Action Servers:
+
+  Action Clients:
+

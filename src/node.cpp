@@ -5,7 +5,7 @@
 #include "el/scenarios.hpp"
 #include <rclcpp/rclcpp.hpp>
 #include <sensor_msgs/msg/laser_scan.hpp>
-#include <nav_msgs/msg/odometry.hpp>
+#include "el/scan_localizer.hpp"
 
 #include <ackermann_msgs/msg/ackermann_drive_stamped.hpp>
 #include <std_msgs/msg/string.hpp>
@@ -26,6 +26,7 @@ class Controller:public rclcpp::Node {
     auto root=declare_parameter<std::string>("map_dir",el::default_map_dir);
     track_=std::make_unique<Track>(root+"/global_waypoints.json");memory_=std::make_unique<Memory>(el::map_stem(root)+".yaml");
     orient_track(*track_,false);
+    localizer_=std::make_unique<ScanLocalizer>(*memory_);
     router_settings_=map_router_settings(root);
     if(declare_parameter<std::string>("mode","moe")!="moe")throw std::runtime_error("online controller requires mode=moe");
     local_sim_clock_=declare_parameter<bool>("local_steady_sim_clock",false);
@@ -35,36 +36,48 @@ class Controller:public rclcpp::Node {
     if(device_name!="cuda" && device_name!="cpu")throw std::runtime_error("inference_device must be cpu or cuda");
     const auto device=device_name=="cpu" ? InferenceDevice::cpu : InferenceDevice::cuda;
     RCLCPP_INFO(get_logger(),"TLN inference device: %s",device_name.c_str());
-    race_=std::make_unique<Policy>(declare_parameter<std::string>("race_checkpoint",router_settings_.race_checkpoint),device);
-    avoid_=std::make_unique<Policy>(declare_parameter<std::string>("avoid_checkpoint","/workspace/models/avoid-corridor-v2.pt"),device);
-    if(race_->uses_corridor())throw std::runtime_error("Race requires an unconditioned checkpoint");
+    const auto shared_path=declare_parameter<std::string>("unified_checkpoint","");
+    if(shared_path.empty()){
+      race_=std::make_shared<Policy>(declare_parameter<std::string>("race_checkpoint",router_settings_.race_checkpoint),device);
+      avoid_=std::make_shared<Policy>(declare_parameter<std::string>("avoid_checkpoint","/workspace/models/avoid-corridor-v2.pt"),device);
+      if(race_->uses_corridor())throw std::runtime_error("Race requires an unconditioned checkpoint");
+    }else{
+      race_=std::make_shared<Policy>(shared_path,device);
+      if(!race_->is_unified())throw std::runtime_error("unified_checkpoint requires schema 5");
+      avoid_=race_;
+    }
     vmax_=declare_parameter<double>("max_speed",3); deadline_=declare_parameter<double>("deadline_ms",25);
     router_settings_.lap_planning=declare_parameter<bool>("lap_planning",false);
     if(!(vmax_>0 && vmax_<=10 && deadline_>0 && deadline_<=150))throw std::runtime_error("invalid speed or deadline");
     router_settings_.sim_avoid_min=declare_parameter<double>("sim_avoid_min",0.);
     router_settings_.sim_avoid_max=declare_parameter<double>("sim_avoid_max",0.);
+    router_settings_.sim_section_speed_profile=declare_parameter<bool>("sim_section_speed_profile",false);
+    router_settings_.race_sight_speed=declare_parameter<bool>("race_sight_speed",false);
+    router_settings_.race_lap_speed=declare_parameter<bool>("race_lap_speed",false);
+    router_settings_.race_exit_speed=declare_parameter<bool>("race_exit_speed",false);
+    router_settings_.straight_boost=declare_parameter<bool>("straight_boost",false);
+    router_settings_.sim_race_only=declare_parameter<bool>("sim_race_only",false);
+    router_settings_.race_brake_preview_s=declare_parameter<double>("race_brake_preview_s",.18);
     router_settings_.validate_sim_band(vmax_,local_sim_clock_);
     auto metrics=declare_parameter<std::string>("metrics","/workspace/runs/control.csv");
     std::filesystem::create_directories(std::filesystem::path(metrics).parent_path());metrics_.open(metrics);
+    if(declare_parameter<bool>("trace_corridor",false)){
+      corridor_log_.open(metrics+".corridor.jsonl");
+      scan_log_.open(metrics+".receive.csv");scan_log_.precision(15);
+      if(!corridor_log_ || !scan_log_)throw std::runtime_error("cannot create diagnostic trace");
+    }
     if(!metrics_)throw std::runtime_error("cannot create metrics");
     metrics_<<"step,stamp,x,y,speed,mode,hazard,valid,compute_ms,steer,target_speed,collision,remembered_cells,progress_m,reason,side,plan_ready,planned_entries,plan_brake_steps";
     ControlTiming::header(metrics_);
-    metrics_<<",scan_source_age_ms,odom_source_age_ms\n";
+    metrics_<<",scan_source_age_ms,pose_source_age_ms,policy_speed,lap_cap,corridor_cap,before_guard_speed,preview_brake,curve_cap,sight_cap,steering_cap,race_plan_cap\n";
     stop_laps_=declare_parameter<int>("stop_after_laps",0);
     drive_=create_publisher<ackermann_msgs::msg::AckermannDriveStamped>("/drive",1);
     debug_=create_publisher<std_msgs::msg::String>("/el/status",1);
-    scan_sub_=create_subscription<sensor_msgs::msg::LaserScan>("/scan",rclcpp::SensorDataQoS(),[this](sensor_msgs::msg::LaserScan::ConstSharedPtr m){scan_=m;scan_received_=steady();});
-    odom_sub_=create_subscription<nav_msgs::msg::Odometry>("/car_state/odom_GT",rclcpp::SensorDataQoS(),[this](nav_msgs::msg::Odometry::ConstSharedPtr m){
-      State s;auto& p=m->pose.pose;s.x=p.position.x;s.y=p.position.y;auto q=p.orientation;
-      s.yaw=atan2(2*(q.w*q.z+q.x*q.y),1-2*(q.y*q.y+q.z*q.z));s.v=m->twist.twist.linear.x;s.yaw_rate=m->twist.twist.angular.z;
-      s.steer=fabs(s.v)>.2?clamp(atan(.3302*s.yaw_rate/s.v),-.4,.4):last_.steer;
-      if(!odoms_.empty()&&hypot(s.x-odoms_.back().second.x,s.y-odoms_.back().second.y)>2){memory_->reset();router_.reset();scans_.clear();last_progress_=-1;}
-      odoms_.push_back({rclcpp::Time(m->header.stamp).seconds(),s});while(odoms_.size()>100)odoms_.pop_front();odom_received_=steady();
-    });
-    collision_sub_=create_subscription<std_msgs::msg::String>("/sim/collision",10,[this](std_msgs::msg::String::ConstSharedPtr m){collision_=m->data!="none";});
+    scan_sub_=create_subscription<sensor_msgs::msg::LaserScan>("/scan",rclcpp::SensorDataQoS(),[this](sensor_msgs::msg::LaserScan::ConstSharedPtr m){pending_scans_.push_back(m);while(pending_scans_.size()>32)pending_scans_.pop_front();scan_received_=steady();
+      if(scan_log_.is_open())scan_log_<<scan_received_<<','<<rclcpp::Time(m->header.stamp).seconds()<<'\n';});
     reset_=create_service<std_srvs::srv::Trigger>("/el/reset_memory",[this](const std::shared_ptr<std_srvs::srv::Trigger::Request>,std::shared_ptr<std_srvs::srv::Trigger::Response> response){
-      response->success=odoms_.empty()||fabs(odoms_.back().second.v)<.1;
-      if(response->success){memory_->reset();router_.reset();scans_.clear();}
+      response->success=(!localizer_->locked() || (!scans_.empty() && fabs(scans_.back().pose.v)<.1));
+      if(response->success){memory_->reset();router_.reset();localizer_->reset();scans_.clear();pending_scans_.clear();last_scan_=-1;last_progress_=-1;progress_=0;last_={};reported_fault_=false;finished_=false;}
       response->message=response->success?"memory reset":"stop vehicle before memory reset";
     });
     last_publish_=steady();watchdog_=std::thread([this]{while(alive_){std::this_thread::sleep_for(std::chrono::milliseconds(20));if(rclcpp::ok()&&steady()-last_publish_.load()>.18){try{publish({0,0});}catch(...){}}}});
@@ -78,53 +91,51 @@ class Controller:public rclcpp::Node {
   // In the native simulator the sensor stamps and this clock share the same
   // host monotonic epoch. A stalled or queued /clock cannot hide an old scan.
   double source_now() {return local_sim_clock_ ? sim_clock_.now().seconds() : now().seconds();}
+  void refuse(const char* reason){
+    router_.stop(reason);
+    if(!reported_fault_){
+      RCLCPP_ERROR(get_logger(),"fault_stamp=%.9f control_fault=%s",source_now(),reason);
+      reported_fault_=true;
+    }
+    last_={0,0};publish(last_);
+  }
   void tick(){try{
     if(finished_){publish({0,0});return;}
     const auto tick_time=steady();
-    const double scan_age=tick_time-scan_received_, odom_age=tick_time-odom_received_;
-    if (!scan_ || odoms_.empty() || scan_age>.15 || odom_age>.15) {
-      if (last_scan_>=0) {
-        router_.stop("sensor_timeout");
-        RCLCPP_WARN_THROTTLE(get_logger(),*get_clock(),3000,
-                            "sensor_timeout: scan age %.1f ms, odometry age %.1f ms",
-                            1000*scan_age,1000*odom_age);
-      }
-      publish({0,0});
+    const double scan_age=tick_time-scan_received_;
+    if(pending_scans_.empty() || scan_age>.15){
+      if(last_scan_>=0)refuse("sensor_timeout");else publish({0,0});
       return;
     }
-    if(count_publishers("/drive")>1){router_.stop("drive_publisher_conflict");publish({0,0});RCLCPP_ERROR_THROTTLE(get_logger(),*get_clock(),3000,"multiple /drive publishers; refuse control");return;}
-    double stamp=rclcpp::Time(scan_->header.stamp).seconds();
-    if(stamp<=last_scan_){
-      const double source_age=source_now()-stamp;
-      if(source_age>.15){
-        router_.stop("scan_timeout");publish({0,0});
-        RCLCPP_WARN_THROTTLE(get_logger(),*get_clock(),3000,
-            "scan_timeout: source age %.1f ms, scan receipt age %.1f ms, odom receipt age %.1f ms",
-            1000*source_age,1000*scan_age,1000*odom_age);
-      }
-      return;
+    if(count_publishers("/drive")>1){refuse("drive_publisher_conflict");RCLCPP_ERROR_THROTTLE(get_logger(),*get_clock(),3000,"multiple /drive publishers; refuse control");return;}
+    const auto scan_=pending_scans_.back();
+    const double stamp=rclcpp::Time(scan_->header.stamp).seconds();
+    if(source_now()-stamp>.15 || (local_sim_clock_ && stamp>source_now())){
+      refuse("scan_timeout");return;
     }
-    auto aligned=std::min_element(odoms_.begin(),odoms_.end(),[&](auto& a,auto& b){return fabs(a.first-stamp)<fabs(b.first-stamp);});
-    if(fabs(aligned->first-stamp)>.03){
-      // Scan and odometry arrive separately. Wait for the matching sample
-      // within the existing freshness deadline; never execute a mismatched pair.
-      if(source_now()-stamp>.15){router_.stop("odom_sync_timeout");publish({0,0});}
-      return;
-    }
-    auto begin=steady();ControlTiming timing;State state=aligned->second;
-    if(!std::isfinite(state.x)||!std::isfinite(state.y)||!std::isfinite(state.yaw)||!std::isfinite(state.v)){router_.stop("invalid_state");publish({0,0});return;}
-    Scan current;current.pose=state;current.stamp=stamp;current.angle_min=scan_->angle_min;current.angle_max=scan_->angle_max;
-    if(scan_->ranges.size()<beams){router_.stop("missing_beams");publish({0,0});return;}
+    if(stamp<=last_scan_)return;
+    auto begin=steady();ControlTiming timing;
+    Scan current;current.stamp=stamp;current.angle_min=scan_->angle_min;current.angle_max=scan_->angle_max;
+    if(scan_->ranges.size()<beams){refuse("missing_beams");return;}
     current.explicit_angles=true;
     int good=0;for(int b=0;b<beams;++b){size_t index=std::lround(double(b)*(scan_->ranges.size()-1)/(beams-1));float r=scan_->ranges[index];current.angles[b]=scan_->angle_min+scan_->angle_increment*index;
       bool valid=!std::isnan(r)&&r>scan_->range_min&&r!= -INFINITY;
       current.range_max=18;current.ranges[b]=valid?clamp(r,0,18):18;current.valid[b]=valid;good+=valid;}
-    if(good<beams*.8){router_.stop("invalid_ranges");publish({0,0});return;}
+    if(good<beams*.8){refuse("invalid_ranges");return;}
+    const bool initializing=!localizer_->locked();
+    const auto estimate=localizer_->update(current,*track_,last_);
+    if(!estimate){
+      if(!initializing)refuse("localization_lost");else publish({0,0});
+      return;
+    }
+    const State state=*estimate;current.pose=state;
+    // Acquire global localization at rest. Only fresh tracking cycles may drive.
+    if(initializing){last_scan_=stamp;publish({0,0});return;}
     timing.mark(ControlTiming::scan);
     memory_->update(current);scans_.push_back(current);while(scans_.size()>history)scans_.pop_front();last_scan_=stamp;
     timing.mark(ControlTiming::memory);
-    if(collision_)router_.stop("sim_collision");
-    auto result=router_.step(*track_,*memory_,state,scans_,*race_,*avoid_,vmax_,.025f,stamp,router_settings_,&timing);
+    CorridorTrace trace;
+    auto result=router_.step(*track_,*memory_,state,scans_,*race_,*avoid_,vmax_,.025f,stamp,router_settings_,&timing,corridor_log_.is_open()?&trace:nullptr);
     timing.mark(ControlTiming::safety);
     auto selected=result.mode;auto candidate=result.command;bool hazard=result.blocked,valid=selected!=Mode::Emergency;
     float ms=(steady()-begin)*1000;
@@ -132,8 +143,7 @@ class Controller:public rclcpp::Node {
     const char* refusal=nullptr;
     if(ms>deadline_) refusal="deadline";
     else if(source_time-stamp>.15) refusal="scan_timeout";
-    else if(source_time-aligned->first>.15) refusal="odom_sync_timeout";
-    else if(local_sim_clock_ && (stamp>source_time || aligned->first>source_time)) refusal="sensor_clock_mismatch";
+    else if(local_sim_clock_ && stamp>source_time) refusal="sensor_clock_mismatch";
     if(refusal){
       router_.stop(refusal);
       if(selected!=Mode::Emergency)result.reason=refusal;
@@ -144,24 +154,34 @@ class Controller:public rclcpp::Node {
     if(last_progress_>=0){float delta=position-last_progress_;if(delta< -length/2)delta+=length;if(delta>length/2)delta-=length;if(fabs(delta)<2)progress_+=delta;}last_progress_=position;
     if(stop_laps_>0&&progress_>=length*stop_laps_){finished_=true;candidate={state.steer,0};valid=false;}
     last_=candidate;publish(candidate);
-    metrics_<<step_<<','<<std::fixed<<stamp<<','<<state.x<<','<<state.y<<','<<state.v<<','<<(int)selected<<','<<hazard<<','<<valid<<','<<ms<<','<<candidate.steer<<','<<candidate.speed<<','<<collision_<<','<<memory_->occupied()<<','<<progress_<<','<<result.reason<<','<<router_.side()<<','<<router_.lap_plan().ready()<<','<<router_.lap_plan().entries()<<','<<router_.lap_plan().brake_steps();
+    if(trace.waypoint>=0){
+      corridor_log_<<nlohmann::json{{"step",step_},{"stamp",stamp},{"progress",progress_},
+        {"pose",{state.x,state.y,state.yaw}},{"speed",state.v},{"waypoint",trace.waypoint},
+        {"brake_event",trace.brake_event},{"policy_steer",trace.policy_steer},{"candidate_steer",trace.candidate_steer},
+        {"brake_pose",{trace.brake_contact.x,trace.brake_contact.y,trace.brake_contact.yaw}},
+        {"wide",trace.wide},{"subdivisions",trace.subdivisions},{"free_columns",trace.fine_free},{"reachable_columns",trace.fine_reachable},{"origin",trace.origin},{"free",trace.free},{"reachable",trace.reachable},
+        {"first_empty",trace.first_empty},{"obstacle_cells",memory_->obstacle_cells()}}.dump()<<'\n';
+    }
+    metrics_<<step_<<','<<std::fixed<<stamp<<','<<state.x<<','<<state.y<<','<<state.v<<','<<(int)selected<<','<<hazard<<','<<valid<<','<<ms<<','<<candidate.steer<<','<<candidate.speed<<','<<""<<','<<memory_->occupied()<<','<<progress_<<','<<result.reason<<','<<router_.side()<<','<<router_.lap_plan().ready()<<','<<router_.lap_plan().entries()<<','<<router_.lap_plan().brake_steps();
     timing.write(metrics_);
-    metrics_<<','<<(source_time-stamp)*1000<<','<<(source_time-aligned->first)*1000<<'\n';
+    metrics_<<','<<(source_time-stamp)*1000<<','<<(source_time-stamp)*1000
+      <<','<<result.speed_limits.policy<<','<<result.speed_limits.lap<<','<<result.speed_limits.corridor
+      <<','<<result.speed_limits.before_guard<<','<<result.speed_limits.preview_brake<<','<<result.speed_limits.curve<<','<<result.speed_limits.sight<<','<<result.speed_limits.steering<<','<<result.speed_limits.planned<<'\n';
     if(finished_)metrics_.flush();
     if(step_%40==0){metrics_.flush();std_msgs::msg::String msg;
       msg.data=nlohmann::json({{"mode",(int)selected},{"hazard",hazard},{"valid",valid},{"compute_ms",ms},{"progress_m",progress_},{"finished",finished_}}).dump();debug_->publish(msg);
       RCLCPP_INFO(get_logger(),"step=%lu mode=%d v=%.2f target=%.2f progress=%.1f ms=%.2f",step_,(int)selected,state.v,candidate.speed,progress_,ms);}
     ++step_;
-  }catch(const std::exception& e){router_.stop("control_exception");publish({0,0});RCLCPP_ERROR_THROTTLE(get_logger(),*get_clock(),2000,"control rejected: %s",e.what());}}
-  std::unique_ptr<Track> track_;std::unique_ptr<Memory> memory_;std::unique_ptr<Policy> race_,avoid_;
+  }catch(const std::exception& e){refuse("control_exception");RCLCPP_ERROR_THROTTLE(get_logger(),*get_clock(),2000,"control rejected: %s",e.what());}}
+  std::unique_ptr<Track> track_;std::unique_ptr<Memory> memory_;std::shared_ptr<Policy> race_,avoid_;
   rclcpp::Clock sim_clock_{RCL_STEADY_TIME};
   bool local_sim_clock_=false;
-  SectionRouter router_;RouterSettings router_settings_;double vmax_=0,deadline_=0,last_scan_=-1,scan_received_=0,odom_received_=0;Control last_;
-  std::deque<std::pair<double,State>> odoms_;std::deque<Scan> scans_;sensor_msgs::msg::LaserScan::ConstSharedPtr scan_;
-  int stop_laps_=0;bool collision_=false,finished_=false;uint64_t step_=0;float progress_=0,last_progress_=-1;
-  std::ofstream metrics_;std::atomic<bool> alive_{true};std::atomic<double> last_publish_{0};std::thread watchdog_;
+  SectionRouter router_;RouterSettings router_settings_;double vmax_=0,deadline_=0,last_scan_=-1,scan_received_=0;Control last_;
+  std::unique_ptr<ScanLocalizer> localizer_;std::deque<Scan> scans_;std::deque<sensor_msgs::msg::LaserScan::ConstSharedPtr> pending_scans_;
+  int stop_laps_=0;bool finished_=false,reported_fault_=false;uint64_t step_=0;float progress_=0,last_progress_=-1;
+  std::ofstream metrics_,corridor_log_,scan_log_;std::atomic<bool> alive_{true};std::atomic<double> last_publish_{0};std::thread watchdog_;
   rclcpp::Publisher<ackermann_msgs::msg::AckermannDriveStamped>::SharedPtr drive_;rclcpp::Publisher<std_msgs::msg::String>::SharedPtr debug_;
-  rclcpp::Subscription<sensor_msgs::msg::LaserScan>::SharedPtr scan_sub_;rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr odom_sub_;rclcpp::Subscription<std_msgs::msg::String>::SharedPtr collision_sub_;
+  rclcpp::Subscription<sensor_msgs::msg::LaserScan>::SharedPtr scan_sub_;
   rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr reset_;rclcpp::TimerBase::SharedPtr timer_;
 };
 static volatile std::sig_atomic_t stop_requested=0;

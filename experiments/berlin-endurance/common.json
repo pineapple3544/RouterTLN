@@ -1,0 +1,446 @@
+{
+  "matched": {
+    "total": {
+      "n": 300,
+      "common": 289,
+      "by_cap": {
+        "3.5": {
+          "clean": 292,
+          "first": 296,
+          "clean_three_laps": 293,
+          "contacts": 0,
+          "stops": 8,
+          "clean_laps": 2857,
+          "common_best_s": 16.559731367166435,
+          "at_least_11_laps": 64
+        },
+        "3.65": {
+          "clean": 292,
+          "first": 296,
+          "clean_three_laps": 293,
+          "contacts": 0,
+          "stops": 8,
+          "clean_laps": 2871,
+          "common_best_s": 16.470747659804122,
+          "at_least_11_laps": 75
+        },
+        "3.75": {
+          "clean": 290,
+          "first": 296,
+          "clean_three_laps": 295,
+          "contacts": 0,
+          "stops": 10,
+          "clean_laps": 2879,
+          "common_best_s": 16.41421910534902,
+          "at_least_11_laps": 81
+        }
+      }
+    },
+    "by_count": {
+      "1": {
+        "n": 100,
+        "common": 99,
+        "by_cap": {
+          "3.5": {
+            "clean": 99,
+            "first": 100,
+            "clean_three_laps": 99,
+            "contacts": 0,
+            "stops": 1,
+            "clean_laps": 1053,
+            "common_best_s": 15.456241380499177,
+            "at_least_11_laps": 61
+          },
+          "3.65": {
+            "clean": 99,
+            "first": 100,
+            "clean_three_laps": 99,
+            "contacts": 0,
+            "stops": 1,
+            "clean_laps": 1063,
+            "common_best_s": 15.312547943539812,
+            "at_least_11_laps": 72
+          },
+          "3.75": {
+            "clean": 99,
+            "first": 100,
+            "clean_three_laps": 100,
+            "contacts": 0,
+            "stops": 1,
+            "clean_laps": 1071,
+            "common_best_s": 15.240611823203187,
+            "at_least_11_laps": 78
+          }
+        }
+      },
+      "3": {
+        "n": 100,
+        "common": 98,
+        "by_cap": {
+          "3.5": {
+            "clean": 99,
+            "first": 100,
+            "clean_three_laps": 100,
+            "contacts": 0,
+            "stops": 1,
+            "clean_laps": 955,
+            "common_best_s": 16.737019933810252,
+            "at_least_11_laps": 3
+          },
+          "3.65": {
+            "clean": 99,
+            "first": 100,
+            "clean_three_laps": 99,
+            "contacts": 0,
+            "stops": 1,
+            "clean_laps": 952,
+            "common_best_s": 16.65929955341541,
+            "at_least_11_laps": 3
+          },
+          "3.75": {
+            "clean": 99,
+            "first": 100,
+            "clean_three_laps": 100,
+            "contacts": 0,
+            "stops": 1,
+            "clean_laps": 959,
+            "common_best_s": 16.60930382708014,
+            "at_least_11_laps": 3
+          }
+        }
+      },
+      "5": {
+        "n": 100,
+        "common": 92,
+        "by_cap": {
+          "3.5": {
+            "clean": 94,
+            "first": 96,
+            "clean_three_laps": 94,
+            "contacts": 0,
+            "stops": 6,
+            "clean_laps": 849,
+            "common_best_s": 17.558331684003008,
+            "at_least_11_laps": 0
+          },
+          "3.65": {
+            "clean": 94,
+            "first": 96,
+            "clean_three_laps": 95,
+            "contacts": 0,
+            "stops": 6,
+            "clean_laps": 856,
+            "common_best_s": 17.51622251128521,
+            "at_least_11_laps": 0
+          },
+          "3.75": {
+            "clean": 92,
+            "first": 96,
+            "clean_three_laps": 95,
+            "contacts": 0,
+            "stops": 8,
+            "clean_laps": 849,
+            "common_best_s": 17.469314955379314,
+            "at_least_11_laps": 0
+          }
+        }
+      }
+    }
+  },
+  "holdout": {
+    "total": {
+      "n": 30,
+      "common": 29,
+      "by_cap": {
+        "3.5": {
+          "clean": 30,
+          "first": 30,
+          "clean_three_laps": 30,
+          "contacts": 0,
+          "stops": 0,
+          "clean_laps": 290,
+          "common_best_s": 16.6578145540928,
+          "at_least_11_laps": 5
+        },
+        "3.65": {
+          "clean": 29,
+          "first": 30,
+          "clean_three_laps": 30,
+          "contacts": 0,
+          "stops": 1,
+          "clean_laps": 289,
+          "common_best_s": 16.562265061108075,
+          "at_least_11_laps": 8
+        },
+        "3.75": {
+          "clean": 30,
+          "first": 30,
+          "clean_three_laps": 30,
+          "contacts": 0,
+          "stops": 0,
+          "clean_laps": 294,
+          "common_best_s": 16.51369377008325,
+          "at_least_11_laps": 9
+        }
+      }
+    },
+    "by_count": {
+      "1": {
+        "n": 10,
+        "common": 10,
+        "by_cap": {
+          "3.5": {
+            "clean": 10,
+            "first": 10,
+            "clean_three_laps": 10,
+            "contacts": 0,
+            "stops": 0,
+            "clean_laps": 105,
+            "common_best_s": 15.476302744723675,
+            "at_least_11_laps": 5
+          },
+          "3.65": {
+            "clean": 10,
+            "first": 10,
+            "clean_three_laps": 10,
+            "contacts": 0,
+            "stops": 0,
+            "clean_laps": 108,
+            "common_best_s": 15.319824206229207,
+            "at_least_11_laps": 8
+          },
+          "3.75": {
+            "clean": 10,
+            "first": 10,
+            "clean_three_laps": 10,
+            "contacts": 0,
+            "stops": 0,
+            "clean_laps": 109,
+            "common_best_s": 15.253588099656572,
+            "at_least_11_laps": 9
+          }
+        }
+      },
+      "3": {
+        "n": 10,
+        "common": 10,
+        "by_cap": {
+          "3.5": {
+            "clean": 10,
+            "first": 10,
+            "clean_three_laps": 10,
+            "contacts": 0,
+            "stops": 0,
+            "clean_laps": 93,
+            "common_best_s": 17.030430378306928,
+            "at_least_11_laps": 0
+          },
+          "3.65": {
+            "clean": 10,
+            "first": 10,
+            "clean_three_laps": 10,
+            "contacts": 0,
+            "stops": 0,
+            "clean_laps": 93,
+            "common_best_s": 16.95704176951259,
+            "at_least_11_laps": 0
+          },
+          "3.75": {
+            "clean": 10,
+            "first": 10,
+            "clean_three_laps": 10,
+            "contacts": 0,
+            "stops": 0,
+            "clean_laps": 93,
+            "common_best_s": 16.901667806003747,
+            "at_least_11_laps": 0
+          }
+        }
+      },
+      "5": {
+        "n": 10,
+        "common": 9,
+        "by_cap": {
+          "3.5": {
+            "clean": 10,
+            "first": 10,
+            "clean_three_laps": 10,
+            "contacts": 0,
+            "stops": 0,
+            "clean_laps": 92,
+            "common_best_s": 17.556587870931686,
+            "at_least_11_laps": 0
+          },
+          "3.65": {
+            "clean": 9,
+            "first": 10,
+            "clean_three_laps": 10,
+            "contacts": 0,
+            "stops": 1,
+            "clean_laps": 88,
+            "common_best_s": 17.504114112746247,
+            "at_least_11_laps": 0
+          },
+          "3.75": {
+            "clean": 10,
+            "first": 10,
+            "clean_three_laps": 10,
+            "contacts": 0,
+            "stops": 0,
+            "clean_laps": 92,
+            "common_best_s": 17.48272891953457,
+            "at_least_11_laps": 0
+          }
+        }
+      }
+    }
+  },
+  "pilot": {
+    "total": {
+      "n": 15,
+      "common": 15,
+      "by_cap": {
+        "3.5": {
+          "clean": 15,
+          "first": 15,
+          "clean_three_laps": 15,
+          "contacts": 0,
+          "stops": 0,
+          "clean_laps": 143,
+          "common_best_s": 16.629169317789692,
+          "at_least_11_laps": 1
+        },
+        "3.65": {
+          "clean": 15,
+          "first": 15,
+          "clean_three_laps": 15,
+          "contacts": 0,
+          "stops": 0,
+          "clean_laps": 146,
+          "common_best_s": 16.52347320075989,
+          "at_least_11_laps": 2
+        },
+        "3.75": {
+          "clean": 15,
+          "first": 15,
+          "clean_three_laps": 15,
+          "contacts": 0,
+          "stops": 0,
+          "clean_laps": 147,
+          "common_best_s": 16.48539208155547,
+          "at_least_11_laps": 2
+        }
+      }
+    },
+    "by_count": {
+      "1": {
+        "n": 5,
+        "common": 5,
+        "by_cap": {
+          "3.5": {
+            "clean": 5,
+            "first": 5,
+            "clean_three_laps": 5,
+            "contacts": 0,
+            "stops": 0,
+            "clean_laps": 51,
+            "common_best_s": 15.661870509186826,
+            "at_least_11_laps": 1
+          },
+          "3.65": {
+            "clean": 5,
+            "first": 5,
+            "clean_three_laps": 5,
+            "contacts": 0,
+            "stops": 0,
+            "clean_laps": 52,
+            "common_best_s": 15.510132612689697,
+            "at_least_11_laps": 2
+          },
+          "3.75": {
+            "clean": 5,
+            "first": 5,
+            "clean_three_laps": 5,
+            "contacts": 0,
+            "stops": 0,
+            "clean_laps": 52,
+            "common_best_s": 15.444519013886689,
+            "at_least_11_laps": 2
+          }
+        }
+      },
+      "3": {
+        "n": 5,
+        "common": 5,
+        "by_cap": {
+          "3.5": {
+            "clean": 5,
+            "first": 5,
+            "clean_three_laps": 5,
+            "contacts": 0,
+            "stops": 0,
+            "clean_laps": 47,
+            "common_best_s": 16.828261391135328,
+            "at_least_11_laps": 0
+          },
+          "3.65": {
+            "clean": 5,
+            "first": 5,
+            "clean_three_laps": 5,
+            "contacts": 0,
+            "stops": 0,
+            "clean_laps": 48,
+            "common_best_s": 16.737515040974596,
+            "at_least_11_laps": 0
+          },
+          "3.75": {
+            "clean": 5,
+            "first": 5,
+            "clean_three_laps": 5,
+            "contacts": 0,
+            "stops": 0,
+            "clean_laps": 49,
+            "common_best_s": 16.716845906619156,
+            "at_least_11_laps": 0
+          }
+        }
+      },
+      "5": {
+        "n": 5,
+        "common": 5,
+        "by_cap": {
+          "3.5": {
+            "clean": 5,
+            "first": 5,
+            "clean_three_laps": 5,
+            "contacts": 0,
+            "stops": 0,
+            "clean_laps": 45,
+            "common_best_s": 17.397376053046926,
+            "at_least_11_laps": 0
+          },
+          "3.65": {
+            "clean": 5,
+            "first": 5,
+            "clean_three_laps": 5,
+            "contacts": 0,
+            "stops": 0,
+            "clean_laps": 46,
+            "common_best_s": 17.322771948615387,
+            "at_least_11_laps": 0
+          },
+          "3.75": {
+            "clean": 5,
+            "first": 5,
+            "clean_three_laps": 5,
+            "contacts": 0,
+            "stops": 0,
+            "clean_laps": 46,
+            "common_best_s": 17.29481132416057,
+            "at_least_11_laps": 0
+          }
+        }
+      }
+    }
+  }
+}

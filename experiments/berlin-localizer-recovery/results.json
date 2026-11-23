@@ -1,0 +1,295 @@
+{
+  "evaluation": {
+    "total": 300,
+    "common": 289,
+    "before": {
+      "clean": 289,
+      "first_lap": 294,
+      "contact": 0,
+      "failure_causes": {
+        "localization_lost": 4,
+        "no_corridor": 6,
+        "braking_footprint": 1
+      },
+      "flying_s": 16.874471670172085
+    },
+    "after": {
+      "clean": 293,
+      "first_lap": 296,
+      "contact": 0,
+      "failure_causes": {
+        "no_corridor": 6,
+        "braking_footprint": 1
+      },
+      "flying_s": 16.874471670172085
+    },
+    "gained": [
+      "random-317869705",
+      "random-351979622",
+      "random-562935709",
+      "random-570222089"
+    ],
+    "lost": [],
+    "max_common_lap_delta_s": 0.0
+  },
+  "holdout": {
+    "total": 60,
+    "common": 54,
+    "before": {
+      "clean": 54,
+      "first_lap": 56,
+      "contact": 0,
+      "failure_causes": {
+        "localization_lost": 1,
+        "braking_footprint": 2,
+        "no_corridor": 2,
+        "dynamic_braking_footprint": 1
+      },
+      "flying_s": 16.73689988802493
+    },
+    "after": {
+      "clean": 55,
+      "first_lap": 57,
+      "contact": 0,
+      "failure_causes": {
+        "braking_footprint": 2,
+        "no_corridor": 2,
+        "dynamic_braking_footprint": 1
+      },
+      "flying_s": 16.73689988802493
+    },
+    "gained": [
+      "held-3-73190706"
+    ],
+    "lost": [],
+    "max_common_lap_delta_s": 0.0
+  },
+  "holdout_counts": {
+    "1": {
+      "total": 20,
+      "common": 19,
+      "before": {
+        "clean": 19,
+        "first_lap": 19,
+        "contact": 0,
+        "failure_causes": {
+          "no_corridor": 1
+        },
+        "flying_s": 15.570795071770148
+      },
+      "after": {
+        "clean": 19,
+        "first_lap": 19,
+        "contact": 0,
+        "failure_causes": {
+          "no_corridor": 1
+        },
+        "flying_s": 15.570795071770148
+      },
+      "gained": [],
+      "lost": [],
+      "max_common_lap_delta_s": 0.0
+    },
+    "3": {
+      "total": 20,
+      "common": 17,
+      "before": {
+        "clean": 17,
+        "first_lap": 19,
+        "contact": 0,
+        "failure_causes": {
+          "localization_lost": 1,
+          "braking_footprint": 1,
+          "dynamic_braking_footprint": 1
+        },
+        "flying_s": 16.634098827375254
+      },
+      "after": {
+        "clean": 18,
+        "first_lap": 20,
+        "contact": 0,
+        "failure_causes": {
+          "braking_footprint": 1,
+          "dynamic_braking_footprint": 1
+        },
+        "flying_s": 16.634098827375254
+      },
+      "gained": [
+        "held-3-73190706"
+      ],
+      "lost": [],
+      "max_common_lap_delta_s": 0.0
+    },
+    "5": {
+      "total": 20,
+      "common": 18,
+      "before": {
+        "clean": 18,
+        "first_lap": 18,
+        "contact": 0,
+        "failure_causes": {
+          "braking_footprint": 1,
+          "no_corridor": 1
+        },
+        "flying_s": 18.064878195796336
+      },
+      "after": {
+        "clean": 18,
+        "first_lap": 18,
+        "contact": 0,
+        "failure_causes": {
+          "braking_footprint": 1,
+          "no_corridor": 1
+        },
+        "flying_s": 18.064878195796336
+      },
+      "gained": [],
+      "lost": [],
+      "max_common_lap_delta_s": 0.0
+    }
+  },
+  "ros": [
+    {
+      "accepted": true,
+      "target_laps": 3,
+      "physical_laps": 3,
+      "lap_s": [
+        27.81126889438383,
+        16.781406199261255,
+        16.676656707073562
+      ],
+      "max_progress_m": 147.04741800566848,
+      "lap_length_m": 48.78392107065079,
+      "collision_samples": 0,
+      "stopped_samples_before_finish": 0,
+      "controller_fault": null,
+      "emergency": null,
+      "runner_exit": 0,
+      "layout": "random-351979622",
+      "variant": "after"
+    },
+    {
+      "accepted": true,
+      "target_laps": 3,
+      "physical_laps": 3,
+      "lap_s": [
+        28.84559469114174,
+        17.08068287887727,
+        17.007206991373096
+      ],
+      "max_progress_m": 146.99772382180637,
+      "lap_length_m": 48.78392107065079,
+      "collision_samples": 0,
+      "stopped_samples_before_finish": 0,
+      "controller_fault": null,
+      "emergency": null,
+      "runner_exit": 0,
+      "layout": "random-562935709",
+      "variant": "after"
+    },
+    {
+      "accepted": true,
+      "target_laps": 3,
+      "physical_laps": 3,
+      "lap_s": [
+        27.645007416005683,
+        16.698233384056948,
+        16.651804742836248
+      ],
+      "max_progress_m": 146.53289178028427,
+      "lap_length_m": 48.78392107065079,
+      "collision_samples": 0,
+      "stopped_samples_before_finish": 0,
+      "controller_fault": null,
+      "emergency": null,
+      "runner_exit": 0,
+      "layout": "random-351979622",
+      "variant": "before"
+    },
+    {
+      "accepted": true,
+      "target_laps": 3,
+      "physical_laps": 3,
+      "lap_s": [
+        28.910113163619826,
+        17.056165003636124,
+        17.001823724513088
+      ],
+      "max_progress_m": 146.63509825691156,
+      "lap_length_m": 48.78392107065079,
+      "collision_samples": 0,
+      "stopped_samples_before_finish": 0,
+      "controller_fault": null,
+      "emergency": null,
+      "runner_exit": 0,
+      "layout": "random-562935709",
+      "variant": "before"
+    }
+  ],
+  "regression": {
+    "random-351979622": {
+      "before_laps": 2,
+      "before_progress_m": 125.64810414677564,
+      "ground_truth_speed_for_audit_only": 2.700000047683716,
+      "diagnostic": [
+        "54.3700 dt 0.0200 points 181 fit 1 loss prior 0.02820 next 0.02357 xyshift 0.0662 prior_v 2.567 dyaw 0.0033 bins 27/30 30/30 24/30 31/31 30/30 30/30",
+        "v -0.72525 rate -0.6117"
+      ],
+      "after_laps": [
+        27.777419263253865,
+        16.727371953440556,
+        16.64601019767339
+      ]
+    },
+    "random-562935709": {
+      "before_laps": 2,
+      "before_progress_m": 126.85753230551963,
+      "ground_truth_speed_for_audit_only": 2.700000047683716,
+      "diagnostic": [
+        "56.1700 dt 0.0200 points 181 fit 1 loss prior 0.02867 next 0.02501 xyshift 0.0640 prior_v 2.489 dyaw 0.0049 bins 18/30 30/30 27/30 31/31 30/30 30/30",
+        "v -0.69963 rate -0.2650"
+      ],
+      "after_laps": [
+        28.82953028097023,
+        17.071801837489236,
+        17.05593540423918
+      ]
+    },
+    "random-317869705": {
+      "before_laps": 0,
+      "before_progress_m": 28.91300803117155,
+      "ground_truth_speed_for_audit_only": 1.1514394283294678,
+      "diagnostic": [
+        "17.9700 dt 0.0200 points 181 fit 1 loss prior 0.02302 next 0.02002 xyshift 0.0634 prior_v 1.162 dyaw 0.0088 bins 26/30 29/30 30/30 31/31 30/30 29/30",
+        "v -1.90551 rate -0.8119"
+      ],
+      "after_laps": [
+        27.54112229505899,
+        16.210122469080048,
+        16.129018458998488
+      ]
+    },
+    "random-570222089": {
+      "before_laps": 0,
+      "before_progress_m": 29.459156430634046,
+      "ground_truth_speed_for_audit_only": 1.102662444114685,
+      "diagnostic": [
+        "16.7700 dt 0.0200 points 181 fit 1 loss prior 0.03496 next 0.02978 xyshift 0.0824 prior_v 0.962 dyaw 0.0089 bins 9/30 27/30 30/30 31/31 30/30 30/30",
+        "v -3.14685 rate -0.0685"
+      ],
+      "after_laps": [
+        28.648362297332884,
+        17.178047456687292,
+        17.086529224719037
+      ]
+    }
+  },
+  "sha256": {
+    "controller-final": "011f030837116498795e043861e86af93fe27f1f4483f7670a6f2499216467a5",
+    "evaluator-final": "1f9545bb7a264eea61d28fb3a3e3b6ada2397ca907bc45c56be9ce727a367229",
+    "holdout.json": "e517f216d75a91417517a6d846211e4f170e2967d94f7da50168aa6d3a44ac6d",
+    "avoid-corridor-v2.pt": "6754bf58549b40854652abd1f4d26af833453905342e8ecec5c4dc8982ec673f",
+    "race-berlin-wsp.pt": "da9f0c1783ed46552558f1c8a4f877dab6f487b88427201fd9b7c5f1ac858e10",
+    "scan_localizer.hpp": "b08fad48deec472fdabc0f639e340448c6f555eadac6f03a80972afb28524bcd"
+  }
+}

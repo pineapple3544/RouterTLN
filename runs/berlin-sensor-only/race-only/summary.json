@@ -1,0 +1,66 @@
+[
+  {
+    "candidate_rejected_steps": 0,
+    "checkpoint": "/workspace/models/race-berlin-wsp.pt",
+    "collision": false,
+    "command_clipped_steps": 0,
+    "completed_laps": 1,
+    "control_dt": 0.05,
+    "control_ms": {
+      "count": 541,
+      "max": 12.123985,
+      "mean": 3.8994172033271717,
+      "median": 3.732018,
+      "min": 3.24634,
+      "p95": 5.453841
+    },
+    "controller": "tln_only",
+    "emergency_steps": 0,
+    "failure_diagnostic": null,
+    "fallback_entries": 0,
+    "fallback_steps": 0,
+    "id": "berlin-forward-tln_only",
+    "inference_ms": {
+      "count": 541,
+      "max": 2.216868,
+      "mean": 0.7772361312384467,
+      "median": 0.724853,
+      "min": 0.570341,
+      "p95": 1.192483
+    },
+    "lap_times_s": [
+      27.037119281427035
+    ],
+    "model_error_max": 1.9073486328125e-06,
+    "obstacles": 0,
+    "peak_actual_speed_mps": 2.4178552627563477,
+    "physics_dt": 0.01,
+    "pose_source": "lidar_static_map",
+    "progress_m": 48.809894683664716,
+    "reason": "completed",
+    "reference_error_m": {
+      "count": 541,
+      "max": 0.25614167721712383,
+      "mean": 0.09182300552426524,
+      "median": 0.07400592265777924,
+      "min": 5.290246610324032e-06,
+      "p95": 0.1926284031048757
+    },
+    "reference_error_rms_m": 0.11041129703199508,
+    "scenario": {
+      "laps": 1,
+      "map_dir": "/workspace/maps/berlin",
+      "map_name": "berlin",
+      "map_stem": "berlin",
+      "name": "berlin-forward",
+      "seed": 2026,
+      "speed_cap": 3
+    },
+    "simulation_seconds": 27.05000000000143,
+    "steps": 541,
+    "synchronous": true,
+    "trace": "/workspace/runs/berlin-sensor-only/race-only/berlin-forward-tln_only.csv",
+    "track_length_m": 48.783905029296875,
+    "training_executed": false
+  }
+]

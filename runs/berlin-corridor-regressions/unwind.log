@@ -1,0 +1,38 @@
+[1/4] Building CXX object CMakeFiles/el_eval_avoid.dir/src/eval_avoid.cpp.o
+[2/4] Linking CXX executable el_eval_avoid
+[3/4] Building CXX object CMakeFiles/el_controller.dir/src/node.cpp.o
+[4/4] Linking CXX executable el_controller
+Internal ctest changing into directory: /build
+Test project /build
+      Start  1: best_checkpoint_regression
+ 1/12 Test  #1: best_checkpoint_regression ..........   Passed    0.40 sec
+      Start  2: teacher_regression
+ 2/12 Test  #2: teacher_regression ..................   Passed    0.29 sec
+      Start  3: native_regression
+ 3/12 Test  #3: native_regression ...................   Passed    0.19 sec
+      Start  4: training_environment_forward_only
+ 4/12 Test  #4: training_environment_forward_only ...   Passed    0.81 sec
+      Start  5: corridor_entry_original
+ 5/12 Test  #5: corridor_entry_original .............   Passed    0.07 sec
+      Start  6: corridor_entry_distributed
+ 6/12 Test  #6: corridor_entry_distributed ..........   Passed    0.07 sec
+      Start  7: corridor_entry_seed39103
+ 7/12 Test  #7: corridor_entry_seed39103 ............   Passed    0.07 sec
+      Start  8: corridor_entry_seed39104
+ 8/12 Test  #8: corridor_entry_seed39104 ............   Passed    0.08 sec
+      Start  9: corridor_entry_random-4135410
+ 9/12 Test  #9: corridor_entry_random-4135410 .......   Passed    0.08 sec
+      Start 10: corridor_entry_random-6695374
+10/12 Test #10: corridor_entry_random-6695374 .......   Passed    0.07 sec
+      Start 11: corridor_entry_random-9157059
+11/12 Test #11: corridor_entry_random-9157059 .......   Passed    0.09 sec
+      Start 12: corridor_entry_random-9285660
+12/12 Test #12: corridor_entry_random-9285660 .......   Passed    0.08 sec
+
+100% tests passed, 0 tests failed out of 12
+
+Total Test time (real) =   2.31 sec
+{'unchanged_pass_records': 85, 'before': 87, 'after': 95, 'gains': ['random-4135410', 'random-5557822', 'random-6695374', 'random-7625705', 'random-7784311', 'random-9157059', 'random-9285660', 'random-9865006'], 'losses': [], 'collisions': 0}
+{'unchanged_pass_records': 85, 'before': 87, 'after': 95, 'gains': ['random-4135410', 'random-5557822', 'random-6695374', 'random-7625705', 'random-7784311', 'random-9157059', 'random-9285660', 'random-9865006'], 'losses': [], 'collisions': 0}
+[('random-4135410-1', True, None), ('random-4135410-2', True, None), ('random-9157059-1', True, None), ('random-9157059-2', True, None), ('random-6695374-1', True, None), ('random-6695374-2', True, None), ('random-9285660-1', True, None), ('random-9285660-2', True, None)]
+unwind_campaign_complete

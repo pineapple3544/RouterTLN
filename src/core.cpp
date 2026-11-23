@@ -51,6 +51,7 @@ Memory::Memory(const std::string& path){
   width_=img.width;height_=img.height;png_image_free(&img);
   if(resolution_<=0||width_<=0||height_<=0)throw std::runtime_error("invalid map geometry");
   base_.resize(width_*height_);odds_.assign(base_.size(),0);feature_odds_.assign(base_.size(),0);seen_.assign(base_.size(),-1);
+  current_hit_mask_.assign(base_.size(),0);
   bool negate=y["negate"].as<int>()!=0;float free=y["free_thresh"].as<float>();
   for(int row=0;row<height_;++row)for(int col=0;col<width_;++col){
     float gray=bytes[(height_-1-row)*width_+col]/255.f;
@@ -85,11 +86,26 @@ float Memory::base_hit_range(float sx,float sy,float dx,float dy,float limit)con
 }
 float Memory::at(float x,float y)const{
   int k=index(x,y);
-  return occupancy(k)>.5f || std::binary_search(current_hits_.begin(),current_hits_.end(),k);
+  return k<0 || base_[k]>.5f || odds_[k]>.5f || current_hit_mask_[k];
+}
+std::vector<int> Memory::obstacle_cells()const{
+  std::vector<int> cells;
+  for(size_t i=0;i<odds_.size();++i)
+    if(base_[i]<.5f && odds_[i]>.5f)cells.push_back(static_cast<int>(i));
+  for(int i:current_hits_)if(base_[i]<.5f)cells.push_back(i);
+  std::sort(cells.begin(),cells.end());
+  cells.erase(std::unique(cells.begin(),cells.end()),cells.end());
+  return cells;
 }
 float Memory::obstacle_at(float x,float y)const{
   int k=index(x,y);
-  return k>=0 && base_[k]<.5f && (odds_[k]>.5f || std::binary_search(current_hits_.begin(),current_hits_.end(),k));
+  return k>=0 && base_[k]<.5f && (odds_[k]>.5f || current_hit_mask_[k]);
+}
+// Preserve the sparse hit list for snapshots and update only touched bits.
+void Memory::replace_current_hits(std::vector<int> hits){
+  for(int k:current_hits_)current_hit_mask_[k]=0;
+  current_hits_=std::move(hits);
+  for(int k:current_hits_)current_hit_mask_[k]=1;
 }
 void Memory::update(const Scan& scan){
   std::vector<int> hits,feature_hits,free_cells;
@@ -114,9 +130,9 @@ void Memory::update(const Scan& scan){
     }}
   }
   auto unique=[](std::vector<int>& a){std::sort(a.begin(),a.end());a.erase(std::unique(a.begin(),a.end()),a.end());};
-  unique(hits);current_hits_=hits;unique(feature_hits);unique(free_cells);
-  for(int k:free_cells)if(!std::binary_search(hits.begin(),hits.end(),k))odds_[k]=fmaxf(-3.f,odds_[k]-.7f);
-  for(int k:hits)odds_[k]=fminf(4.f,odds_[k]+1.f);
+  unique(hits);replace_current_hits(std::move(hits));unique(feature_hits);unique(free_cells);
+  for(int k:free_cells)if(!current_hit_mask_[k])odds_[k]=fmaxf(-3.f,odds_[k]-.7f);
+  for(int k:current_hits_)odds_[k]=fminf(4.f,odds_[k]+1.f);
   for(int k:free_cells)if(!std::binary_search(feature_hits.begin(),feature_hits.end(),k)){feature_odds_[k]=fmaxf(-3.f,feature_odds_[k]-.7f);seen_[k]=scan.stamp;}
   for(int k:feature_hits){feature_odds_[k]=fminf(4.f,feature_odds_[k]+1.f);seen_[k]=scan.stamp;}
 }
@@ -141,7 +157,7 @@ void Memory::features(const State& s,double now,Observation& o)const{
     o.map[2*crop*crop+i]=k>=0&&seen_[k]>=0?clamp((now-seen_[k])/60.,0,1):1.f;
   }
 }
-void Memory::reset(){current_hits_.clear();std::fill(odds_.begin(),odds_.end(),0);std::fill(feature_odds_.begin(),feature_odds_.end(),0);std::fill(seen_.begin(),seen_.end(),-1);associated_wall_returns_=0;}
+void Memory::reset(){replace_current_hits({});std::fill(odds_.begin(),odds_.end(),0);std::fill(feature_odds_.begin(),feature_odds_.end(),0);std::fill(seen_.begin(),seen_.end(),-1);associated_wall_returns_=0;}
 size_t Memory::occupied()const{size_t n=0;for(size_t i=0;i<odds_.size();++i)if(base_[i]<.5f&&odds_[i]>.5f)++n;return n;}
 void Memory::copy_occupancy(std::vector<uint8_t>& cells,int& width,int& height,float& resolution,float& x0,float& y0)const{
   width=width_;height=height_;resolution=resolution_;x0=x0_;y0=y0_;cells.resize(base_.size());

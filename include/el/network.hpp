@@ -7,6 +7,7 @@ namespace el {
 struct TlnImpl:torch::nn::Module {
   torch::nn::Sequential lidar,grid,head;
   bool guided=false;
+  bool shared_guided=false;
   TlnImpl(){
     lidar=register_module("lidar",torch::nn::Sequential(
       torch::nn::Conv1d(torch::nn::Conv1dOptions(history*2,24,5).stride(2)),torch::nn::ReLU(),
@@ -25,6 +26,7 @@ struct TlnImpl:torch::nn::Module {
   torch::Tensor forward(torch::Tensor s,torch::Tensor m,torch::Tensor c){auto raw=head->forward(torch::cat({lidar->forward(s).flatten(1),grid->forward(m).flatten(1),c},1));
     if(!guided)return raw;
     auto steer=(c.select(1,4)+.20f*raw.select(1,0)).clamp(-1,1);
+    if(shared_guided)steer=torch::where(c.select(1,3)>.5f,steer,raw.select(1,0));
     return torch::stack({steer,raw.select(1,1)},1);}
 };
 TORCH_MODULE(Tln);

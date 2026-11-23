@@ -14,7 +14,9 @@ print(w["x_m"], w["y_m"], w["psi_rad"])' "$map_dir/global_waypoints.json")
 read -r sx sy stheta <<< "$pose"
 clock_args=()
 if [[ ${EL_LOCAL_STEADY_SIM:-0} == 1 ]]; then clock_args=(-p use_sim_time:=true); fi
-exec ros2 run f1tenth_gym_ros gym_bridge --ros-args \
+bridge=(ros2 run f1tenth_gym_ros gym_bridge)
+if [[ ${EL_LOCAL_STEADY_SIM:-0} == 1 ]]; then bridge=(python3 /workspace/scripts/local_gym_bridge.py); fi
+exec "${bridge[@]}" --ros-args \
   "${clock_args[@]}" -r __node:=bridge \
   --params-file "$base/stack_master/config/SIM/sim.yaml" \
   -p map_path:="$stem.yaml" \

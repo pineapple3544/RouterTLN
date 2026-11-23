@@ -1,0 +1,816 @@
+{
+  "pilot": [
+    {
+      "name": "pilot-1-00",
+      "seed": 568953820,
+      "count": 1,
+      "stations": [
+        40.5
+      ],
+      "offsets": [
+        0.0893
+      ],
+      "map": "berlin",
+      "layout": 0,
+      "start": 37
+    },
+    {
+      "name": "pilot-1-01",
+      "seed": 988452151,
+      "count": 1,
+      "stations": [
+        11.0
+      ],
+      "offsets": [
+        0.0796
+      ],
+      "map": "berlin",
+      "layout": 0,
+      "start": 37
+    },
+    {
+      "name": "pilot-1-02",
+      "seed": 597074814,
+      "count": 1,
+      "stations": [
+        12.7
+      ],
+      "offsets": [
+        0.1086
+      ],
+      "map": "berlin",
+      "layout": 0,
+      "start": 37
+    },
+    {
+      "name": "pilot-1-03",
+      "seed": 7050139,
+      "count": 1,
+      "stations": [
+        9.3
+      ],
+      "offsets": [
+        -0.1187
+      ],
+      "map": "berlin",
+      "layout": 0,
+      "start": 37
+    },
+    {
+      "name": "pilot-1-04",
+      "seed": 795132030,
+      "count": 1,
+      "stations": [
+        38.0
+      ],
+      "offsets": [
+        -0.0495
+      ],
+      "map": "berlin",
+      "layout": 0,
+      "start": 37
+    },
+    {
+      "name": "pilot-3-00",
+      "seed": 1020232218,
+      "count": 3,
+      "stations": [
+        22.1,
+        31.9,
+        36.4
+      ],
+      "offsets": [
+        -0.1659,
+        -0.1395,
+        0.0536
+      ],
+      "map": "berlin",
+      "layout": 0,
+      "start": 37
+    },
+    {
+      "name": "pilot-3-01",
+      "seed": 311236795,
+      "count": 3,
+      "stations": [
+        13.3,
+        19.9,
+        35.9
+      ],
+      "offsets": [
+        -0.0907,
+        -0.1776,
+        0.0675
+      ],
+      "map": "berlin",
+      "layout": 0,
+      "start": 37
+    },
+    {
+      "name": "pilot-3-02",
+      "seed": 356433916,
+      "count": 3,
+      "stations": [
+        7.5,
+        17.7,
+        38.1
+      ],
+      "offsets": [
+        -0.0659,
+        0.1111,
+        -0.0969
+      ],
+      "map": "berlin",
+      "layout": 0,
+      "start": 37
+    },
+    {
+      "name": "pilot-3-03",
+      "seed": 432736843,
+      "count": 3,
+      "stations": [
+        13.5,
+        19.9,
+        44.7
+      ],
+      "offsets": [
+        -0.1065,
+        0.0274,
+        -0.1586
+      ],
+      "map": "berlin",
+      "layout": 0,
+      "start": 37
+    },
+    {
+      "name": "pilot-3-04",
+      "seed": 620502365,
+      "count": 3,
+      "stations": [
+        17.9,
+        28.9,
+        43.6
+      ],
+      "offsets": [
+        -0.0536,
+        -0.0754,
+        -0.0535
+      ],
+      "map": "berlin",
+      "layout": 0,
+      "start": 37
+    },
+    {
+      "name": "pilot-5-00",
+      "seed": 474512376,
+      "count": 5,
+      "stations": [
+        13.1,
+        16.5,
+        27.6,
+        30.6,
+        32.4
+      ],
+      "offsets": [
+        -0.0379,
+        0.0097,
+        0.1661,
+        0.1672,
+        -0.0533
+      ],
+      "map": "berlin",
+      "layout": 0,
+      "start": 37
+    },
+    {
+      "name": "pilot-5-01",
+      "seed": 100281898,
+      "count": 5,
+      "stations": [
+        5.7,
+        16.6,
+        23.5,
+        39.6,
+        41.4
+      ],
+      "offsets": [
+        -0.1084,
+        0.0183,
+        0.1147,
+        0.0182,
+        0.1444
+      ],
+      "map": "berlin",
+      "layout": 0,
+      "start": 37
+    },
+    {
+      "name": "pilot-5-02",
+      "seed": 564198591,
+      "count": 5,
+      "stations": [
+        6.3,
+        22.5,
+        24.3,
+        26.6,
+        30.6
+      ],
+      "offsets": [
+        0.1207,
+        -0.0239,
+        0.1383,
+        -0.1536,
+        -0.1154
+      ],
+      "map": "berlin",
+      "layout": 0,
+      "start": 37
+    },
+    {
+      "name": "pilot-5-03",
+      "seed": 792163126,
+      "count": 5,
+      "stations": [
+        7.9,
+        19.2,
+        21.8,
+        41.1,
+        43.5
+      ],
+      "offsets": [
+        0.1232,
+        -0.0096,
+        0.1524,
+        0.0897,
+        -0.1359
+      ],
+      "map": "berlin",
+      "layout": 0,
+      "start": 37
+    },
+    {
+      "name": "pilot-5-04",
+      "seed": 326863592,
+      "count": 5,
+      "stations": [
+        16.6,
+        21.0,
+        30.3,
+        38.8,
+        40.8
+      ],
+      "offsets": [
+        -0.1431,
+        0.0028,
+        0.1322,
+        -0.1104,
+        -0.1482
+      ],
+      "map": "berlin",
+      "layout": 0,
+      "start": 37
+    }
+  ],
+  "holdout": [
+    {
+      "name": "holdout-1-00",
+      "seed": 669831179,
+      "count": 1,
+      "stations": [
+        40.5
+      ],
+      "offsets": [
+        0.1478
+      ],
+      "map": "berlin",
+      "layout": 0,
+      "start": 37
+    },
+    {
+      "name": "holdout-1-01",
+      "seed": 662630861,
+      "count": 1,
+      "stations": [
+        39.5
+      ],
+      "offsets": [
+        -0.0913
+      ],
+      "map": "berlin",
+      "layout": 0,
+      "start": 37
+    },
+    {
+      "name": "holdout-1-02",
+      "seed": 998273523,
+      "count": 1,
+      "stations": [
+        8.0
+      ],
+      "offsets": [
+        -0.0689
+      ],
+      "map": "berlin",
+      "layout": 0,
+      "start": 37
+    },
+    {
+      "name": "holdout-1-03",
+      "seed": 27313703,
+      "count": 1,
+      "stations": [
+        7.6
+      ],
+      "offsets": [
+        0.1596
+      ],
+      "map": "berlin",
+      "layout": 0,
+      "start": 37
+    },
+    {
+      "name": "holdout-1-04",
+      "seed": 144801053,
+      "count": 1,
+      "stations": [
+        10.2
+      ],
+      "offsets": [
+        0.1181
+      ],
+      "map": "berlin",
+      "layout": 0,
+      "start": 37
+    },
+    {
+      "name": "holdout-1-05",
+      "seed": 339019681,
+      "count": 1,
+      "stations": [
+        14.1
+      ],
+      "offsets": [
+        0.0059
+      ],
+      "map": "berlin",
+      "layout": 0,
+      "start": 37
+    },
+    {
+      "name": "holdout-1-06",
+      "seed": 251443724,
+      "count": 1,
+      "stations": [
+        23.7
+      ],
+      "offsets": [
+        -0.1219
+      ],
+      "map": "berlin",
+      "layout": 0,
+      "start": 37
+    },
+    {
+      "name": "holdout-1-07",
+      "seed": 53806601,
+      "count": 1,
+      "stations": [
+        43.8
+      ],
+      "offsets": [
+        0.1212
+      ],
+      "map": "berlin",
+      "layout": 0,
+      "start": 37
+    },
+    {
+      "name": "holdout-1-08",
+      "seed": 539074708,
+      "count": 1,
+      "stations": [
+        13.6
+      ],
+      "offsets": [
+        -0.1311
+      ],
+      "map": "berlin",
+      "layout": 0,
+      "start": 37
+    },
+    {
+      "name": "holdout-1-09",
+      "seed": 817836332,
+      "count": 1,
+      "stations": [
+        17.7
+      ],
+      "offsets": [
+        0.1311
+      ],
+      "map": "berlin",
+      "layout": 0,
+      "start": 37
+    },
+    {
+      "name": "holdout-3-00",
+      "seed": 790637654,
+      "count": 3,
+      "stations": [
+        11.1,
+        20.0,
+        30.5
+      ],
+      "offsets": [
+        -0.1117,
+        0.013,
+        -0.0542
+      ],
+      "map": "berlin",
+      "layout": 0,
+      "start": 37
+    },
+    {
+      "name": "holdout-3-01",
+      "seed": 313156498,
+      "count": 3,
+      "stations": [
+        5.8,
+        9.5,
+        34.4
+      ],
+      "offsets": [
+        -0.0467,
+        0.03,
+        0.0306
+      ],
+      "map": "berlin",
+      "layout": 0,
+      "start": 37
+    },
+    {
+      "name": "holdout-3-02",
+      "seed": 989368260,
+      "count": 3,
+      "stations": [
+        11.2,
+        17.5,
+        26.5
+      ],
+      "offsets": [
+        0.0122,
+        -0.0954,
+        -0.0656
+      ],
+      "map": "berlin",
+      "layout": 0,
+      "start": 37
+    },
+    {
+      "name": "holdout-3-03",
+      "seed": 174653009,
+      "count": 3,
+      "stations": [
+        15.9,
+        29.5,
+        41.1
+      ],
+      "offsets": [
+        0.0245,
+        0.1305,
+        -0.0575
+      ],
+      "map": "berlin",
+      "layout": 0,
+      "start": 37
+    },
+    {
+      "name": "holdout-3-04",
+      "seed": 61569456,
+      "count": 3,
+      "stations": [
+        22.2,
+        29.9,
+        35.6
+      ],
+      "offsets": [
+        0.1669,
+        -0.0108,
+        -0.1024
+      ],
+      "map": "berlin",
+      "layout": 0,
+      "start": 37
+    },
+    {
+      "name": "holdout-3-05",
+      "seed": 627351863,
+      "count": 3,
+      "stations": [
+        18.2,
+        31.1,
+        44.3
+      ],
+      "offsets": [
+        -0.1619,
+        0.1201,
+        -0.0306
+      ],
+      "map": "berlin",
+      "layout": 0,
+      "start": 37
+    },
+    {
+      "name": "holdout-3-06",
+      "seed": 936978426,
+      "count": 3,
+      "stations": [
+        31.1,
+        35.0,
+        41.2
+      ],
+      "offsets": [
+        0.1366,
+        -0.1116,
+        0.0849
+      ],
+      "map": "berlin",
+      "layout": 0,
+      "start": 37
+    },
+    {
+      "name": "holdout-3-07",
+      "seed": 815034585,
+      "count": 3,
+      "stations": [
+        16.0,
+        29.4,
+        43.7
+      ],
+      "offsets": [
+        0.0657,
+        -0.0638,
+        -0.108
+      ],
+      "map": "berlin",
+      "layout": 0,
+      "start": 37
+    },
+    {
+      "name": "holdout-3-08",
+      "seed": 72245147,
+      "count": 3,
+      "stations": [
+        13.4,
+        24.2,
+        33.1
+      ],
+      "offsets": [
+        0.1474,
+        -0.0013,
+        0.0325
+      ],
+      "map": "berlin",
+      "layout": 0,
+      "start": 37
+    },
+    {
+      "name": "holdout-3-09",
+      "seed": 718986801,
+      "count": 3,
+      "stations": [
+        5.9,
+        14.1,
+        43.6
+      ],
+      "offsets": [
+        -0.0472,
+        -0.0115,
+        0.0251
+      ],
+      "map": "berlin",
+      "layout": 0,
+      "start": 37
+    },
+    {
+      "name": "holdout-5-00",
+      "seed": 341690237,
+      "count": 5,
+      "stations": [
+        5.5,
+        25.7,
+        28.7,
+        33.4,
+        36.6
+      ],
+      "offsets": [
+        -0.0267,
+        0.0907,
+        -0.0796,
+        0.0178,
+        -0.0382
+      ],
+      "map": "berlin",
+      "layout": 0,
+      "start": 37
+    },
+    {
+      "name": "holdout-5-01",
+      "seed": 736450781,
+      "count": 5,
+      "stations": [
+        9.8,
+        15.9,
+        18.7,
+        26.9,
+        40.0
+      ],
+      "offsets": [
+        -0.0871,
+        0.1747,
+        0.1639,
+        -0.0285,
+        -0.0151
+      ],
+      "map": "berlin",
+      "layout": 0,
+      "start": 37
+    },
+    {
+      "name": "holdout-5-02",
+      "seed": 507004760,
+      "count": 5,
+      "stations": [
+        5.9,
+        22.9,
+        33.9,
+        36.5,
+        38.7
+      ],
+      "offsets": [
+        0.129,
+        -0.003,
+        0.0643,
+        0.0159,
+        -0.1292
+      ],
+      "map": "berlin",
+      "layout": 0,
+      "start": 37
+    },
+    {
+      "name": "holdout-5-03",
+      "seed": 132234398,
+      "count": 5,
+      "stations": [
+        6.9,
+        18.0,
+        27.8,
+        30.6,
+        42.5
+      ],
+      "offsets": [
+        -0.1494,
+        -0.0056,
+        -0.0029,
+        -0.127,
+        -0.1723
+      ],
+      "map": "berlin",
+      "layout": 0,
+      "start": 37
+    },
+    {
+      "name": "holdout-5-04",
+      "seed": 657062314,
+      "count": 5,
+      "stations": [
+        7.7,
+        23.0,
+        31.2,
+        42.0,
+        43.8
+      ],
+      "offsets": [
+        -0.0413,
+        0.0432,
+        -0.1177,
+        0.0064,
+        -0.0306
+      ],
+      "map": "berlin",
+      "layout": 0,
+      "start": 37
+    },
+    {
+      "name": "holdout-5-05",
+      "seed": 720301880,
+      "count": 5,
+      "stations": [
+        13.8,
+        18.7,
+        27.5,
+        34.1,
+        41.5
+      ],
+      "offsets": [
+        0.0769,
+        0.0808,
+        -0.1661,
+        0.0228,
+        0.0256
+      ],
+      "map": "berlin",
+      "layout": 0,
+      "start": 37
+    },
+    {
+      "name": "holdout-5-06",
+      "seed": 1055883276,
+      "count": 5,
+      "stations": [
+        8.1,
+        16.7,
+        31.2,
+        39.9,
+        44.5
+      ],
+      "offsets": [
+        0.1458,
+        0.0772,
+        0.0359,
+        0.0743,
+        -0.0889
+      ],
+      "map": "berlin",
+      "layout": 0,
+      "start": 37
+    },
+    {
+      "name": "holdout-5-07",
+      "seed": 75209789,
+      "count": 5,
+      "stations": [
+        11.6,
+        18.1,
+        20.5,
+        29.7,
+        41.4
+      ],
+      "offsets": [
+        -0.0534,
+        0.0206,
+        0.0801,
+        0.1566,
+        -0.1707
+      ],
+      "map": "berlin",
+      "layout": 0,
+      "start": 37
+    },
+    {
+      "name": "holdout-5-08",
+      "seed": 587951364,
+      "count": 5,
+      "stations": [
+        6.2,
+        27.1,
+        30.1,
+        41.6,
+        43.7
+      ],
+      "offsets": [
+        0.0774,
+        0.1318,
+        -0.1771,
+        -0.0752,
+        0.0516
+      ],
+      "map": "berlin",
+      "layout": 0,
+      "start": 37
+    },
+    {
+      "name": "holdout-5-09",
+      "seed": 798666439,
+      "count": 5,
+      "stations": [
+        6.8,
+        11.9,
+        22.5,
+        32.9,
+        42.9
+      ],
+      "offsets": [
+        0.0532,
+        -0.1676,
+        0.0471,
+        -0.1788,
+        -0.0194
+      ],
+      "map": "berlin",
+      "layout": 0,
+      "start": 37
+    }
+  ]
+}

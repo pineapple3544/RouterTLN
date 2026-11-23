@@ -1,5 +1,6 @@
 #include "sim_support.hpp"
 #include "el/policy.hpp"
+#include "el/scan_localizer.hpp"
 #include "el/eval_metrics.hpp"
 #include <numeric>
 #include <iomanip>
@@ -45,6 +46,7 @@ int main(int argc,char** argv){try{
     Sim sim(base+"/"+stem,seed,18);Memory memory(base+"/"+stem+".yaml");sim.obstacles(json::array());sim.reset(start_pose);
     if(sim.collision)throw std::runtime_error("invalid colliding initial pose");
     TeacherConfig tc;tc.kind=TeacherKind::Smppi;tc.seed=seed;tc.samples=2048;tc.horizon=40;tc.iterations=2;tc.temperature=.5f;tc.steer_sigma=.035f;tc.speed_sigma=.3f;
+    ScanLocalizer localizer(memory);
     Teacher teacher(tc);std::deque<Scan> scans;Control previous;bool in_fallback=false;double safe_since=-1;
     double progress=0,last_s=project_route(track,basic(sim.state)).s,last_cross=0,peak=0,model_error=0,best_progress=0,last_advance=0;
     int steps=0,fallback_steps=0,fallback_entries=0,rejected=0,clipped=0,emergency_steps=0;std::string reason="timeout";
@@ -59,9 +61,17 @@ int main(int argc,char** argv){try{
     }
     trace<<"step,observation_time,next_time,x,y,actual_speed,raw_steer,raw_speed,executed_steer,executed_speed,candidate_safe,fallback,collision,progress_m,reference_error_m,inference_ms,control_ms\n";
     for(int step=0;step<max_steps;++step){auto cycle=Clock::now();double t0=sim.stamp;auto before=sim.state;
-      if(scan_archive.is_open())scan_archive.write(reinterpret_cast<const char*>(&sim.scan),sizeof(Scan));
-      memory.update(sim.scan);scans.push_back(sim.scan);while(scans.size()>history)scans.pop_front();
-      auto observation=observe(scans,basic(sim.state),memory,track,0,0);auto p=problem(track,memory,sim.state,cap,previous);
+      Scan sample=sim.scan;
+      sample.pose={};
+      const auto estimate=localizer.update(sample,track,previous);
+      if(!estimate){reason="localization_lost";break;}
+      sample.pose=*estimate;
+      if(scan_archive.is_open())scan_archive.write(reinterpret_cast<const char*>(&sample),sizeof(Scan));
+      memory.update(sample);scans.push_back(sample);while(scans.size()>history)scans.pop_front();
+      const auto& car=sample.pose;
+      DynamicState inferred{{car.x,car.y,car.steer,car.v,car.yaw,car.yaw_rate,0},{previous.steer,previous.steer}};
+      auto observation=observe(scans,car,memory,track,0,0);
+      auto p=problem(track,memory,inferred,cap,previous);
       Control raw{},action{};bool safe=true,fallback=false,valid=true;double inference=0;
       if(controller!="smppi"){
         auto began=Clock::now();raw=policy.infer(observation);inference=elapsed_ms(began);infer_ms.push_back(inference);
@@ -74,9 +84,9 @@ int main(int argc,char** argv){try{
         else if(in_fallback){if(safe_since<0)safe_since=t0;if(t0-safe_since>=.3){in_fallback=false;safe_since=-1;}}
       }
       if(controller=="smppi"||(controller=="tln_smppi_guarded"&&in_fallback)){
-        auto plan=teacher.solve(p,initial(p,tc.horizon));valid=plan.valid;action=valid?plan.action:Control{sim.state.z[2],0};
+        auto plan=teacher.solve(p,initial(p,tc.horizon));valid=plan.valid;action=valid?plan.action:Control{car.steer,0};
         fallback=controller!="smppi";if(fallback)++fallback_steps;if(!valid)++emergency_steps;
-        if(!valid){Memory base_memory(base+"/"+stem+".yaml");auto base_problem=problem(track,base_memory,sim.state,cap,previous);
+        if(!valid){Memory base_memory(base+"/"+stem+".yaml");auto base_problem=problem(track,base_memory,inferred,cap,previous);
           Control candidate{clamp(raw.steer,-.4,.4),clamp(raw.speed,0,cap)};
           failure_diagnostic={{"observation_time",t0},{"step",step},{"current_world_state",sim.state.z},{"current_footprint_margin_0",teacher_footprint(p,p.state,0)},{"current_footprint_margin_004",teacher_footprint(p,p.state,.04f)},
             {"base_only_footprint_margin_0",teacher_footprint(base_problem,base_problem.state,0)},{"base_only_footprint_margin_004",teacher_footprint(base_problem,base_problem.state,.04f)},
@@ -105,7 +115,7 @@ int main(int argc,char** argv){try{
       if(progress>best_progress+.5){best_progress=progress;last_advance=sim.stamp;}if(sim.stamp-last_advance>10){reason="stalled";break;}
     }
     double sum2=0;for(auto e:reference_error)sum2+=e*e;
-    json row={{"id",id},{"controller",controller},{"scenario",spec},{"checkpoint",checkpoint},{"reason",reason},{"steps",steps},{"collision",sim.collision},{"simulation_seconds",sim.stamp},{"track_length_m",length},{"progress_m",progress},{"lap_times_s",lap_times},{"completed_laps",lap_times.size()},{"peak_actual_speed_mps",peak},{"model_error_max",model_error},{"fallback_steps",fallback_steps},{"fallback_entries",fallback_entries},{"candidate_rejected_steps",rejected},{"command_clipped_steps",clipped},{"emergency_steps",emergency_steps},{"inference_ms",distribution(infer_ms)},{"control_ms",distribution(control_ms)},{"reference_error_m",distribution(reference_error)},{"reference_error_rms_m",sqrt(sum2/std::max(size_t(1),reference_error.size()))},{"synchronous",true},{"physics_dt",.01},{"control_dt",.05},{"obstacles",0},{"training_executed",false},{"trace",output+"/"+id+".csv"}};
+    json row={{"pose_source","lidar_static_map"},{"id",id},{"controller",controller},{"scenario",spec},{"checkpoint",checkpoint},{"reason",reason},{"steps",steps},{"collision",sim.collision},{"simulation_seconds",sim.stamp},{"track_length_m",length},{"progress_m",progress},{"lap_times_s",lap_times},{"completed_laps",lap_times.size()},{"peak_actual_speed_mps",peak},{"model_error_max",model_error},{"fallback_steps",fallback_steps},{"fallback_entries",fallback_entries},{"candidate_rejected_steps",rejected},{"command_clipped_steps",clipped},{"emergency_steps",emergency_steps},{"inference_ms",distribution(infer_ms)},{"control_ms",distribution(control_ms)},{"reference_error_m",distribution(reference_error)},{"reference_error_rms_m",sqrt(sum2/std::max(size_t(1),reference_error.size()))},{"synchronous",true},{"physics_dt",.01},{"control_dt",.05},{"obstacles",0},{"training_executed",false},{"trace",output+"/"+id+".csv"}};
     row["failure_diagnostic"]=failure_diagnostic;results.push_back(row);std::ofstream(output+"/summary.json")<<results.dump(2);
     std::cout<<"RESULT "<<id<<" "<<reason<<" laps="<<lap_times.size()<<" fallback="<<fallback_steps<<"/"<<steps<<std::endl;
   }

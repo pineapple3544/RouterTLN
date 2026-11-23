@@ -1,0 +1,131 @@
+{
+  "device": "cpu",
+  "teacher": false,
+  "cases": [
+    {
+      "map": "berlin",
+      "layout": 0,
+      "count": 3,
+      "full_lap": true,
+      "lap_planning": true,
+      "start": 37,
+      "stations": [
+        5.298022136174788,
+        12.295882752519706,
+        19.293757587369917
+      ],
+      "offsets": [
+        -0.0119,
+        -0.0857,
+        -0.0484
+      ],
+      "speed_cap": 3.0,
+      "sim_avoid_min": 2.7,
+      "sim_avoid_max": 3.0,
+      "laps": 3,
+      "seed": 12345,
+      "name": "random-2238863",
+      "ros_finish": true
+    },
+    {
+      "map": "berlin",
+      "layout": 0,
+      "count": 3,
+      "full_lap": true,
+      "lap_planning": true,
+      "start": 37,
+      "stations": [
+        17.394339198006687,
+        19.293757587369917,
+        21.19253905536544
+      ],
+      "offsets": [
+        -0.0114,
+        0.075,
+        -0.0114
+      ],
+      "speed_cap": 3.0,
+      "sim_avoid_min": 2.7,
+      "sim_avoid_max": 3.0,
+      "laps": 3,
+      "seed": 12345,
+      "name": "random-1846076",
+      "ros_finish": true
+    },
+    {
+      "map": "berlin",
+      "layout": 0,
+      "count": 3,
+      "full_lap": true,
+      "lap_planning": true,
+      "start": 37,
+      "stations": [
+        7.297342446409951,
+        14.39527175008781,
+        21.4924522225176
+      ],
+      "offsets": [
+        0.0327,
+        -0.0234,
+        -0.1
+      ],
+      "speed_cap": 3.0,
+      "sim_avoid_min": 2.7,
+      "sim_avoid_max": 3.0,
+      "laps": 3,
+      "seed": 12345,
+      "name": "random-9699447",
+      "ros_finish": true
+    },
+    {
+      "map": "berlin",
+      "layout": 0,
+      "count": 3,
+      "full_lap": true,
+      "lap_planning": true,
+      "start": 37,
+      "stations": [
+        9.296768013871864,
+        22.192501895545607,
+        35.08797348093779
+      ],
+      "offsets": [
+        0.0221,
+        0.0511,
+        0.0483
+      ],
+      "speed_cap": 3.0,
+      "sim_avoid_min": 2.7,
+      "sim_avoid_max": 3.0,
+      "laps": 3,
+      "seed": 12345,
+      "name": "random-9701112",
+      "ros_finish": true
+    },
+    {
+      "map": "berlin",
+      "layout": 0,
+      "count": 3,
+      "full_lap": true,
+      "lap_planning": true,
+      "start": 37,
+      "stations": [
+        21.692455244991564,
+        31.888917856452306,
+        42.085880529745126
+      ],
+      "offsets": [
+        -0.0216,
+        -0.0598,
+        -0.0952
+      ],
+      "speed_cap": 3.0,
+      "sim_avoid_min": 2.7,
+      "sim_avoid_max": 3.0,
+      "laps": 3,
+      "seed": 12345,
+      "name": "random-8181110",
+      "ros_finish": true
+    }
+  ]
+}

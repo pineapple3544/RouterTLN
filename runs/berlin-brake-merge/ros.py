@@ -15,15 +15,15 @@ LAYOUTS = {
     'mid-bends': (197, 40, [-.10, .0, .10]),
     'distributed': (102, 142, [.08, -.12, .04]),
 }
-if __name__ == '__main__':
+def main(catalog=LAYOUTS, domain_base=140):
     parser = argparse.ArgumentParser()
     parser.add_argument('output', type=Path)
-    parser.add_argument('--layouts', nargs='+', choices=list(LAYOUTS), default=list(LAYOUTS))
+    parser.add_argument('--layouts', nargs='+', choices=list(catalog), default=list(catalog))
     parser.add_argument('--spread-cores', action='store_true', help='Use one logical CPU per physical core')
     parser.add_argument('--repeats', type=int, choices=[1,2], default=2)
     parser.add_argument('--resume', action='store_true')
     args = parser.parse_args()
-    layouts = {name: LAYOUTS[name] for name in args.layouts}
+    layouts = {name: catalog[name] for name in args.layouts}
     out = args.output.resolve()
     out.relative_to(ROOT/'runs')
     out.mkdir(parents=True, exist_ok=args.resume)
@@ -49,12 +49,14 @@ if __name__ == '__main__':
             if args.resume and (out/(tag+'.csv')).exists():
                 assert '"iterations"' in (out/(tag+'-run.log')).read_text()
                 continue
-            env=dict(os.environ, ROS_DOMAIN_ID=str(140+(rep-1)*len(LAYOUTS)+ix),
+            env=dict(os.environ, ROS_DOMAIN_ID=str(domain_base+(rep-1)*len(catalog)+ix),
                 EL_MAP_DIR='/workspace/maps/berlin', EL_START_INDEX='37', EL_STOP_AFTER_LAPS='3',
                 EL_OBSTACLE_INDEX=str(first), EL_OBSTACLE_STRIDE=str(stride),
                 EL_OBSTACLE_OFFSETS=json.dumps(offsets), EL_LAP_PLANNING='true', EL_SPEED_CAP='3.0', EL_SIM_AVOID_MIN='2.7', EL_SIM_AVOID_MAX='3.0',
                 EL_AVOID_CHECKPOINT='/workspace/models/avoid-corridor-v2.pt',
                 OPENBLAS_NUM_THREADS='1', OMP_NUM_THREADS='1')
+            if os.environ.get('EL_TRACE_FIRST_REPEAT') == '1':
+                env['EL_CORRIDOR_TRACE'] = '1' if rep == 1 else '0'
             env.pop('EL_RACE_CHECKPOINT',None)
             if args.spread_cores and len(selected)>=4:
                 env['EL_SIM_CPUSET'] = ','.join(map(str, selected[:2]))
@@ -71,3 +73,7 @@ if __name__ == '__main__':
             print('END',tag,'runner',ret.returncode,'pose_probe',probe_rc,flush=True)
             if ret.returncode or probe_rc:
                 raise SystemExit('Trial infrastructure failed: '+tag)
+
+
+if __name__ == '__main__':
+    main()

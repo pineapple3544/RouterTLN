@@ -73,6 +73,7 @@ class Track {
   std::vector<Waypoint> points;
 };
 class Memory {
+  friend struct OfflineSnapshot;
  public:
   explicit Memory(const std::string& yaml);
   void update(const Scan&);
@@ -80,6 +81,7 @@ class Memory {
   void features(const State&,double,Observation&)const;
   void reset();
   size_t occupied()const;
+  std::vector<int> obstacle_cells()const;
   float at(float x,float y)const;
   float obstacle_at(float x,float y)const;
   size_t associated_wall_returns()const{return associated_wall_returns_;}
@@ -93,6 +95,8 @@ class Memory {
   std::vector<float> base_,odds_,feature_odds_;
   std::vector<double> seen_;
   std::vector<int> current_hits_;
+  std::vector<uint8_t> current_hit_mask_;
+  void replace_current_hits(std::vector<int> hits);
   size_t associated_wall_returns_=0;
   int index(float,float)const;
   float occupancy(int)const;

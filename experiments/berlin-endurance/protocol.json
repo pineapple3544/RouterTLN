@@ -1,0 +1,19 @@
+{
+  "candidate_cap_mps": 3.75,
+  "reference_cap_mps": 3.5,
+  "sim_avoid_min_mps": 2.7,
+  "sim_avoid_max_mps": 3.0,
+  "sensor_timeout_ms": 150,
+  "control_budget_ms": 25,
+  "duration_s": 180,
+  "lap_limit": null,
+  "hashes": {
+    "experiments/berlin-endurance/layouts.json": "6964d4640df1de05b63a8565dcd2dee808c9cbf4a5bfb12bfe3b97cf920639a1",
+    "experiments/berlin-passage/random-300.json": "37f91f3e6b6a1b846e02a946619db5bef4a89cc7935ef8140bc6ecc5306df26d",
+    "experiments/berlin-race-speed/ros-layouts.json": "05b25f02d1cc4a159bcae102577462b7ee78f488b777e787c608ca589a5e7ed2",
+    "include/el/section_router.hpp": "e2a9a0d05fd242b85f6e7483d7b359143eed19de92d4e01b91e601dcf1007b55",
+    "src/eval_avoid.cpp": "d898f961c0d7f95693e55df017167f6f5152dc5a088bac7d096942580d2c180c",
+    "models/avoid-corridor-v2.pt": "6754bf58549b40854652abd1f4d26af833453905342e8ecec5c4dc8982ec673f",
+    "models/race-berlin-wsp.pt": "da9f0c1783ed46552558f1c8a4f877dab6f487b88427201fd9b7c5f1ac858e10"
+  }
+}

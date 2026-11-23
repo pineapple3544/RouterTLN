@@ -1,0 +1,244 @@
+--- a/include/el/avoid_corridor.hpp
++++ b/include/el/avoid_corridor.hpp
+@@ -45,7 +45,8 @@
+     // Prefer a full corridor with reserve for steering and occupancy uncertainty.
+     // Ramp the extra margin ahead of the car so a narrow entry can open onto
+     // a wide exit. The ordinary clearance search remains available at a pinch.
+-    const Passage passage=prefer_reserve?preview_passage(track,start,car,memory):Passage{};
++    const Passage passage=prefer_reserve?preview_passage(track,start,car,memory,replay_line):Passage{};
++    passage_exit_=passage.valid?passage.exit:0.f;
+     // Do not switch sides just because the other side is representable on the
+     // coarse grid. Evaluate the narrow side on the same fine lattice first.
+     if(passage.valid){
+@@ -71,15 +72,16 @@
+       // the delayed steering and braking checks still validate each command.
+       if(trace){*trace=CorridorTrace{};trace->subdivisions=2;}
+       if(plan_lattice<2,3>(track,start,car,memory,replay_line,trace,false,passage))return true;
+-      if(plan_curved_entry(track,start,car,memory,trace))return true;
++      if(plan_curved_entry(track,start,car,memory,trace) ||
++         plan_curved_entry(track,start,car,memory,trace,true))return true;
+     }
+     valid_=false;return false;
+   }
+  private:
+   // Across an obstacle, check both the opening and its exit at every waypoint.
+   // A wide opening that closes a few rows later is a poor steering target.
+-  struct Passage {float offset=0,entry=0,exit=0;bool valid=false;};
+-  Passage preview_passage(const Track& track,int start,const State& car,const Memory& memory)const{
++  struct Passage {float offset=0,entry=0,exit=0,hit_center=0;bool valid=false,located=false;};
++  Passage preview_passage(const Track& track,int start,const State& car,const Memory& memory,const std::vector<float>* scout)const{
+     struct ObstacleLayer {
+       const Memory& map;
+       float at(float x,float y)const{return map.obstacle_at(x,y);}
+@@ -112,20 +114,67 @@
+     const size_t index=(start+first)%wp.size();
+     const float prior=valid_ && previous_.size()==wp.size() && previous_[index].stamp==generation_
+       ?previous_[index].d:lateral;
++    float proven=0;int observed=0;
++    if(scout){
++      for(int i=(first+last)/2;i<=last+2;++i){
++        const float d=(*scout)[(start+i)%wp.size()];
++        if(std::isfinite(d)){proven+=d;++observed;}
++      }
++      if(observed)proven/=observed;
++    }
+     float best=-std::numeric_limits<float>::infinity();
+     for(int j=0;j<cols;){
+       if(!open[j]){++j;continue;}
+       const int begin=j;
+       while(j<cols && open[j])++j;
+       const int width=j-begin;
+-      const float center=(.5f*(begin+j-1)-cols/2)*spacing;
++      float center=(.5f*(begin+j-1)-cols/2)*spacing;
++      float bonus=0;
++      if(observed && width>=4){
++        const float low=(begin+1-cols/2)*spacing,high=(j-2-cols/2)*spacing;
++        if(proven>=low && proven<=high){
++          bonus=width*spacing;
++          const float bend=wrap(wp[(start+10)%wp.size()].yaw-wp[start].yaw);
++          // The recorded line helps time an inward turn. On the outside
++          // keep the centre of the opening, where the wall margin is largest.
++          if(fabsf(bend)>.35f && bend*center>0)
++            center=.5f*(center+proven);
++          // For a close switchback, take the part of this open interval
++          // nearest the next confirmed crossing. This leaves travel for
++          // the lateral transition while keeping both ends of the gap clear.
++          const int lead_rows=int(std::ceil((.65f+.55f*car.v)/.1f));
++          for(int i=last+4;i<=last+4+lead_rows;++i){
++            const float later=(*scout)[(start+i)%wp.size()];
++            if(std::isfinite(later) && later*proven<0 && fabsf(later)>.18f && fabsf(proven)>.18f){
++              center=clamp(.5f*(center+later),low,high);
++              break;
++            }
++          }
++        }
++      }
+       // Prefer a reachable approach. One newly observed cell at the far
+       // edge should not reverse an already committed steering manoeuvre.
+-      const float score=width*spacing-.50f*fabsf(center-prior)-.20f*fabsf(center-lateral);
++      const float score=bonus+width*spacing-.50f*fabsf(center-prior)-.20f*fabsf(center-lateral);
+       if(score>best){
+         gate.offset=center;best=score;
+       }
+     }
++    // Estimate which side of the reference is actually occupied. A partially
++    // visible inside obstacle can initially make the inside opening look wide.
++    float left=-INFINITY,right=INFINITY;
++    for(int i=std::max(0,first-3);i<=last+3;++i){
++      const auto& w=wp[(start+i)%wp.size()];const auto& next=wp[(start+i+1)%wp.size()];
++      const float nx=-sinf(w.yaw),ny=cosf(w.yaw);
++      for(float t:{0.f,.25f,.5f,.75f}){
++        const float x=w.x+t*(next.x-w.x),y=w.y+t*(next.y-w.y);
++        for(int k=-20;k<=20;++k){
++          const float d=k*.02f;
++          if(memory.obstacle_at(x+nx*d,y+ny*d)>.5f){left=std::max(left,d);right=std::min(right,d);}
++        }
++      }
++    }
++    gate.located=right<=left;
++    if(gate.located)gate.hit_center=.5f*(right+left);
+     gate.valid=std::isfinite(best);
+     gate.entry=.10f*first;
+     gate.exit=.10f*(last+4);
+@@ -134,7 +183,7 @@
+   // Connect the measured entry pose to the previous downstream guide. The
+   // lattice uses a reference-aligned body at each row. In a tight bend its
+   // body corners can strike a wall that clears a car tangent to the curve.
+-  bool plan_curved_entry(const Track& track,int start,const State& car,const Memory& memory,CorridorTrace* trace){
++  bool plan_curved_entry(const Track& track,int start,const State& car,const Memory& memory,CorridorTrace* trace,bool tangent_join=false){
+     if(!valid_ || previous_.size()!=track.points.size())return false;
+     constexpr int samples=2*count-1;
+     const auto& wp=track.points;
+@@ -152,6 +201,7 @@
+     }
+     float best=std::numeric_limits<float>::infinity();
+     for(float length:{.8f,1.3f,1.6f,2.f,2.5f}){
++      const int join=std::clamp(int(std::lower_bound(arc.begin(),arc.end(),length)-arc.begin()),1,samples-2);
+       for(int col=-12;col<=12;++col){
+         const float goal=col*.10f;
+         for(int i=0;i<samples;++i){
+@@ -160,6 +210,21 @@
+           const float u=clamp((arc[i]-std::max(1.8f,length))/1.1f,0,1),merge=u*u*(3-2*u);
+           offset[i]=approach+(prior[i]-approach)*merge;
+           curve[i]={ref[i].x+nx[i]*offset[i],ref[i].y+ny[i]*offset[i]};
++        }
++        if(tangent_join){
++          // A narrow turn can have no reference-aligned transition, even
++          // though a tangent from the measured pose clears the occupied cells.
++          const State target=curve[join];
++          const float heading=atan2f(curve[join+1].y-target.y,curve[join+1].x-target.x);
++          const float scale=hypotf(target.x-car.x,target.y-car.y);
++          for(int i=1;i<join;++i){
++            const float t=clamp(arc[i]/arc[join],0.f,1.f);
++            const float u=1.f-t,blend=t*t*(3.f-2.f*t);
++            const float entry=scale*t*u*u,exit=-scale*t*t*u;
++            curve[i].x=car.x+(target.x-car.x)*blend+entry*cosf(car.yaw)+exit*cosf(heading);
++            curve[i].y=car.y+(target.y-car.y)*blend+entry*sinf(car.yaw)+exit*sinf(heading);
++            offset[i]=(curve[i].x-ref[i].x)*nx[i]+(curve[i].y-ref[i].y)*ny[i];
++          }
+         }
+         curve[0]=car;
+         float peak=0,effort=0;
+@@ -212,6 +277,21 @@
+       trace->reachable[0]=1u<<coarse(origin);
+       trace->fine_reachable[0][origin/32]|=1u<<(origin%32);
+     }
++    float gate_lead=std::max(.8f,.80f*car.v);
++    if(passage.valid){
++      // A lateral shift takes distance even at scout speed. A turn already
++      // consumes part of the available curvature before the car moves across.
++      const auto& turn=ref(5);
++      const float bend=wrap(turn.yaw-w.yaw);
++      const float shift=passage.offset-lateral;
++      if(passage.located && std::copysign(1.f,bend)*passage.hit_center<=.04f && bend*shift>0 && fabsf(bend)>.35f){
++        float arc=0;
++        for(int i=1;i<=5;++i)arc+=hypotf(ref(i).x-ref(i-1).x,ref(i).y-ref(i-1).y);
++        const float available=std::max(.30f,tanf(.4f)/.3302f-fabsf(bend)/std::max(.05f,arc));
++        const float distance=sqrtf(4*fabsf(shift)/available);
++        gate_lead=std::max(gate_lead,distance+.27f+.1f*car.v);
++      }
++    }
+     float ahead=0;
+     for(int i=1;i<count;++i){
+       auto& p=ref(i);
+@@ -273,8 +353,7 @@
+         const float shortfall=std::max(0.f,1-room[j]/.35f);
+         penalty+=12.f*shortfall*shortfall;
+         if(passage.valid){
+-          const float lead=std::max(.8f,.80f*car.v);
+-          const float approach=clamp(1-(passage.entry-ahead)/lead,0,1);
++          const float approach=clamp(1-(passage.entry-ahead)/gate_lead,0,1);
+           const float exit=clamp(1-(ahead-passage.exit)/.7f,0,1);
+           const float error=offset-passage.offset;
+           penalty+=48.f*approach*exit*error*error;
+@@ -391,7 +470,7 @@
+     const float turning=fabsf(wrap(path_[7].yaw-measured.yaw));
+     const int horizon=turning>.50f && std::abs(offsets_[7])>.12f
+       ?std::clamp(int(std::ceil(1.70f/(.01f*std::max(1.f,measured.v)))),50,140):50;
+-    auto score=[&](float steer){
++    auto score=[&](float steer,int steps,float pursuit,bool* contact=nullptr){
+       DynamicState state=initial;
+       float loss=2.f*(steer-policy.steer)*(steer-policy.steer);
+       State next=basic(initial);
+@@ -400,7 +479,7 @@
+       loss+=1000.f*braking_cost(next,.04f);
+       int segment=0;
+       float continuation=steer;
+-      for(int tick=1;tick<=horizon;++tick){
++      for(int tick=1;tick<=steps;++tick){
+         state=physics_step(state,{tick<=15?steer:continuation,policy.speed},Vehicle{});
+         if(tick%5)continue;
+         const State car=basic(state);
+@@ -422,9 +501,12 @@
+         }
+         segment=nearest;
+         loss+=best;
+-        if(footprint(memory,car,.065f)>.5f || gym_front_blocked(memory,car,.05f))loss+=12.f;
++        if(footprint(memory,car,.065f)>.5f || gym_front_blocked(memory,car,.05f)){
++          loss+=12.f;
++          if(contact)*contact=true;
++        }
+         if(footprint(memory,car,.13f)>.5f)loss+=.35f;
+-        float look=.65f;
++        float look=pursuit;
+         for(int j=nearest;j<count-1;++j){
+           const auto& a=path_[j];const auto& b=path_[j+1];
+           const float dx=b.x-a.x,dy=b.y-a.y,length=std::max(.001f,hypotf(dx,dy));
+@@ -440,11 +522,27 @@
+       }
+       return loss;
+     };
+-    float selected=policy.steer,best=score(selected);
++    bool nominal_contact=false;
++    float selected=policy.steer,best=score(selected,horizon,.65f,&nominal_contact);
+     for(int k=-4;k<=4;++k){
+       const float steer=.1f*k;
+-      const float loss=score(steer);
++      const float loss=score(steer,horizon,.65f);
+       if(loss<best){selected=steer;best=loss;}
++    }
++    if(nominal_contact && turning>.50f && passage_exit_>0.f &&
++       fabsf(selected-policy.steer)>.08f){
++      // The first clear arc may end outside an opening. Compare continuations
++      // through the observed gate, including the rear of the vehicle.
++      const float speed=std::max(.6f,std::min(policy.speed,measured.v));
++      const int through=std::clamp(int(std::ceil((passage_exit_+.35f)/(.01f*speed))),horizon,320);
++      best=std::numeric_limits<float>::infinity();
++      for(float look:{.4f,.65f}){
++        for(int k=-4;k<=5;++k){
++          const float steer=k==5?policy.steer:.1f*k;
++          const float loss=score(steer,through,look);
++          if(loss<best){selected=steer;best=loss;}
++        }
++      }
+     }
+     return selected;
+   }
+@@ -489,6 +587,7 @@
+   std::vector<Offset> previous_;
+   uint64_t generation_=0;
+   bool valid_=false;
++  float passage_exit_=0;
+   std::array<State,count> path_{};
+   std::array<float,count> offsets_{};
+ };

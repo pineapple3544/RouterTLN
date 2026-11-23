@@ -1,0 +1,34 @@
+[
+  {
+    "repeat": "random-625657002-1",
+    "ros_first_emergency_m": 6.597551,
+    "reason": "no_corridor",
+    "compute_ms": 2.037313,
+    "ros_estimated_speed": 1.16891,
+    "ros_measured_speed": 1.1349017533457606,
+    "ros_position_error_m": 0.03723586462966576,
+    "offline_at_nearest_progress": {
+      "s": 6.605605928337246,
+      "reason": "hold",
+      "speed": 1.3849457502365112,
+      "mode": 1
+    },
+    "ros_previous_steer": 0.1
+  },
+  {
+    "repeat": "random-625657002-2",
+    "ros_first_emergency_m": 6.397619,
+    "reason": "no_corridor",
+    "compute_ms": 2.507686,
+    "ros_estimated_speed": 0.943251,
+    "ros_measured_speed": 1.0258250283047405,
+    "ros_position_error_m": 0.05237043829761988,
+    "offline_at_nearest_progress": {
+      "s": 6.397618394587541,
+      "reason": "hold",
+      "speed": 1.4505701065063477,
+      "mode": 1
+    },
+    "ros_previous_steer": 0.1
+  }
+]

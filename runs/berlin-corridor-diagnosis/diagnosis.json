@@ -1,0 +1,218 @@
+{
+  "original": {
+    "observations": {
+      "previous": {
+        "step": 1195,
+        "s": 53.682,
+        "pose": [
+          3.4764952659606934,
+          -18.07884407043457,
+          2.886000871658325
+        ],
+        "origin": -2,
+        "first_empty": -1,
+        "dead": {},
+        "mask_mismatches": 0,
+        "critical": [],
+        "cells": 80,
+        "far_cells": 3,
+        "lateral_m": -0.1956726479932179,
+        "heading_error_rad": -0.04847598075866699
+      },
+      "failure": {
+        "step": 1196,
+        "s": 53.782,
+        "pose": [
+          3.4006311893463135,
+          -18.051048278808594,
+          2.793985605239868
+        ],
+        "origin": -2,
+        "first_empty": 1,
+        "dead": {
+          "full": 1,
+          "near": 1
+        },
+        "mask_mismatches": 0,
+        "critical": [
+          {
+            "col": -3,
+            "wall": 0,
+            "points": [
+              [
+                48904,
+                0.018
+              ]
+            ]
+          },
+          {
+            "col": -2,
+            "wall": 0,
+            "points": [
+              [
+                47703,
+                0.0
+              ],
+              [
+                48904,
+                0.018
+              ]
+            ]
+          },
+          {
+            "col": -1,
+            "wall": 0,
+            "points": [
+              [
+                46502,
+                0.0
+              ],
+              [
+                47703,
+                0.0
+              ],
+              [
+                48904,
+                0.018
+              ]
+            ]
+          }
+        ],
+        "cells": 77,
+        "far_cells": 0,
+        "lateral_m": -0.2031092641451152,
+        "heading_error_rad": -0.08377814292907715
+      },
+      "complete": {
+        "step": 1234,
+        "s": 53.782,
+        "pose": [
+          3.3163137435913086,
+          -18.6683349609375,
+          -2.8863914012908936
+        ],
+        "origin": 4,
+        "first_empty": -1,
+        "dead": {},
+        "mask_mismatches": 0,
+        "critical": [],
+        "cells": 81,
+        "far_cells": 1,
+        "lateral_m": 0.4148066181866492,
+        "heading_error_rad": 0.5190301577197474
+      }
+    },
+    "crossed_first_empty": {
+      "failed_pose_failed_grid": 1,
+      "failed_pose_completed_grid": -1,
+      "completed_pose_failed_grid": -1,
+      "completed_pose_completed_grid": -1
+    }
+  },
+  "distributed": {
+    "observations": {
+      "previous": {
+        "step": 516,
+        "s": 19.993,
+        "pose": [
+          -0.5343151092529297,
+          -4.260903835296631,
+          1.7705639600753784
+        ],
+        "origin": -3,
+        "first_empty": -1,
+        "dead": {},
+        "mask_mismatches": 0,
+        "critical": [],
+        "cells": 51,
+        "far_cells": 8,
+        "lateral_m": -0.29097379967704384,
+        "heading_error_rad": -0.35269320011138916
+      },
+      "failure": {
+        "step": 517,
+        "s": 20.093,
+        "pose": [
+          -0.5449675917625427,
+          -4.223875045776367,
+          1.7884812355041504
+        ],
+        "origin": -3,
+        "first_empty": 1,
+        "dead": {
+          "full": 1,
+          "near": 1
+        },
+        "mask_mismatches": 0,
+        "critical": [
+          {
+            "col": -4,
+            "wall": 0,
+            "points": [
+              [
+                260605,
+                0.0
+              ]
+            ]
+          },
+          {
+            "col": -3,
+            "wall": 0,
+            "points": [
+              [
+                259404,
+                0.0
+              ],
+              [
+                260605,
+                0.0
+              ]
+            ]
+          },
+          {
+            "col": -2,
+            "wall": 0,
+            "points": [
+              [
+                257604,
+                0.025
+              ],
+              [
+                260605,
+                0.0
+              ]
+            ]
+          }
+        ],
+        "cells": 54,
+        "far_cells": 10,
+        "lateral_m": -0.30389872529069556,
+        "heading_error_rad": -0.43079113960266113
+      },
+      "complete": {
+        "step": 533,
+        "s": 20.093,
+        "pose": [
+          -0.4212331771850586,
+          -4.158991813659668,
+          1.7696619033813477
+        ],
+        "origin": -4,
+        "first_empty": -1,
+        "dead": {},
+        "mask_mismatches": 0,
+        "critical": [],
+        "cells": 47,
+        "far_cells": 3,
+        "lateral_m": -0.44170337934135545,
+        "heading_error_rad": -0.44961047172546387
+      }
+    },
+    "crossed_first_empty": {
+      "failed_pose_failed_grid": 1,
+      "failed_pose_completed_grid": 1,
+      "completed_pose_failed_grid": -1,
+      "completed_pose_completed_grid": -1
+    }
+  }
+}

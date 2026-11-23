@@ -1,0 +1,58 @@
+{
+  "39103": {
+    "failed_run": "before-contact/random-39103-2.csv",
+    "passed_section_run": "before-contact/random-39103-2.csv",
+    "failure_progress": 70.27639770507812,
+    "passing_progress": 21.492456436157227,
+    "controller_brake_contact_pose": [
+      -2.6352453231811523,
+      -3.6820504665374756,
+      3.1224074363708496
+    ],
+    "rejected_steer": -0.07617677003145218,
+    "first_empty": -1,
+    "passed_first_empty": -1,
+    "failure": {
+      "lateral_m": -0.2731667621102331,
+      "yaw_relative_rad": 0.12753707567323858
+    },
+    "passing": {
+      "lateral_m": -0.2694233530269947,
+      "yaw_relative_rad": -0.030602693557739258
+    },
+    "brake_replay_hit_cells_xy_static": [
+      [
+        -2.9852320000000008,
+        -3.836634400000001,
+        false
+      ]
+    ],
+    "after_at_same_station": {
+      "lateral_m": -0.28722772656348144,
+      "yaw_relative_rad": -0.057723283767700195
+    }
+  },
+  "39104": {
+    "failed_run": "before-3/random-39104-1.csv",
+    "passed_section_run": "before-extra/random-39104-2.csv",
+    "failure_progress": 73.77508544921875,
+    "passing_progress": 73.77508544921875,
+    "controller_brake_contact_pose": null,
+    "rejected_steer": null,
+    "first_empty": 2,
+    "passed_first_empty": -1,
+    "failure": {
+      "lateral_m": -0.14451618802003288,
+      "yaw_relative_rad": -0.3615309000015259
+    },
+    "passing": {
+      "lateral_m": 0.6838598499460395,
+      "yaw_relative_rad": 0.1695178747177124
+    },
+    "brake_replay_hit_cells_xy_static": [],
+    "after_at_same_station": {
+      "lateral_m": 0.6278425072504443,
+      "yaw_relative_rad": 0.04798758029937744
+    }
+  }
+}

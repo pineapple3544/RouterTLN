@@ -1,0 +1,832 @@
+{
+  "device": "cpu",
+  "teacher": false,
+  "cases": [
+    {
+      "map": "berlin",
+      "layout": 0,
+      "count": 3,
+      "full_lap": true,
+      "lap_planning": true,
+      "start": 37,
+      "stations": [
+        19.293757587369917,
+        23.59173262391897,
+        27.89015644939439
+      ],
+      "offsets": [
+        -0.0411,
+        0.06,
+        0.0702
+      ],
+      "speed_cap": 3.0,
+      "sim_avoid_min": 2.7,
+      "sim_avoid_max": 3.0,
+      "laps": 3,
+      "seed": 12345,
+      "name": "lat-0.06_yaw-6_v+0.00",
+      "ros_finish": true,
+      "checkpoint": {
+        "restore": "/workspace/runs/berlin-offline-39204/verified/approach.cbor",
+        "perturb": {
+          "lateral_m": -0.06,
+          "yaw_rad": -0.10471975511965978,
+          "speed_mps": 0
+        }
+      }
+    },
+    {
+      "map": "berlin",
+      "layout": 0,
+      "count": 3,
+      "full_lap": true,
+      "lap_planning": true,
+      "start": 37,
+      "stations": [
+        19.293757587369917,
+        23.59173262391897,
+        27.89015644939439
+      ],
+      "offsets": [
+        -0.0411,
+        0.06,
+        0.0702
+      ],
+      "speed_cap": 3.0,
+      "sim_avoid_min": 2.7,
+      "sim_avoid_max": 3.0,
+      "laps": 3,
+      "seed": 12345,
+      "name": "lat-0.06_yaw-3_v+0.00",
+      "ros_finish": true,
+      "checkpoint": {
+        "restore": "/workspace/runs/berlin-offline-39204/verified/approach.cbor",
+        "perturb": {
+          "lateral_m": -0.06,
+          "yaw_rad": -0.05235987755982989,
+          "speed_mps": 0
+        }
+      }
+    },
+    {
+      "map": "berlin",
+      "layout": 0,
+      "count": 3,
+      "full_lap": true,
+      "lap_planning": true,
+      "start": 37,
+      "stations": [
+        19.293757587369917,
+        23.59173262391897,
+        27.89015644939439
+      ],
+      "offsets": [
+        -0.0411,
+        0.06,
+        0.0702
+      ],
+      "speed_cap": 3.0,
+      "sim_avoid_min": 2.7,
+      "sim_avoid_max": 3.0,
+      "laps": 3,
+      "seed": 12345,
+      "name": "lat-0.06_yaw+0_v+0.00",
+      "ros_finish": true,
+      "checkpoint": {
+        "restore": "/workspace/runs/berlin-offline-39204/verified/approach.cbor",
+        "perturb": {
+          "lateral_m": -0.06,
+          "yaw_rad": 0.0,
+          "speed_mps": 0
+        }
+      }
+    },
+    {
+      "map": "berlin",
+      "layout": 0,
+      "count": 3,
+      "full_lap": true,
+      "lap_planning": true,
+      "start": 37,
+      "stations": [
+        19.293757587369917,
+        23.59173262391897,
+        27.89015644939439
+      ],
+      "offsets": [
+        -0.0411,
+        0.06,
+        0.0702
+      ],
+      "speed_cap": 3.0,
+      "sim_avoid_min": 2.7,
+      "sim_avoid_max": 3.0,
+      "laps": 3,
+      "seed": 12345,
+      "name": "lat-0.06_yaw+3_v+0.00",
+      "ros_finish": true,
+      "checkpoint": {
+        "restore": "/workspace/runs/berlin-offline-39204/verified/approach.cbor",
+        "perturb": {
+          "lateral_m": -0.06,
+          "yaw_rad": 0.05235987755982989,
+          "speed_mps": 0
+        }
+      }
+    },
+    {
+      "map": "berlin",
+      "layout": 0,
+      "count": 3,
+      "full_lap": true,
+      "lap_planning": true,
+      "start": 37,
+      "stations": [
+        19.293757587369917,
+        23.59173262391897,
+        27.89015644939439
+      ],
+      "offsets": [
+        -0.0411,
+        0.06,
+        0.0702
+      ],
+      "speed_cap": 3.0,
+      "sim_avoid_min": 2.7,
+      "sim_avoid_max": 3.0,
+      "laps": 3,
+      "seed": 12345,
+      "name": "lat-0.06_yaw+6_v+0.00",
+      "ros_finish": true,
+      "checkpoint": {
+        "restore": "/workspace/runs/berlin-offline-39204/verified/approach.cbor",
+        "perturb": {
+          "lateral_m": -0.06,
+          "yaw_rad": 0.10471975511965978,
+          "speed_mps": 0
+        }
+      }
+    },
+    {
+      "map": "berlin",
+      "layout": 0,
+      "count": 3,
+      "full_lap": true,
+      "lap_planning": true,
+      "start": 37,
+      "stations": [
+        19.293757587369917,
+        23.59173262391897,
+        27.89015644939439
+      ],
+      "offsets": [
+        -0.0411,
+        0.06,
+        0.0702
+      ],
+      "speed_cap": 3.0,
+      "sim_avoid_min": 2.7,
+      "sim_avoid_max": 3.0,
+      "laps": 3,
+      "seed": 12345,
+      "name": "lat-0.03_yaw-6_v+0.00",
+      "ros_finish": true,
+      "checkpoint": {
+        "restore": "/workspace/runs/berlin-offline-39204/verified/approach.cbor",
+        "perturb": {
+          "lateral_m": -0.03,
+          "yaw_rad": -0.10471975511965978,
+          "speed_mps": 0
+        }
+      }
+    },
+    {
+      "map": "berlin",
+      "layout": 0,
+      "count": 3,
+      "full_lap": true,
+      "lap_planning": true,
+      "start": 37,
+      "stations": [
+        19.293757587369917,
+        23.59173262391897,
+        27.89015644939439
+      ],
+      "offsets": [
+        -0.0411,
+        0.06,
+        0.0702
+      ],
+      "speed_cap": 3.0,
+      "sim_avoid_min": 2.7,
+      "sim_avoid_max": 3.0,
+      "laps": 3,
+      "seed": 12345,
+      "name": "lat-0.03_yaw-3_v+0.00",
+      "ros_finish": true,
+      "checkpoint": {
+        "restore": "/workspace/runs/berlin-offline-39204/verified/approach.cbor",
+        "perturb": {
+          "lateral_m": -0.03,
+          "yaw_rad": -0.05235987755982989,
+          "speed_mps": 0
+        }
+      }
+    },
+    {
+      "map": "berlin",
+      "layout": 0,
+      "count": 3,
+      "full_lap": true,
+      "lap_planning": true,
+      "start": 37,
+      "stations": [
+        19.293757587369917,
+        23.59173262391897,
+        27.89015644939439
+      ],
+      "offsets": [
+        -0.0411,
+        0.06,
+        0.0702
+      ],
+      "speed_cap": 3.0,
+      "sim_avoid_min": 2.7,
+      "sim_avoid_max": 3.0,
+      "laps": 3,
+      "seed": 12345,
+      "name": "lat-0.03_yaw+0_v+0.00",
+      "ros_finish": true,
+      "checkpoint": {
+        "restore": "/workspace/runs/berlin-offline-39204/verified/approach.cbor",
+        "perturb": {
+          "lateral_m": -0.03,
+          "yaw_rad": 0.0,
+          "speed_mps": 0
+        }
+      }
+    },
+    {
+      "map": "berlin",
+      "layout": 0,
+      "count": 3,
+      "full_lap": true,
+      "lap_planning": true,
+      "start": 37,
+      "stations": [
+        19.293757587369917,
+        23.59173262391897,
+        27.89015644939439
+      ],
+      "offsets": [
+        -0.0411,
+        0.06,
+        0.0702
+      ],
+      "speed_cap": 3.0,
+      "sim_avoid_min": 2.7,
+      "sim_avoid_max": 3.0,
+      "laps": 3,
+      "seed": 12345,
+      "name": "lat-0.03_yaw+3_v+0.00",
+      "ros_finish": true,
+      "checkpoint": {
+        "restore": "/workspace/runs/berlin-offline-39204/verified/approach.cbor",
+        "perturb": {
+          "lateral_m": -0.03,
+          "yaw_rad": 0.05235987755982989,
+          "speed_mps": 0
+        }
+      }
+    },
+    {
+      "map": "berlin",
+      "layout": 0,
+      "count": 3,
+      "full_lap": true,
+      "lap_planning": true,
+      "start": 37,
+      "stations": [
+        19.293757587369917,
+        23.59173262391897,
+        27.89015644939439
+      ],
+      "offsets": [
+        -0.0411,
+        0.06,
+        0.0702
+      ],
+      "speed_cap": 3.0,
+      "sim_avoid_min": 2.7,
+      "sim_avoid_max": 3.0,
+      "laps": 3,
+      "seed": 12345,
+      "name": "lat-0.03_yaw+6_v+0.00",
+      "ros_finish": true,
+      "checkpoint": {
+        "restore": "/workspace/runs/berlin-offline-39204/verified/approach.cbor",
+        "perturb": {
+          "lateral_m": -0.03,
+          "yaw_rad": 0.10471975511965978,
+          "speed_mps": 0
+        }
+      }
+    },
+    {
+      "map": "berlin",
+      "layout": 0,
+      "count": 3,
+      "full_lap": true,
+      "lap_planning": true,
+      "start": 37,
+      "stations": [
+        19.293757587369917,
+        23.59173262391897,
+        27.89015644939439
+      ],
+      "offsets": [
+        -0.0411,
+        0.06,
+        0.0702
+      ],
+      "speed_cap": 3.0,
+      "sim_avoid_min": 2.7,
+      "sim_avoid_max": 3.0,
+      "laps": 3,
+      "seed": 12345,
+      "name": "lat+0.00_yaw-6_v+0.00",
+      "ros_finish": true,
+      "checkpoint": {
+        "restore": "/workspace/runs/berlin-offline-39204/verified/approach.cbor",
+        "perturb": {
+          "lateral_m": 0,
+          "yaw_rad": -0.10471975511965978,
+          "speed_mps": 0
+        }
+      }
+    },
+    {
+      "map": "berlin",
+      "layout": 0,
+      "count": 3,
+      "full_lap": true,
+      "lap_planning": true,
+      "start": 37,
+      "stations": [
+        19.293757587369917,
+        23.59173262391897,
+        27.89015644939439
+      ],
+      "offsets": [
+        -0.0411,
+        0.06,
+        0.0702
+      ],
+      "speed_cap": 3.0,
+      "sim_avoid_min": 2.7,
+      "sim_avoid_max": 3.0,
+      "laps": 3,
+      "seed": 12345,
+      "name": "lat+0.00_yaw-3_v+0.00",
+      "ros_finish": true,
+      "checkpoint": {
+        "restore": "/workspace/runs/berlin-offline-39204/verified/approach.cbor",
+        "perturb": {
+          "lateral_m": 0,
+          "yaw_rad": -0.05235987755982989,
+          "speed_mps": 0
+        }
+      }
+    },
+    {
+      "map": "berlin",
+      "layout": 0,
+      "count": 3,
+      "full_lap": true,
+      "lap_planning": true,
+      "start": 37,
+      "stations": [
+        19.293757587369917,
+        23.59173262391897,
+        27.89015644939439
+      ],
+      "offsets": [
+        -0.0411,
+        0.06,
+        0.0702
+      ],
+      "speed_cap": 3.0,
+      "sim_avoid_min": 2.7,
+      "sim_avoid_max": 3.0,
+      "laps": 3,
+      "seed": 12345,
+      "name": "lat+0.00_yaw+0_v+0.00",
+      "ros_finish": true,
+      "checkpoint": {
+        "restore": "/workspace/runs/berlin-offline-39204/verified/approach.cbor",
+        "perturb": {
+          "lateral_m": 0,
+          "yaw_rad": 0.0,
+          "speed_mps": 0
+        },
+        "ticks": "/workspace/runs/berlin-offline-39204/verified/unchanged-ticks.jsonl"
+      }
+    },
+    {
+      "map": "berlin",
+      "layout": 0,
+      "count": 3,
+      "full_lap": true,
+      "lap_planning": true,
+      "start": 37,
+      "stations": [
+        19.293757587369917,
+        23.59173262391897,
+        27.89015644939439
+      ],
+      "offsets": [
+        -0.0411,
+        0.06,
+        0.0702
+      ],
+      "speed_cap": 3.0,
+      "sim_avoid_min": 2.7,
+      "sim_avoid_max": 3.0,
+      "laps": 3,
+      "seed": 12345,
+      "name": "lat+0.00_yaw+3_v+0.00",
+      "ros_finish": true,
+      "checkpoint": {
+        "restore": "/workspace/runs/berlin-offline-39204/verified/approach.cbor",
+        "perturb": {
+          "lateral_m": 0,
+          "yaw_rad": 0.05235987755982989,
+          "speed_mps": 0
+        }
+      }
+    },
+    {
+      "map": "berlin",
+      "layout": 0,
+      "count": 3,
+      "full_lap": true,
+      "lap_planning": true,
+      "start": 37,
+      "stations": [
+        19.293757587369917,
+        23.59173262391897,
+        27.89015644939439
+      ],
+      "offsets": [
+        -0.0411,
+        0.06,
+        0.0702
+      ],
+      "speed_cap": 3.0,
+      "sim_avoid_min": 2.7,
+      "sim_avoid_max": 3.0,
+      "laps": 3,
+      "seed": 12345,
+      "name": "lat+0.00_yaw+6_v+0.00",
+      "ros_finish": true,
+      "checkpoint": {
+        "restore": "/workspace/runs/berlin-offline-39204/verified/approach.cbor",
+        "perturb": {
+          "lateral_m": 0,
+          "yaw_rad": 0.10471975511965978,
+          "speed_mps": 0
+        }
+      }
+    },
+    {
+      "map": "berlin",
+      "layout": 0,
+      "count": 3,
+      "full_lap": true,
+      "lap_planning": true,
+      "start": 37,
+      "stations": [
+        19.293757587369917,
+        23.59173262391897,
+        27.89015644939439
+      ],
+      "offsets": [
+        -0.0411,
+        0.06,
+        0.0702
+      ],
+      "speed_cap": 3.0,
+      "sim_avoid_min": 2.7,
+      "sim_avoid_max": 3.0,
+      "laps": 3,
+      "seed": 12345,
+      "name": "lat+0.03_yaw-6_v+0.00",
+      "ros_finish": true,
+      "checkpoint": {
+        "restore": "/workspace/runs/berlin-offline-39204/verified/approach.cbor",
+        "perturb": {
+          "lateral_m": 0.03,
+          "yaw_rad": -0.10471975511965978,
+          "speed_mps": 0
+        }
+      }
+    },
+    {
+      "map": "berlin",
+      "layout": 0,
+      "count": 3,
+      "full_lap": true,
+      "lap_planning": true,
+      "start": 37,
+      "stations": [
+        19.293757587369917,
+        23.59173262391897,
+        27.89015644939439
+      ],
+      "offsets": [
+        -0.0411,
+        0.06,
+        0.0702
+      ],
+      "speed_cap": 3.0,
+      "sim_avoid_min": 2.7,
+      "sim_avoid_max": 3.0,
+      "laps": 3,
+      "seed": 12345,
+      "name": "lat+0.03_yaw-3_v+0.00",
+      "ros_finish": true,
+      "checkpoint": {
+        "restore": "/workspace/runs/berlin-offline-39204/verified/approach.cbor",
+        "perturb": {
+          "lateral_m": 0.03,
+          "yaw_rad": -0.05235987755982989,
+          "speed_mps": 0
+        }
+      }
+    },
+    {
+      "map": "berlin",
+      "layout": 0,
+      "count": 3,
+      "full_lap": true,
+      "lap_planning": true,
+      "start": 37,
+      "stations": [
+        19.293757587369917,
+        23.59173262391897,
+        27.89015644939439
+      ],
+      "offsets": [
+        -0.0411,
+        0.06,
+        0.0702
+      ],
+      "speed_cap": 3.0,
+      "sim_avoid_min": 2.7,
+      "sim_avoid_max": 3.0,
+      "laps": 3,
+      "seed": 12345,
+      "name": "lat+0.03_yaw+0_v+0.00",
+      "ros_finish": true,
+      "checkpoint": {
+        "restore": "/workspace/runs/berlin-offline-39204/verified/approach.cbor",
+        "perturb": {
+          "lateral_m": 0.03,
+          "yaw_rad": 0.0,
+          "speed_mps": 0
+        }
+      }
+    },
+    {
+      "map": "berlin",
+      "layout": 0,
+      "count": 3,
+      "full_lap": true,
+      "lap_planning": true,
+      "start": 37,
+      "stations": [
+        19.293757587369917,
+        23.59173262391897,
+        27.89015644939439
+      ],
+      "offsets": [
+        -0.0411,
+        0.06,
+        0.0702
+      ],
+      "speed_cap": 3.0,
+      "sim_avoid_min": 2.7,
+      "sim_avoid_max": 3.0,
+      "laps": 3,
+      "seed": 12345,
+      "name": "lat+0.03_yaw+3_v+0.00",
+      "ros_finish": true,
+      "checkpoint": {
+        "restore": "/workspace/runs/berlin-offline-39204/verified/approach.cbor",
+        "perturb": {
+          "lateral_m": 0.03,
+          "yaw_rad": 0.05235987755982989,
+          "speed_mps": 0
+        }
+      }
+    },
+    {
+      "map": "berlin",
+      "layout": 0,
+      "count": 3,
+      "full_lap": true,
+      "lap_planning": true,
+      "start": 37,
+      "stations": [
+        19.293757587369917,
+        23.59173262391897,
+        27.89015644939439
+      ],
+      "offsets": [
+        -0.0411,
+        0.06,
+        0.0702
+      ],
+      "speed_cap": 3.0,
+      "sim_avoid_min": 2.7,
+      "sim_avoid_max": 3.0,
+      "laps": 3,
+      "seed": 12345,
+      "name": "lat+0.03_yaw+6_v+0.00",
+      "ros_finish": true,
+      "checkpoint": {
+        "restore": "/workspace/runs/berlin-offline-39204/verified/approach.cbor",
+        "perturb": {
+          "lateral_m": 0.03,
+          "yaw_rad": 0.10471975511965978,
+          "speed_mps": 0
+        }
+      }
+    },
+    {
+      "map": "berlin",
+      "layout": 0,
+      "count": 3,
+      "full_lap": true,
+      "lap_planning": true,
+      "start": 37,
+      "stations": [
+        19.293757587369917,
+        23.59173262391897,
+        27.89015644939439
+      ],
+      "offsets": [
+        -0.0411,
+        0.06,
+        0.0702
+      ],
+      "speed_cap": 3.0,
+      "sim_avoid_min": 2.7,
+      "sim_avoid_max": 3.0,
+      "laps": 3,
+      "seed": 12345,
+      "name": "lat+0.06_yaw-6_v+0.00",
+      "ros_finish": true,
+      "checkpoint": {
+        "restore": "/workspace/runs/berlin-offline-39204/verified/approach.cbor",
+        "perturb": {
+          "lateral_m": 0.06,
+          "yaw_rad": -0.10471975511965978,
+          "speed_mps": 0
+        }
+      }
+    },
+    {
+      "map": "berlin",
+      "layout": 0,
+      "count": 3,
+      "full_lap": true,
+      "lap_planning": true,
+      "start": 37,
+      "stations": [
+        19.293757587369917,
+        23.59173262391897,
+        27.89015644939439
+      ],
+      "offsets": [
+        -0.0411,
+        0.06,
+        0.0702
+      ],
+      "speed_cap": 3.0,
+      "sim_avoid_min": 2.7,
+      "sim_avoid_max": 3.0,
+      "laps": 3,
+      "seed": 12345,
+      "name": "lat+0.06_yaw-3_v+0.00",
+      "ros_finish": true,
+      "checkpoint": {
+        "restore": "/workspace/runs/berlin-offline-39204/verified/approach.cbor",
+        "perturb": {
+          "lateral_m": 0.06,
+          "yaw_rad": -0.05235987755982989,
+          "speed_mps": 0
+        }
+      }
+    },
+    {
+      "map": "berlin",
+      "layout": 0,
+      "count": 3,
+      "full_lap": true,
+      "lap_planning": true,
+      "start": 37,
+      "stations": [
+        19.293757587369917,
+        23.59173262391897,
+        27.89015644939439
+      ],
+      "offsets": [
+        -0.0411,
+        0.06,
+        0.0702
+      ],
+      "speed_cap": 3.0,
+      "sim_avoid_min": 2.7,
+      "sim_avoid_max": 3.0,
+      "laps": 3,
+      "seed": 12345,
+      "name": "lat+0.06_yaw+0_v+0.00",
+      "ros_finish": true,
+      "checkpoint": {
+        "restore": "/workspace/runs/berlin-offline-39204/verified/approach.cbor",
+        "perturb": {
+          "lateral_m": 0.06,
+          "yaw_rad": 0.0,
+          "speed_mps": 0
+        }
+      }
+    },
+    {
+      "map": "berlin",
+      "layout": 0,
+      "count": 3,
+      "full_lap": true,
+      "lap_planning": true,
+      "start": 37,
+      "stations": [
+        19.293757587369917,
+        23.59173262391897,
+        27.89015644939439
+      ],
+      "offsets": [
+        -0.0411,
+        0.06,
+        0.0702
+      ],
+      "speed_cap": 3.0,
+      "sim_avoid_min": 2.7,
+      "sim_avoid_max": 3.0,
+      "laps": 3,
+      "seed": 12345,
+      "name": "lat+0.06_yaw+3_v+0.00",
+      "ros_finish": true,
+      "checkpoint": {
+        "restore": "/workspace/runs/berlin-offline-39204/verified/approach.cbor",
+        "perturb": {
+          "lateral_m": 0.06,
+          "yaw_rad": 0.05235987755982989,
+          "speed_mps": 0
+        }
+      }
+    },
+    {
+      "map": "berlin",
+      "layout": 0,
+      "count": 3,
+      "full_lap": true,
+      "lap_planning": true,
+      "start": 37,
+      "stations": [
+        19.293757587369917,
+        23.59173262391897,
+        27.89015644939439
+      ],
+      "offsets": [
+        -0.0411,
+        0.06,
+        0.0702
+      ],
+      "speed_cap": 3.0,
+      "sim_avoid_min": 2.7,
+      "sim_avoid_max": 3.0,
+      "laps": 3,
+      "seed": 12345,
+      "name": "lat+0.06_yaw+6_v+0.00",
+      "ros_finish": true,
+      "checkpoint": {
+        "restore": "/workspace/runs/berlin-offline-39204/verified/approach.cbor",
+        "perturb": {
+          "lateral_m": 0.06,
+          "yaw_rad": 0.10471975511965978,
+          "speed_mps": 0
+        }
+      }
+    }
+  ]
+}
