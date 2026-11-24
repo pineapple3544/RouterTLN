@@ -173,7 +173,11 @@ json run(const std::string& map,int layout,int count,Policy& policy,bool baselin
   double previous_sector_cross=0;
   json authority={{"avoid_policy_steps",0},{"avoid_preview_steps",0},{"avoid_fallback_steps",0},
                   {"avoid_final_steer_changed_steps",0},{"avoid_speed_above_2_7_steps",0},
-                  {"avoid_speed_at_least_3_7_steps",0},{"phase_steps",json::array({0,0,0,0})}};
+                  {"avoid_speed_at_least_3_7_steps",0},{"phase_steps",json::array({0,0,0,0})},
+                  {"flying_avoid_policy_steps",0},{"flying_avoid_preview_steps",0},
+                  {"flying_avoid_fallback_steps",0},{"flying_avoid_final_steer_changed_steps",0},
+                  {"flying_avoid_speed_above_2_7_steps",0},{"flying_avoid_speed_at_least_3_7_steps",0},
+                  {"flying_avoid_abs_steer_change_sum_rad",0.0}};
   auto increment=[&](const char* key){authority[key]=authority[key].get<int>()+1;};
   json contact=nullptr;
   const bool trace_avoid=spec.value("trace_avoid",false);
@@ -237,7 +241,11 @@ json run(const std::string& map,int layout,int count,Policy& policy,bool baselin
     a.field("min_speed",min_moving_speed);a.field("laps",lap_results);a.field("last_cross",previous_cross);
     a.field("lap",lap);
     if(!reading || data.contains("authority")){
-      a.field("authority",authority);a.field("sectors",sectors);a.field("previous_sector_cross",previous_sector_cross);
+      // Keep newly introduced counters initialized when restoring an older
+      // compatible producer's snapshot.
+      if(reading){auto defaults=authority;a.field("authority",authority);defaults.update(authority);authority=std::move(defaults);}
+      else a.field("authority",authority);
+      a.field("sectors",sectors);a.field("previous_sector_cross",previous_sector_cross);
     }else{
       previous_sector_cross=sim.stamp;
     }
@@ -375,6 +383,17 @@ json run(const std::string& map,int layout,int count,Policy& policy,bool baselin
           if(std::abs(cmd.steer-limits.policy_steer)>1e-5f)increment("avoid_final_steer_changed_steps");
           if(car.v>2.7f)increment("avoid_speed_above_2_7_steps");
           if(car.v>=3.7f)increment("avoid_speed_at_least_3_7_steps");
+          if(router.lap_plan().ready()){
+            increment("flying_avoid_policy_steps");
+            if(limits.preview_used)increment("flying_avoid_preview_steps");
+            if(limits.fallback_used)increment("flying_avoid_fallback_steps");
+            const double delta=std::abs(cmd.steer-limits.policy_steer);
+            if(delta>1e-5)increment("flying_avoid_final_steer_changed_steps");
+            if(car.v>2.7f)increment("flying_avoid_speed_above_2_7_steps");
+            if(car.v>=3.7f)increment("flying_avoid_speed_at_least_3_7_steps");
+            authority["flying_avoid_abs_steer_change_sum_rad"]=
+              authority["flying_avoid_abs_steer_change_sum_rad"].get<double>()+delta;
+          }
         }
         if(ticks_log.is_open()){
           json tick={{"step",step},{"t",sim.stamp},{"s",progress},{"car",{car.x,car.y,car.yaw,car.v,car.steer}},
@@ -384,7 +403,8 @@ json run(const std::string& map,int layout,int count,Policy& policy,bool baselin
             {"authority",{{"policy_called",limits.policy_called},{"policy_steer",limits.policy_steer},
                {"before_guard_steer",limits.before_guard_steer},{"preview_used",limits.preview_used},
                {"fallback_used",limits.fallback_used},{"phase",limits.phase},{"safe_cap",limits.v2_safe_cap},
-               {"approach_cap",limits.v2_approach_cap},{"obstacle_distance",limits.v2_obstacle_distance}}},
+               {"approach_cap",limits.v2_approach_cap},{"obstacle_distance",limits.v2_obstacle_distance},
+               {"reference_steer",limits.v2_reference_steer}}},
             {"command",{cmd.steer,cmd.speed}},{"mode",int(result.mode)},{"reason",result.reason},{"ready",router.lap_plan().ready()},
             {"first_empty",trace.first_empty},{"wide",trace.wide},{"planned_offsets",trace.planned_offsets},{"gate",{trace.gate_entry,trace.gate_exit,trace.gate_offset}},{"subdivisions",trace.subdivisions},{"scan",sim.scan.ranges}};
           if(result.mode==Mode::Emergency && first_rejection.is_null()){

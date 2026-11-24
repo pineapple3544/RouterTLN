@@ -75,7 +75,11 @@ def main():
         for row in rows:
             stats = row["authority"]
             laps = [lap["seconds"] for lap in row["laps"]]
+            flying = stats["flying_avoid_policy_steps"]
+            preview_rate = stats["flying_avoid_preview_steps"] / flying if flying else None
+            changed_rate = stats["flying_avoid_final_steer_changed_steps"] / flying if flying else None
             summary.append(dict(arm=arm, case=row["case"], count=row["spec"]["count"],
+                flying_preview_rate=preview_rate, flying_steer_changed_rate=changed_rate,
                 accepted=accepted(row), reason=row["reason"], laps=len(laps),
                 best_lap=min(laps, default=None), contact=row["contact"] is not None,
                 rejection=row["first_rejection"] is not None, **{

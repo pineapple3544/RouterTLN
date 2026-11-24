@@ -10,6 +10,8 @@ int main(){
   check(driving_phase(true,true,INFINITY,5)==DrivingPhase::Merge,"merge");
   check(approach_speed_limit(4.25f,0,4,3)==3.f,"approach ceiling");
   check(approach_speed_limit(4.25f,INFINITY,4,3)==4.25f,"open cruise");
+  check(handoff_entry_distance(4.25f,3.f,3.f)==4.25f,"legacy entry retained");
+  check(handoff_entry_distance(2.f,5.f,2.f)>6.f,"braking-aware entry");
   State car{};car.v=3;check(handoff_dynamics_ready(car,0,3.5f),"handoff");
   car.steer=.35f;check(!handoff_dynamics_ready(car,0,3.5f),"handoff steering");
   DrivingPlan plan;plan.safe_speed=3.7f;plan.expert=Mode::Avoid;

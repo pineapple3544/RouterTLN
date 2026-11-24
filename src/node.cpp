@@ -75,7 +75,7 @@ class Controller:public rclcpp::Node {
     if(!metrics_)throw std::runtime_error("cannot create metrics");
     metrics_<<"step,stamp,x,y,speed,mode,hazard,valid,compute_ms,steer,target_speed,collision,remembered_cells,progress_m,reason,side,plan_ready,planned_entries,plan_brake_steps";
     ControlTiming::header(metrics_);
-    metrics_<<",scan_source_age_ms,pose_source_age_ms,policy_speed,lap_cap,corridor_cap,before_guard_speed,preview_brake,curve_cap,sight_cap,steering_cap,race_plan_cap,policy_called,policy_steer,before_guard_steer,preview_used,fallback_used,v2_phase,v2_safe_cap,v2_approach_cap,v2_obstacle_distance\n";
+    metrics_<<",scan_source_age_ms,pose_source_age_ms,policy_speed,lap_cap,corridor_cap,before_guard_speed,preview_brake,curve_cap,sight_cap,steering_cap,race_plan_cap,policy_called,policy_steer,before_guard_steer,preview_used,fallback_used,v2_phase,v2_safe_cap,v2_approach_cap,v2_obstacle_distance,v2_reference_steer\n";
     stop_laps_=declare_parameter<int>("stop_after_laps",0);
     drive_=create_publisher<ackermann_msgs::msg::AckermannDriveStamped>("/drive",1);
     debug_=create_publisher<std_msgs::msg::String>("/el/status",1);
@@ -177,7 +177,7 @@ class Controller:public rclcpp::Node {
       <<','<<result.speed_limits.before_guard_steer<<','<<result.speed_limits.preview_used
       <<','<<result.speed_limits.fallback_used<<','<<result.speed_limits.phase
       <<','<<result.speed_limits.v2_safe_cap<<','<<result.speed_limits.v2_approach_cap
-      <<','<<result.speed_limits.v2_obstacle_distance<<'\n';
+      <<','<<result.speed_limits.v2_obstacle_distance<<','<<result.speed_limits.v2_reference_steer<<'\n';
     if(finished_)metrics_.flush();
     if(step_%40==0){metrics_.flush();std_msgs::msg::String msg;
       msg.data=nlohmann::json({{"mode",(int)selected},{"hazard",hazard},{"valid",valid},{"compute_ms",ms},{"progress_m",progress_},{"finished",finished_}}).dump();debug_->publish(msg);

@@ -34,6 +34,14 @@ inline float approach_speed_limit(float cruise,float distance,float speed,float 
   return std::min(cruise,std::sqrt(entry_speed*entry_speed+2.f*2.6f*space));
 }
 
+// Keep legacy entry distance as a minimum. Earlier selection is allowed only
+// for a currently observed conflict, never for memory alone.
+inline float handoff_entry_distance(float legacy_distance,float speed,float entry_speed) {
+  const float v=std::max(0.f,speed);
+  const float braking=std::max(0.f,v*v-entry_speed*entry_speed)/(2.f*2.6f);
+  return std::max(legacy_distance,braking+.22f*v+1.65f);
+}
+
 inline bool handoff_dynamics_ready(const State& car,float curvature,float race_cap) {
   return std::abs(car.steer-std::atan(.3302f*curvature))<=.20f &&
          std::abs(car.yaw_rate-car.v*curvature)<=1.5f &&

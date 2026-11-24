@@ -19,6 +19,7 @@ struct SpeedLimits {
   bool policy_called=false, preview_used=false, fallback_used=false;
   int phase=-1;
   float v2_safe_cap=-1, v2_approach_cap=-1, v2_obstacle_distance=-1;
+  float v2_reference_steer=0;
 };
 struct SectionDecision {
   Mode mode;
@@ -235,6 +236,9 @@ class SectionRouter {
     float lateral = -(car.x-here.x)*sinf(here.yaw)+(car.y-here.y)*cosf(here.yaw);
     if(plan_laps)lap_plan_.observe(n,points.size(),lateral);
     float entry = 2.0f + .45f*car.v + car.v*car.v/10;
+    // Before the new planner is enabled, use the exact legacy thresholds.
+    if(settings.hierarchical_v2 && lap_plan_.ready())
+      entry=handoff_entry_distance(entry,car.v,settings.v2_approach_speed);
     float merge_distance = entry + .7f + fabsf(lateral);
     float horizon = std::min(length*.48f, entry+merge_distance+5);
     float first = INFINITY, end = -INFINITY;
@@ -313,7 +317,13 @@ class SectionRouter {
       plan->obstacle_distance=std::isfinite(distance)?distance:-1.f;
       const bool merging=avoiding_ && position_>end_+.35f && !hazard && merge_clear;
       plan->phase=driving_phase(avoiding_,merging,distance,entry+std::max(1.f,.35f*car.v));
-      float safe=cruise;
+      // One cyclic acceleration/braking profile is shared by both experts.
+      // Passing cruise as avoid_entry disables the old fixed-speed section
+      // penalty; the currently observed corridor supplies its local ceiling.
+      // This initial profile is conservative: it uses map curvature and the
+      // scout's recorded tracking deviation, not a newly optimized racing line.
+      plan->target_speed=lap_plan_.race_speed(points,n,position_,car,cruise,cruise);
+      float safe=std::min(cruise,plan->target_speed);
       if(avoiding_){
         // Replace the provisional approach envelope with the observed corridor
         // geometry. Neither the mode nor a remembered entry fixes the speed.
@@ -326,7 +336,6 @@ class SectionRouter {
         safe=std::min({safe,plan->curve_cap,plan->sight_cap,plan->approach_cap});
       }
       plan->safe_speed=safe;
-      plan->target_speed=safe; // first-test reference envelope, not forced target
       plan->reference_steer=avoiding_?.4f*input.context[4]:0.f;
       for(size_t k=0;k<plan->path_context.size();++k)plan->path_context[k]=input.context[5+k];
     }
@@ -340,6 +349,7 @@ class SectionRouter {
     SpeedLimits limits;
     limits.phase=int(plan.phase);limits.v2_safe_cap=plan.safe_speed;
     limits.v2_approach_cap=plan.approach_cap;limits.v2_obstacle_distance=plan.obstacle_distance;
+    limits.v2_reference_steer=plan.reference_steer;
     limits.curve=plan.curve_cap;limits.sight=plan.sight_cap;
     limits.corridor=plan.corridor_cap;limits.planned=plan.target_speed;
     auto reject=[&](const char* reason){
