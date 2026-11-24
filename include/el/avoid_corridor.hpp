@@ -353,6 +353,36 @@ class AvoidCorridor {
     }
     return limit;
   }
+  // Cheap single-candidate tracking preview for v2. This is an additional
+  // gate, not a replacement for the independent full stopping-envelope check.
+  bool policy_preview_ok(DynamicState state,Control cmd,const Memory& memory)const {
+    if(!valid_)return false;
+    int segment=0;
+    auto distance=[&](const State& car){
+      float best=std::numeric_limits<float>::infinity();
+      int nearest=segment;
+      for(int j=segment;j<std::min(segment+6,count-1);++j){
+        const auto& a=path_[j];const auto& b=path_[j+1];
+        const float dx=b.x-a.x,dy=b.y-a.y;
+        const float t=clamp(((car.x-a.x)*dx+(car.y-a.y)*dy)/std::max(.0001f,dx*dx+dy*dy),0,1);
+        const float ex=car.x-a.x-t*dx,ey=car.y-a.y-t*dy;
+        const float squared=ex*ex+ey*ey;
+        if(squared<best){best=squared;nearest=j;}
+      }
+      segment=nearest;
+      return std::sqrt(best);
+    };
+    const float initial=distance(basic(state));
+    const float tolerance=std::max(.18f,initial+.03f);
+    for(int tick=1;tick<=15;++tick){
+      state=physics_step(state,cmd,Vehicle{});
+      const State car=basic(state);
+      if(!std::isfinite(car.x) || !std::isfinite(car.y) || !std::isfinite(car.yaw) ||
+         footprint(memory,car,.065f)>.5f || gym_front_blocked(memory,car,.05f) ||
+         distance(car)>tolerance)return false;
+    }
+    return true;
+  }
   // Project candidate steering onto the observed corridor using the same delayed
   // vehicle dynamics as the command guard. Near a bend the scout line can be
   // traversable yet a faster vehicle can cut across its inner boundary.

@@ -22,7 +22,16 @@ struct RouterSettings {
   bool race_exit_speed=false;
   bool race_lap_speed=false;
   float race_brake_preview_s=.18f;
+  // v2 first-test mode is simulator-only and uses the existing scout.
+  bool hierarchical_v2=false, v2_policy_first=true;
+  float v2_avoid_speed_scale=1.f, v2_approach_speed=3.f;
   void validate_sim_band(float cap, bool simulator) const {
+    if(hierarchical_v2 && !(simulator && lap_planning && cap>0 && cap<=5.f &&
+        sim_avoid_min==0 && sim_avoid_max==0 && !sim_section_speed_profile &&
+        !sim_race_only && !straight_boost && !race_sight_speed && !race_exit_speed &&
+        !race_lap_speed && v2_avoid_speed_scale>=.5f && v2_avoid_speed_scale<=3.f &&
+        v2_approach_speed>0 && v2_approach_speed<=5.f))
+      throw std::runtime_error("v2 requires simulator lap planning, cap <= 5, valid v2 settings, no legacy speed band/envelope");
     if(race_lap_speed && (race_sight_speed || race_exit_speed))
       throw std::runtime_error("choose either the scout speed plan or the earlier Race envelope");
     if((race_lap_speed || race_sight_speed || race_exit_speed) && (!sim_race_only || straight_boost))

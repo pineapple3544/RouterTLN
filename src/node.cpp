@@ -58,7 +58,13 @@ class Controller:public rclcpp::Node {
     router_settings_.straight_boost=declare_parameter<bool>("straight_boost",false);
     router_settings_.sim_race_only=declare_parameter<bool>("sim_race_only",false);
     router_settings_.race_brake_preview_s=declare_parameter<double>("race_brake_preview_s",.18);
+    router_settings_.hierarchical_v2=declare_parameter<bool>("hierarchical_v2",false);
+    router_settings_.v2_policy_first=declare_parameter<bool>("v2_policy_first",true);
+    router_settings_.v2_avoid_speed_scale=declare_parameter<double>("v2_avoid_speed_scale",1.);
+    router_settings_.v2_approach_speed=declare_parameter<double>("v2_approach_speed",3.);
     router_settings_.validate_sim_band(vmax_,local_sim_clock_);
+    if(router_settings_.hierarchical_v2 && !avoid_->uses_corridor())
+      throw std::runtime_error("v2 requires a corridor-guided Avoid checkpoint");
     auto metrics=declare_parameter<std::string>("metrics","/workspace/runs/control.csv");
     std::filesystem::create_directories(std::filesystem::path(metrics).parent_path());metrics_.open(metrics);
     if(declare_parameter<bool>("trace_corridor",false)){
@@ -69,7 +75,7 @@ class Controller:public rclcpp::Node {
     if(!metrics_)throw std::runtime_error("cannot create metrics");
     metrics_<<"step,stamp,x,y,speed,mode,hazard,valid,compute_ms,steer,target_speed,collision,remembered_cells,progress_m,reason,side,plan_ready,planned_entries,plan_brake_steps";
     ControlTiming::header(metrics_);
-    metrics_<<",scan_source_age_ms,pose_source_age_ms,policy_speed,lap_cap,corridor_cap,before_guard_speed,preview_brake,curve_cap,sight_cap,steering_cap,race_plan_cap\n";
+    metrics_<<",scan_source_age_ms,pose_source_age_ms,policy_speed,lap_cap,corridor_cap,before_guard_speed,preview_brake,curve_cap,sight_cap,steering_cap,race_plan_cap,policy_called,policy_steer,before_guard_steer,preview_used,fallback_used,v2_phase,v2_safe_cap,v2_approach_cap,v2_obstacle_distance\n";
     stop_laps_=declare_parameter<int>("stop_after_laps",0);
     drive_=create_publisher<ackermann_msgs::msg::AckermannDriveStamped>("/drive",1);
     debug_=create_publisher<std_msgs::msg::String>("/el/status",1);
@@ -166,7 +172,12 @@ class Controller:public rclcpp::Node {
     timing.write(metrics_);
     metrics_<<','<<(source_time-stamp)*1000<<','<<(source_time-stamp)*1000
       <<','<<result.speed_limits.policy<<','<<result.speed_limits.lap<<','<<result.speed_limits.corridor
-      <<','<<result.speed_limits.before_guard<<','<<result.speed_limits.preview_brake<<','<<result.speed_limits.curve<<','<<result.speed_limits.sight<<','<<result.speed_limits.steering<<','<<result.speed_limits.planned<<'\n';
+      <<','<<result.speed_limits.before_guard<<','<<result.speed_limits.preview_brake<<','<<result.speed_limits.curve<<','<<result.speed_limits.sight<<','<<result.speed_limits.steering<<','<<result.speed_limits.planned
+      <<','<<result.speed_limits.policy_called<<','<<result.speed_limits.policy_steer
+      <<','<<result.speed_limits.before_guard_steer<<','<<result.speed_limits.preview_used
+      <<','<<result.speed_limits.fallback_used<<','<<result.speed_limits.phase
+      <<','<<result.speed_limits.v2_safe_cap<<','<<result.speed_limits.v2_approach_cap
+      <<','<<result.speed_limits.v2_obstacle_distance<<'\n';
     if(finished_)metrics_.flush();
     if(step_%40==0){metrics_.flush();std_msgs::msg::String msg;
       msg.data=nlohmann::json({{"mode",(int)selected},{"hazard",hazard},{"valid",valid},{"compute_ms",ms},{"progress_m",progress_},{"finished",finished_}}).dump();debug_->publish(msg);

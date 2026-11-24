@@ -89,3 +89,8 @@ target_link_libraries(el_scan_localizer_test PRIVATE el_core)
 add_test(NAME scan_localizer_sensor_only COMMAND el_scan_localizer_test
   "${CMAKE_CURRENT_SOURCE_DIR}/maps/berlin/berlin.yaml"
   "${CMAKE_CURRENT_SOURCE_DIR}/maps/berlin/global_waypoints.json")
+
+# Pure C++ contract tests: no ROS/Gym/LibTorch runtime required.
+add_executable(el_v2_control_test tests/v2_control_test.cpp)
+target_include_directories(el_v2_control_test PRIVATE include)
+add_test(NAME hierarchical_control_contract COMMAND el_v2_control_test)

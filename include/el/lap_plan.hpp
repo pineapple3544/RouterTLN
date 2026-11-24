@@ -58,6 +58,18 @@ class LapPlan {
   unsigned brake_steps() const {return brake_steps_;}
   float legacy_avoid_cap()const{return legacy_avoid_cap_;}
   float cap() const {return cap_;}
+  // The stored station is relative to this run's start. Do not treat an
+  // obstacle just passed as one directly ahead; wrap to the next lap.
+  float next_obstacle_distance(float position,float length)const {
+    float nearest=INFINITY;
+    if(!ready_ || !(length>0))return nearest;
+    for(const auto& section:sections_){
+      float ahead=std::fmod(section.obstacle-position,length);
+      if(ahead<0)ahead+=length;
+      nearest=std::min(nearest,ahead);
+    }
+    return nearest;
+  }
 
   bool update(float pos, float length, float first, float speed, float cruise,
               const RouterSettings& settings) {
@@ -83,7 +95,7 @@ class LapPlan {
         confirmed=offset>=-1.f && offset<=section.exit-section.obstacle+1.f;
       }
       const float lead=.35f+settings.plan_lead_time*section.speed;
-      if(settings.sim_section_speed_profile){
+      if(!settings.hierarchical_v2 && settings.sim_section_speed_profile){
         float obstacle_distance=ahead+section.obstacle-section.entry;
         if(obstacle_distance<-.65f)obstacle_distance+=length;
         obstacle_distance=std::min(obstacle_distance,first);
@@ -91,7 +103,7 @@ class LapPlan {
         const float slow=settings.sim_avoid_min;
         cap_=std::min(cap_,sqrtf(slow*slow+3.6f*space));
       }
-      if(!settings.sim_section_speed_profile || settings.sim_race_only){
+      if(!settings.hierarchical_v2 && (!settings.sim_section_speed_profile || settings.sim_race_only)){
         const float remaining=std::max(0.f,ahead-lead-.20f*speed);
         const float approach=settings.plan_speed_fraction*section.speed;
         const float legacy_limit=std::sqrt(approach*approach+2*1.8f*remaining);

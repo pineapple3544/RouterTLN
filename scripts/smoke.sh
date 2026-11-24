@@ -55,6 +55,10 @@ if [[ -n ${EL_RACE_BRAKE_PREVIEW_S:-} ]]; then extra+=(-p "race_brake_preview_s:
 if [[ -n ${EL_SIM_SECTION_SPEED_PROFILE:-} ]]; then extra+=(-p "sim_section_speed_profile:=$EL_SIM_SECTION_SPEED_PROFILE"); fi
 if [[ -n ${EL_SIM_AVOID_MIN:-} ]]; then extra+=(-p "sim_avoid_min:=$EL_SIM_AVOID_MIN"); fi
 if [[ -n ${EL_SIM_AVOID_MAX:-} ]]; then extra+=(-p "sim_avoid_max:=$EL_SIM_AVOID_MAX"); fi
+if [[ -n ${EL_HIERARCHICAL_V2:-} ]]; then extra+=(-p "hierarchical_v2:=$EL_HIERARCHICAL_V2"); fi
+if [[ -n ${EL_V2_POLICY_FIRST:-} ]]; then extra+=(-p "v2_policy_first:=$EL_V2_POLICY_FIRST"); fi
+if [[ -n ${EL_V2_AVOID_SPEED_SCALE:-} ]]; then extra+=(-p "v2_avoid_speed_scale:=$EL_V2_AVOID_SPEED_SCALE"); fi
+if [[ -n ${EL_V2_APPROACH_SPEED:-} ]]; then extra+=(-p "v2_approach_speed:=$EL_V2_APPROACH_SPEED"); fi
 if [[ -n ${EL_INFERENCE_DEVICE:-} ]]; then extra+=(-p "inference_device:=$EL_INFERENCE_DEVICE"); fi
 if [[ -n ${EL_AVOID_CHECKPOINT:-} ]]; then extra+=(-p "avoid_checkpoint:=$EL_AVOID_CHECKPOINT"); fi
 if [ -n "${EL_UNIFIED_CHECKPOINT:-}" ]; then extra+=(-p "unified_checkpoint:=$EL_UNIFIED_CHECKPOINT"); fi

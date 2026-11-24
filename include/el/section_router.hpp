@@ -5,6 +5,8 @@
 #include "el/lap_plan.hpp"
 #include "el/policy.hpp"
 #include "el/avoid_corridor.hpp"
+#include "el/hierarchical_control.hpp"
+#include "el/safety_guard.hpp"
 #include <algorithm>
 #include <limits>
 
@@ -13,6 +15,10 @@ struct SpeedLimits {
   float policy=-1, lap=-1, corridor=-1, before_guard=-1;
   float curve=-1, sight=-1, steering=-1, planned=-1;
   bool preview_brake=false;
+  float policy_steer=0, before_guard_steer=0;
+  bool policy_called=false, preview_used=false, fallback_used=false;
+  int phase=-1;
+  float v2_safe_cap=-1, v2_approach_cap=-1, v2_obstacle_distance=-1;
 };
 struct SectionDecision {
   Mode mode;
@@ -46,12 +52,19 @@ class SectionRouter {
     if (settings.sim_avoid_max>0 && !adaptive) cap=std::min(cap,3.f);
     Observation input;
     int route_index=0;
-    auto decision=route_observation(track,memory,car,scans,avoid.uses_corridor(),now,input,settings,cap,timing,trace,&route_index);
+    DrivingPlan plan;
+    auto decision=route_observation(track,memory,car,scans,avoid.uses_corridor(),now,input,settings,cap,timing,trace,&route_index,
+                                    settings.hierarchical_v2?&plan:nullptr);
     if(timing)timing->mark(ControlTiming::corridor);
     if(decision.mode==Mode::Emergency)return stop_with(decision.reason);
+    if(plan.active){
+      if(!avoid.uses_corridor())return stop_with("v2_requires_guided_avoid");
+      return step_v2(plan,input,decision,car,memory,race,avoid,dt,settings,timing,trace);
+    }
     Control cmd=avoiding_?avoid.infer(input,timing):race.infer(input,timing);
     if (!std::isfinite(cmd.steer)||!std::isfinite(cmd.speed)) return stop_with("invalid_action");
     limits.policy=cmd.speed;
+    limits.policy_steer=cmd.steer;limits.policy_called=true;
     const bool adaptive_avoid=adaptive && !settings.sim_race_only;
     if(!avoiding_){
       cmd.speed*=settings.race_speed_scale;
@@ -141,7 +154,7 @@ class SectionRouter {
       // Allow for several control updates at the current steering angle before braking.
       // The normal one-cycle refusal still validates the command that will be issued.
       const int ahead_ticks=std::max(ticks,int(std::ceil(settings.race_brake_preview_s/.01f)));
-      if(command_refusal(memory,car,committed,cmd,dyn,.01f*ahead_ticks,ahead_ticks,nullptr)){
+      if(SafetyGuard::refusal(memory,car,committed,cmd,dyn,.01f*ahead_ticks,ahead_ticks,nullptr)){
         const float slower=std::min(cmd.speed,std::max(.8f,car.v-.8f));
         limits.preview_brake=slower<cmd.speed;
         cmd.speed=slower;
@@ -150,15 +163,17 @@ class SectionRouter {
     if((settings.race_exit_speed || settings.race_lap_speed) && adaptive && !avoiding_ && cmd.speed>3.f){
       // The existing 180 ms guard runs first. Check the higher exit speed at 240 ms.
       constexpr int count=24;
-      if(command_refusal(memory,car,committed,cmd,dyn,.01f*count,count,nullptr)){
+      if(SafetyGuard::refusal(memory,car,committed,cmd,dyn,.01f*count,count,nullptr)){
         const float slower=std::max(1.f,car.v-1.0f);
         cmd.speed=std::min(cmd.speed,slower);
         limits.preview_brake=true;
       }
     }
     if(trace)trace->policy_steer=cmd.steer;
-    if(avoiding_ && avoid.uses_corridor() && settings.lap_planning)
+    if(avoiding_ && avoid.uses_corridor() && settings.lap_planning){
+      limits.preview_used=true;
       cmd.steer=corridor_.preview_steer(dyn,cmd,memory,dt,ticks);
+    }
     // A scout can unwind full lock while the next obstacle is still in the
     // stopping arc. Compare the queued turn and the requested turn before the
     // immediate guard loses all feasible actions. Re-evaluate on each scan.
@@ -176,7 +191,8 @@ class SectionRouter {
       }
     }
     if(trace)trace->candidate_steer=cmd.steer;
-    const char* refusal=command_refusal(memory,car,committed,cmd,dyn,dt,ticks,trace);
+    limits.before_guard_steer=cmd.steer;
+    const char* refusal=SafetyGuard::refusal(memory,car,committed,cmd,dyn,dt,ticks,trace);
     if(refusal && avoiding_ && avoid.uses_corridor() && settings.lap_planning && cmd.speed>0){
       // Try a rolling slowdown only if the requested action failed the stop
       // envelope. Use the same guards for every replacement, including the
@@ -186,8 +202,8 @@ class SectionRouter {
       for(float speed:{cmd.speed,slower}){
         for(float steer:{cmd.steer,car.steer,0.f,-.2f,.2f,-.4f,.4f}){
           Control candidate{steer,speed};
-          if(!command_refusal(memory,car,committed,candidate,dyn,dt,ticks,nullptr)){
-            cmd=candidate;refusal=nullptr;decision.reason="safe_alternative";break;
+          if(!SafetyGuard::refusal(memory,car,committed,candidate,dyn,dt,ticks,nullptr)){
+            cmd=candidate;refusal=nullptr;limits.fallback_used=true;decision.reason="safe_alternative";break;
           }
         }
         if(!refusal || slower==cmd.speed)break;
@@ -206,7 +222,7 @@ class SectionRouter {
   // offline expert labels at learner-visited states. Does not publish commands.
   SectionDecision route_observation(const Track& track,const Memory& memory,const State& car,
                                     const std::deque<Scan>& scans,bool guided,double now,Observation& input,
-                                    const RouterSettings& settings={}, float cruise=3.f, ControlTiming* timing=nullptr, CorridorTrace* trace=nullptr,int* route_index=nullptr){
+                                    const RouterSettings& settings={}, float cruise=3.f, ControlTiming* timing=nullptr, CorridorTrace* trace=nullptr,int* route_index=nullptr,DrivingPlan* plan=nullptr){
     const bool plan_laps=settings.lap_planning;
     int n = track.closest(car);
     if(route_index)*route_index=n;
@@ -263,6 +279,13 @@ class SectionRouter {
     if (avoiding_) {
       bool ready=position_>end_+.35f && !hazard && merge_clear &&
                  fabsf(lateral)<.30f && fabsf(wrap(car.yaw-here.yaw))<.32f;
+      if(ready && settings.hierarchical_v2 && lap_plan_.ready()){
+        const auto& next=points[(n+1)%points.size()];
+        const float ds=std::max(.001f,hypotf(next.x-here.x,next.y-here.y));
+        const float curvature=wrap(next.yaw-here.yaw)/ds;
+        const float race_cap=curve_speed_cap(track,n,car.v,cruise,5.2f,2.6f);
+        ready=handoff_dynamics_ready(car,curvature,race_cap);
+      }
       if (!ready) clear_since_=-1;
       else if (clear_since_<0) clear_since_=now;
       else if (now-clear_since_>=.20) {
@@ -282,9 +305,81 @@ class SectionRouter {
       if(hazard)side_=corridor_.side_at(first+.35f);
       if(guided)corridor_.condition(input,car,settings.lookahead_scale,returning);
     }
+    if(plan && settings.hierarchical_v2 && lap_plan_.ready()){
+      plan->active=true;
+      plan->expert=avoiding_?Mode::Avoid:Mode::Race;
+      plan->route_index=n;
+      const float distance=std::min(first,lap_plan_.next_obstacle_distance(position_,length));
+      plan->obstacle_distance=std::isfinite(distance)?distance:-1.f;
+      const bool merging=avoiding_ && position_>end_+.35f && !hazard && merge_clear;
+      plan->phase=driving_phase(avoiding_,merging,distance,entry+std::max(1.f,.35f*car.v));
+      float safe=cruise;
+      if(avoiding_){
+        // Replace the provisional approach envelope with the observed corridor
+        // geometry. Neither the mode nor a remembered entry fixes the speed.
+        plan->corridor_cap=corridor_.speed_limit(std::min(cruise,settings.avoid_speed_cap),car.v);
+        safe=std::min(safe,plan->corridor_cap);
+      }else{
+        plan->curve_cap=curve_speed_cap(track,n,car.v,cruise,5.2f,2.6f);
+        plan->sight_cap=scans.empty()?0.f:race_sight_speed_limit(scans.back(),6.f);
+        plan->approach_cap=approach_speed_limit(cruise,distance,car.v,settings.v2_approach_speed);
+        safe=std::min({safe,plan->curve_cap,plan->sight_cap,plan->approach_cap});
+      }
+      plan->safe_speed=safe;
+      plan->target_speed=safe; // first-test reference envelope, not forced target
+      plan->reference_steer=avoiding_?.4f*input.context[4]:0.f;
+      for(size_t k=0;k<plan->path_context.size();++k)plan->path_context[k]=input.context[5+k];
+    }
     return {avoiding_?Mode::Avoid:Mode::Race,{},reason,hazard};
   }
  private:
+  template<class RacePolicy>
+  SectionDecision step_v2(const DrivingPlan& plan,Observation& input,SectionDecision decision,
+                          const State& car,const Memory& memory,RacePolicy& race,Policy& avoid,
+                          float dt,const RouterSettings& settings,ControlTiming* timing,CorridorTrace* trace){
+    SpeedLimits limits;
+    limits.phase=int(plan.phase);limits.v2_safe_cap=plan.safe_speed;
+    limits.v2_approach_cap=plan.approach_cap;limits.v2_obstacle_distance=plan.obstacle_distance;
+    limits.curve=plan.curve_cap;limits.sight=plan.sight_cap;
+    limits.corridor=plan.corridor_cap;limits.planned=plan.target_speed;
+    auto reject=[&](const char* reason){
+      stop(reason);
+      return SectionDecision{Mode::Emergency,{car.steer,0},reason,decision.blocked,limits};
+    };
+    const bool avoiding=plan.expert==Mode::Avoid;
+    apply_plan_path(input,plan);
+    Control raw=avoiding?avoid.infer(input,timing):race.infer(input,timing);
+    if(!std::isfinite(raw.steer)||!std::isfinite(raw.speed)||!std::isfinite(plan.safe_speed))
+      return reject("invalid_action");
+    limits.policy=raw.speed;limits.policy_steer=raw.steer;limits.policy_called=true;
+    // Keep the Race checkpoint and nominal scale; no forced speed floors.
+    const float scale=avoiding?settings.v2_avoid_speed_scale:settings.race_speed_scale;
+    Control cmd=constrain_policy(raw,plan,scale,last_command_.speed,car.v,dt,have_pose_);
+    limits.before_guard=cmd.speed;
+    float slip=0;
+    if(have_pose_ && hypotf(car.x-last_pose_.x,car.y-last_pose_.y)>.015f){
+      const float mid_yaw=last_pose_.yaw+.5f*wrap(car.yaw-last_pose_.yaw);
+      slip=wrap(atan2f(car.y-last_pose_.y,car.x-last_pose_.x)-mid_yaw);
+    }
+    const float pending=have_pose_?last_command_.steer:car.steer;
+    DynamicState dyn{{car.x,car.y,car.steer,car.v,car.yaw,car.yaw_rate,slip},{pending,pending}};
+    const Control committed=have_pose_?last_command_:Control{car.steer,car.v};
+    dyn=physics_step(dyn,committed,Vehicle{});
+    const int ticks=std::max(1,int(std::ceil(dt/.01f-1e-5f)));
+    if(trace)trace->policy_steer=cmd.steer;
+    const bool tracking_ok=!avoiding || (settings.v2_policy_first && corridor_.policy_preview_ok(dyn,cmd,memory));
+    auto selected=select_v2_control(cmd,avoiding,settings.v2_policy_first,tracking_ok,car.steer,car.v,
+      [&](Control proposal){return corridor_.preview_steer(dyn,proposal,memory,dt,ticks);},
+      [&](Control proposal){return SafetyGuard::refusal(memory,car,committed,proposal,dyn,dt,ticks,trace);});
+    limits.preview_used=selected.preview_used;limits.fallback_used=selected.fallback_used;
+    limits.before_guard_steer=selected.before_guard_steer;
+    if(selected.refusal)return reject(selected.refusal);
+    if(selected.fallback_used)decision.reason="safe_alternative";
+    if(trace)trace->candidate_steer=selected.command.steer;
+    last_pose_=car;have_pose_=true;last_command_=selected.command;
+    decision.command=selected.command;decision.speed_limits=limits;
+    return decision;
+  }
   static float narrow_bend_speed_cap(const Track& track,int index,const Memory& memory,const State& car,float cruise){
     constexpr float lateral_probe_m=.60f;
     constexpr float bend_speed_mps=3.9f;
@@ -360,40 +455,6 @@ class SectionRouter {
       measure(car);
     }
     return clearance;
-  }
-  static const char* command_refusal(const Memory& memory,const State& car,const Control& committed,
-                                     Control cmd,DynamicState dyn,float dt,int ticks,CorridorTrace* trace){
-    // Predict the command interval with the measured drive response. Keep the
-    // slower braking envelope as an independent geometric clearance check.
-    State prediction=predict_command_tick(car,committed,.01f);
-    for(int i=0;i<ticks;++i){
-      prediction=predict_command_tick(prediction,cmd,dt/ticks);
-      if(footprint(memory,prediction)>.5f || gym_front_blocked(memory,prediction)) return "command_footprint";
-    }
-    Control brake{prediction.steer,0};
-    for(int i=0;prediction.v>=.045f && i<300;++i){
-      prediction=advance(prediction,brake,.01f);
-      if(footprint(memory,prediction)>.5f || gym_front_blocked(memory,prediction)){
-        if(trace){trace->brake_event=true;trace->brake_contact=prediction;}
-        return "braking_footprint";
-      }
-    }
-    if(prediction.v>=.045f) return "braking_horizon";
-
-    // Include one additional physics tick before braking for sampled actuation.
-    for(int i=0;i<ticks+1;++i){
-      dyn=physics_step(dyn,cmd,Vehicle{});
-      if(!std::isfinite(dyn.z[0]) || !std::isfinite(dyn.z[1]) || !std::isfinite(dyn.z[4]) ||
-         footprint(memory,basic(dyn))>.5f || gym_front_blocked(memory,basic(dyn))) return "dynamic_command_footprint";
-    }
-    brake={dyn.z[2],0};
-    for(int i=0;dyn.z[3]>=.045f && i<300;++i){
-      dyn=physics_step(dyn,brake,Vehicle{});
-      if(!std::isfinite(dyn.z[0]) || !std::isfinite(dyn.z[1]) || !std::isfinite(dyn.z[4]) ||
-         footprint(memory,basic(dyn))>.5f || gym_front_blocked(memory,basic(dyn))) return "dynamic_braking_footprint";
-    }
-    if(!std::isfinite(dyn.z[3]) || dyn.z[3]>=.045f) return "braking_horizon";
-    return nullptr;
   }
   State last_pose_{};
   Control last_command_{};
