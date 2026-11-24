@@ -43,7 +43,7 @@ struct RouterSettings {
       throw std::runtime_error("invalid Race braking preview duration");
     if(sim_section_speed_profile && !(simulator && lap_planning && sim_avoid_min>0 &&
                                      sim_avoid_max>sim_avoid_min && cap<=10.f))
-      throw std::runtime_error("adaptive speed requires a local simulator and a nonempty speed band");
+      throw std::runtime_error("adaptive speed requires an explicitly selected simulator and a nonempty speed band");
     if (sim_avoid_min==0 && sim_avoid_max==0) return;
     if (!simulator || !lap_planning || !(sim_avoid_min>=0 && sim_avoid_max>0 &&
                                          sim_avoid_min<=sim_avoid_max && sim_avoid_max<=cap))

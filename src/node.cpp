@@ -30,6 +30,9 @@ class Controller:public rclcpp::Node {
     router_settings_=map_router_settings(root);
     if(declare_parameter<std::string>("mode","moe")!="moe")throw std::runtime_error("online controller requires mode=moe");
     local_sim_clock_=declare_parameter<bool>("local_steady_sim_clock",false);
+    official_simulator_=declare_parameter<bool>("official_simulator",false);
+    if(official_simulator_ && local_sim_clock_)
+      throw std::runtime_error("official simulator must use the original ROS clock, not the local bridge clock");
     if (local_sim_clock_ && !get_parameter("use_sim_time").as_bool())
       throw std::runtime_error("local_steady_sim_clock requires use_sim_time");
     const auto device_name=declare_parameter<std::string>("inference_device",local_sim_clock_?"cpu":"cuda");
@@ -62,7 +65,9 @@ class Controller:public rclcpp::Node {
     router_settings_.v2_policy_first=declare_parameter<bool>("v2_policy_first",true);
     router_settings_.v2_avoid_speed_scale=declare_parameter<double>("v2_avoid_speed_scale",1.);
     router_settings_.v2_approach_speed=declare_parameter<double>("v2_approach_speed",3.);
-    router_settings_.validate_sim_band(vmax_,local_sim_clock_);
+    // Simulation-only controller experiments are independent of the transport
+    // clock. The official GymBridge does not need the local steady-clock shim.
+    router_settings_.validate_sim_band(vmax_,local_sim_clock_ || official_simulator_);
     if(router_settings_.hierarchical_v2 && !avoid_->uses_corridor())
       throw std::runtime_error("v2 requires a corridor-guided Avoid checkpoint");
     auto metrics=declare_parameter<std::string>("metrics","/workspace/runs/control.csv");
@@ -116,7 +121,11 @@ class Controller:public rclcpp::Node {
     if(count_publishers("/drive")>1){refuse("drive_publisher_conflict");RCLCPP_ERROR_THROTTLE(get_logger(),*get_clock(),3000,"multiple /drive publishers; refuse control");return;}
     const auto scan_=pending_scans_.back();
     const double stamp=rclcpp::Time(scan_->header.stamp).seconds();
-    if(source_now()-stamp>.15 || (local_sim_clock_ && stamp>source_now())){
+    const double acquisition_now=source_now();
+    if(official_simulator_ && (!(stamp>0) || !(acquisition_now>0) || stamp>acquisition_now+.05)){
+      refuse("sensor_clock_mismatch");return;
+    }
+    if(acquisition_now-stamp>.15 || (local_sim_clock_ && stamp>acquisition_now)){
       refuse("scan_timeout");return;
     }
     if(stamp<=last_scan_)return;
@@ -150,6 +159,8 @@ class Controller:public rclcpp::Node {
     if(ms>deadline_) refusal="deadline";
     else if(source_time-stamp>.15) refusal="scan_timeout";
     else if(local_sim_clock_ && stamp>source_time) refusal="sensor_clock_mismatch";
+    else if(official_simulator_ && (!(source_time>0) || stamp>source_time+.05))
+      refusal="sensor_clock_mismatch";
     if(refusal){
       router_.stop(refusal);
       if(selected!=Mode::Emergency)result.reason=refusal;
@@ -186,7 +197,7 @@ class Controller:public rclcpp::Node {
   }catch(const std::exception& e){refuse("control_exception");RCLCPP_ERROR_THROTTLE(get_logger(),*get_clock(),2000,"control rejected: %s",e.what());}}
   std::unique_ptr<Track> track_;std::unique_ptr<Memory> memory_;std::shared_ptr<Policy> race_,avoid_;
   rclcpp::Clock sim_clock_{RCL_STEADY_TIME};
-  bool local_sim_clock_=false;
+  bool local_sim_clock_=false,official_simulator_=false;
   SectionRouter router_;RouterSettings router_settings_;double vmax_=0,deadline_=0,last_scan_=-1,scan_received_=0;Control last_;
   std::unique_ptr<ScanLocalizer> localizer_;std::deque<Scan> scans_;std::deque<sensor_msgs::msg::LaserScan::ConstSharedPtr> pending_scans_;
   int stop_laps_=0;bool finished_=false,reported_fault_=false;uint64_t step_=0;float progress_=0,last_progress_=-1;

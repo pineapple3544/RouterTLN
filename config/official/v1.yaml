@@ -1,0 +1,27 @@
+# Original weights / 3.5 m/s endurance baseline, official bridge transport.
+/el_native_controller:
+  ros__parameters:
+    mode: moe
+    official_simulator: true
+    local_steady_sim_clock: false
+    use_sim_time: false
+    inference_device: cpu
+    map_dir: /workspace/maps/berlin
+    race_checkpoint: /workspace/models/race-berlin-wsp.pt
+    avoid_checkpoint: /workspace/models/avoid-corridor-v2.pt
+    unified_checkpoint: ""
+    lap_planning: true
+    max_speed: 3.5
+    deadline_ms: 25.0
+    stop_after_laps: 0
+    trace_corridor: false
+    hierarchical_v2: false
+    sim_section_speed_profile: true
+    sim_race_only: true
+    sim_avoid_min: 2.7
+    sim_avoid_max: 3.0
+    straight_boost: false
+    race_sight_speed: false
+    race_exit_speed: false
+    race_lap_speed: false
+    race_brake_preview_s: 0.18

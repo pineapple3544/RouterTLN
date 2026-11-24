@@ -1,0 +1,29 @@
+# Original weights / conservative v2 first test. Not a validated score.
+/el_native_controller:
+  ros__parameters:
+    mode: moe
+    official_simulator: true
+    local_steady_sim_clock: false
+    use_sim_time: false
+    inference_device: cpu
+    map_dir: /workspace/maps/berlin
+    race_checkpoint: /workspace/models/race-berlin-wsp.pt
+    avoid_checkpoint: /workspace/models/avoid-corridor-v2.pt
+    unified_checkpoint: ""
+    lap_planning: true
+    max_speed: 3.5
+    deadline_ms: 25.0
+    stop_after_laps: 0
+    trace_corridor: false
+    hierarchical_v2: true
+    v2_policy_first: true
+    v2_avoid_speed_scale: 1.0
+    v2_approach_speed: 3.0
+    sim_section_speed_profile: false
+    sim_race_only: false
+    sim_avoid_min: 0.0
+    sim_avoid_max: 0.0
+    straight_boost: false
+    race_sight_speed: false
+    race_exit_speed: false
+    race_lap_speed: false

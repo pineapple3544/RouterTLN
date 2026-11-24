@@ -235,6 +235,8 @@ python3 runs/avoid-wsp-speed/make_edits.py
 
 ## 랜덤 장애물 배치기와 평가기 사용법
 
+**공식 평가용 경로(v2):** 원본 GymBridge와 원본 race manager를 사용하는 [별도 평가 환경](docs/official-evaluation.md)을 우선 사용한다. 아래 자체 배치기/동기식 Gym 실험은 개발용으로 구분하며 공식 제출 성적으로 사용하지 않는다.
+
 ### 매 랩 새 배치로 평가하기 · Forza `race_manager`
 
 `obstacle_spawner`는 경로와 트랙 폭을 이용해 후보를 만들고, 랩이 바뀔 때 장애물을 다시 뽑아 `/sim/obstacles`로 발행한다. `scorer`는 랩타임과 벽·장애물 충돌을 기록한다. 시뮬레이터와 주행 제어기를 먼저 실행한 뒤, 같은 ROS 도메인의 별도 터미널에서 두 노드를 함께 시작한다. 이때 장애물 발행기는 하나만 실행한다. 아래는 베이스 이미지에 설치된 `hyhall12` 맵 예시다.
