@@ -125,15 +125,15 @@ def terminate(children, names):
 
 
 def run_trial(setup, frozen, expected, output, count, seed, duration):
-    # A separate, passive orchestration node receives only scan headers,
-    # obstacle-publication presence and whether a positive drive command began.
-    # It never reads obstacle coordinates, publishes drive, or passes data to TLN.
+    # A separate passive orchestration node receives only scan headers and
+    # whether a positive drive command began. Obstacle readiness is checked
+    # through the ROS graph, without subscribing to any ground-truth topic.
+    # The observer never publishes drive or passes data to TLN.
     import rclpy
     from rclpy.parameter import Parameter
     from rclpy.qos import qos_profile_sensor_data
     from rclpy.signals import SignalHandlerOptions
     from sensor_msgs.msg import LaserScan
-    from geometry_msgs.msg import PoseArray
     from ackermann_msgs.msg import AckermannDriveStamped
 
     check_frozen(setup, frozen, expected)
@@ -159,7 +159,6 @@ def run_trial(setup, frozen, expected, output, count, seed, duration):
     active_since = None
     scan_stamp = None
     scan_received = None
-    obstacle_seen = False
     try:
         rclpy.init(args=[], signal_handler_options=SignalHandlerOptions.NO)
         node = rclpy.create_node("routertln_eval_observer",
@@ -168,16 +167,13 @@ def run_trial(setup, frozen, expected, output, count, seed, duration):
             nonlocal scan_stamp, scan_received
             scan_stamp = msg.header.stamp.sec + msg.header.stamp.nanosec * 1e-9
             scan_received = time.monotonic()
-        def obstacle_event(_msg):
-            nonlocal obstacle_seen
-            obstacle_seen = True
         def drive(msg):
             nonlocal active_since
-            if active_since is None and msg.drive.speed > 0:
+            if (active_since is None and "controller" in children and
+                    node.count_publishers("/drive") == 1 and msg.drive.speed > 0):
                 active_since = time.monotonic()
         subscriptions = [
             node.create_subscription(LaserScan, "/scan", scan, qos_profile_sensor_data),
-            node.create_subscription(PoseArray, "/sim/obstacles", obstacle_event, qos_profile_sensor_data),
             node.create_subscription(AckermannDriveStamped, "/drive", drive, qos_profile_sensor_data),
         ]
         def spin():
@@ -198,19 +194,33 @@ def run_trial(setup, frozen, expected, output, count, seed, duration):
         discovery = time.monotonic() + 2
         while time.monotonic() < discovery:
             spin()
-        for topic in ("/scan", "/drive", "/sim/obstacles"):
-            if node.count_publishers(topic):
-                raise RuntimeError(f"practice domain already has a publisher on {topic}; choose an unused domain")
+        # DDS discovery can briefly retain the previous trial's endpoints.
+        topics = ("/scan", "/drive", "/sim/obstacles")
+        clear_deadline = time.monotonic() + 8
+        while any(node.count_publishers(topic) for topic in topics):
+            if time.monotonic() >= clear_deadline:
+                raise RuntimeError("practice domain already has a scan/drive/obstacle publisher; choose an unused domain")
+            spin()
         start(children, "bridge", commands["bridge"], output)
         wait_for(fresh_scan, 40, ("bridge",),
                  "no fresh original /scan; inspect bridge log and ROS clock setting")
         start(children, "scorer", commands["scorer"], output)
         start(children, "spawner", commands["spawner"], output)
-        wait_for(lambda: obstacle_seen and fresh_scan() and node.count_publishers("/sim/obstacles")==1,
+        wait_for(lambda: fresh_scan() and node.count_publishers("/sim/obstacles")==1
+                 and node.count_subscribers("/sim/obstacles")>=1,
                  30, ("bridge", "scorer", "spawner"),
-                 "official spawner did not publish obstacles or scan clock is incompatible")
-        if node.count_publishers("/drive") or node.count_publishers("/scan") != 1:
-            raise RuntimeError("unexpected drive or scan publisher")
+                 "official spawner/bridge endpoints not discovered or scan clock is incompatible")
+        # Allow the official spawner and subscriber to exchange their initial
+        # data before the controller starts. This is a graph check, not proof
+        # of delivery; confirm actual obstacle appearance in the first smoke run.
+        settle = time.monotonic() + 2
+        while time.monotonic() < settle:
+            require_alive(children, ("bridge", "scorer", "spawner"))
+            spin()
+        if (not fresh_scan() or node.count_publishers("/drive") or
+                node.count_publishers("/scan") != 1 or
+                node.count_publishers("/sim/obstacles") != 1):
+            raise RuntimeError("unexpected publishers or stale scan before driving")
         start(children, "controller", commands["controller"], output)
         wait_for(lambda: active_since is not None, 40,
                  ("bridge", "scorer", "spawner", "controller"),
@@ -221,6 +231,8 @@ def run_trial(setup, frozen, expected, output, count, seed, duration):
         while time.monotonic() - active_since < duration:
             spin()
             require_alive(children, ("bridge", "spawner", "controller"))
+            if node.count_publishers("/drive") > 1 or node.count_publishers("/sim/obstacles") > 1:
+                raise RuntimeError("additional drive/obstacle publisher appeared during practice")
             if children["scorer"].poll() is not None:
                 if children["scorer"].returncode != 0:
                     raise RuntimeError("official scorer failed; inspect scorer.log")
@@ -246,10 +258,20 @@ def run_trial(setup, frozen, expected, output, count, seed, duration):
         if rclpy.ok():
             rclpy.shutdown()
         outcome["process_exit_codes"] = {name: proc.poll() for name, proc in children.items()}
-        outcome["official_result_files"] = [str(p.relative_to(output)) for p in sorted(result_dir.rglob("*")) if p.is_file()]
+        outcome["scorer_output_files"] = [str(p.relative_to(output)) for p in sorted(result_dir.rglob("*")) if p.is_file()]
+        result_files = sorted(result_dir.rglob("race_result_*.json"))
+        outcome["official_result_files"] = []
+        for path in result_files:
+            try:
+                json.loads(path.read_text())
+            except (OSError, ValueError):
+                continue
+            outcome["official_result_files"].append(str(path.relative_to(output)))
+        if not outcome["official_result_files"] and "error" not in outcome:
+            outcome["error"] = "no readable race_result_*.json; inspect the installed scorer's result format"
         write_json(output / "trial.json", outcome)
-    if not outcome["official_result_files"]:
-        raise RuntimeError(f"original scorer wrote no results: {output}")
+    if "error" in outcome:
+        raise RuntimeError(outcome["error"])
     return outcome
 
 

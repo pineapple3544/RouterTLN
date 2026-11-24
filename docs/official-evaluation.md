@@ -16,6 +16,12 @@ bash scripts/build.sh
 
 ## 2. 실행 전 검사
 
+ROS 실행 전에 고정 설정 및 해시 검증 계약 테스트를 실행할 수 있다.
+
+```bash
+python3 tests/test_official_eval.py
+```
+
 ```bash
 bash scripts/official_eval.sh check --profile config/official/v1.yaml
 bash scripts/official_eval.sh check --profile config/official/v2.yaml
@@ -54,11 +60,11 @@ bash scripts/official_eval.sh suite --profile config/official/v2.yaml \
 
 1. `ros2 run f1tenth_gym_ros gym_bridge` (원본)
 2. 원본 `race_manager scorer` 및 `obstacle_spawner`
-3. 신선한 /scan과 장애물 메시지의 발행 여부 확인
+3. 신선한 /scan과 공식 장애물 발행기/구독기 연결 여부 확인
 4. `el_controller` (고정 프로파일)
 5. 원본 scorer 결과 저장 후 종료
 
-실행기는 GT 메시지의 장애물 좌표를 읽거나 제어기에 전달하지 않는다. 준비 여부 확인용 별도 노드는 /sim/obstacles 메시지 수신 여부만 확인한다. 제어기의 구독은 /scan과 ROS 기본 관리 토픽 그대로다. 기존 ROS 도메인에 /drive, /scan 또는 /sim/obstacles 발행자가 있으면 실행을 거절한다.
+실행기는 GT 토픽을 구독하지 않는다. 준비 여부 확인용 별도 노드는 /sim/obstacles의 ROS 그래프상 발행자 및 구독자 존재만 확인하며 메시지 내용은 읽지 않는다. 그래프 연결은 실제 장애물 생성의 증명이 아니므로 첫 smoke 시험에서 공식 시뮬레이터 화면에 장애물이 나타나는지 확인한다. 제어기의 구독은 /scan과 ROS 기본 관리 토픽 그대로다. 기존 ROS 도메인에 /drive, /scan 또는 /sim/obstacles 발행자가 있으면 실행을 거절한다.
 
 ### 180초 또는 10랩 종료
 
@@ -83,6 +89,6 @@ bash scripts/official_eval.sh controller --profile config/official/v2.yaml \
 
 ## 5. 결과 및 문제 확인
 
-`manifest.json`은 파일 해시 및 설치 패키지 경로, `controller.yaml`은 고정된 설정, `obsN/commands.json`은 실행 명령, `obsN/{bridge,scorer,spawner,controller}.log`와 `obsN/control.csv`는 진단 자료, `obsN/race_manager/`는 원본 scorer의 출력, `trial.json`과 `suite.json`은 실행 상태다. 설정 또는 입력 파일 해시가 바뀌면 다음 run을 시작하지 않는다. 실패 시 자동 재시도하지 않는다.
+`manifest.json`은 파일 해시 및 설치 패키지 경로, `controller.yaml`은 고정된 설정, `obsN/commands.json`은 실행 명령, `obsN/{bridge,scorer,spawner,controller}.log`와 `obsN/control.csv`는 진단 자료, `obsN/race_manager/`는 원본 scorer의 출력, `trial.json`과 `suite.json`은 실행 상태다. 설정 또는 입력 파일 해시가 바뀌면 다음 run을 시작하지 않는다. 실패 시 자동 재시도하지 않는다. 문서화된 원본 scorer의 race_result_*.json이 없거나 읽을 수 없으면 해당 run을 오류로 기록하며 설치된 scorer의 실제 출력 형식을 확인한다.
 
 공식 환경의 첫 시험에서는 스캔 시각, /clock 사용 여부, 제어 기한, 초기 위치 추정, 실제 장애물 초기 발행, 원본 scorer 출력 및 10랩 종료 방식부터 확인한다. 이후 동일 고정 프로파일로 노이즈 강건성과 미사용 배치를 비교한다. 기존 실험의 수치와 새 환경의 수치를 혼용하지 않는다.
