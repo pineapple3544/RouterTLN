@@ -32,6 +32,8 @@ docker compose run --rm berlin ros --obstacles 3 --variant coupled
 
 이미 빌드한 이미지를 옮길 때는 첫 PC에서 `docker image save -o routertln-v1.5.tar routertln:v1.5`, 대상 PC에서 `docker image load -i routertln-v1.5.tar`를 실행한다. 저장소 없이도 `docker run --rm --network none routertln:v1.5 cases`로 확인할 수 있다. 결과를 호스트에 보관하려면 위 Compose 명령을 사용하거나 `/workspace/runs`에 출력 폴더를 마운트한다. CUDA 교사 데이터 생성과 재학습에는 아래의 [기존 개발 환경](docker/Dockerfile)을 사용한다.
 
+**Docker 재현 검증.** 이 PC에서 새 체크아웃으로 빌드한 CPU 이미지의 회귀 테스트 9개가 통과했다. `coupled` 54개 배치를 다시 실행해 모두 180초 무정지·무충돌을 완주했고, 배치별 랩 기록·최소 여유·조향 집계가 기존 개발 환경과 일치했다. ROS 180초 주행은 장애물 3개 `coupled`로 10랩·최고 16.970초, 장애물 5개 `both`로 9랩·최고 18.402초였다. 두 실행 모두 보호 정지·충돌·25ms 초과가 0회였다. 서로 다른 물리 PC 간의 ROS 지연은 아직 비교하지 않았다. [Docker 검증 기록](experiments/berlin-endurance/v1.5/docker-verification.json)
+
 ### v1.5에서 바뀐 점과 측정 결과
 
 - 첫 랩에서 관측한 점유 격자와 자차 추정 위치로 한 바퀴의 회피 경로와 감속 계획을 만든다. 후속 랩은 Race와 Avoid가 2.7~4.5m/s의 정상 속도 범위를 공유한다. 정찰 랩 상한은 2.2m/s, 센서 보호 기준은 150ms다.

@@ -824,3 +824,102 @@ Publish sensor-only Berlin controller, scout speed planning and endurance result
  tools/make_avoid_highspeed_wsp.py                  |   95 +
  tools/replay_corridor.cpp                          |   23 +
  280 files changed, 50131 insertions(+), 288 deletions(-)
+24640d90aea1d3af659398bed5f9166868a4adbb
+2026-11-23T23:46:15+09:00 | pineapple4566 <nyko2006@gmail.com>
+Refresh contribution history through the Berlin evaluation release
+
+
+ git_commit_history.txt | 826 +++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 826 insertions(+)
+412054ded631ea82d022ceff62f37be693d87f73
+2026-11-23T23:50:04+09:00 | pineapple4566 <nyko2006@gmail.com>
+Document pre-speedup 300-layout endurance baseline and stop causes
+
+
+ README.md                              |  2 ++
+ experiments/berlin-endurance/README.md | 23 +++++++++++++++++++++++
+ 2 files changed, 25 insertions(+)
+87db46e7130ab539021e020f25ae2bcab80ea339
+2026-11-23T23:57:02+09:00 | KN_Yeon <72249146+pineapple3544@users.noreply.github.com>
+Update README.md
+
+
+ README.md | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+23fa88608d98198f4bc22172c279503e58efd153
+2026-11-24T15:14:13+09:00 | KN_Yeon <72249146+pineapple3544@users.noreply.github.com>
+docs: add high-speed Avoid TLN control authority hypothesis
+
+
+ README.md | 40 ++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 40 insertions(+)
+14dd4649d65c38213634696fd71617ae0c6e861a
+2026-11-25T19:36:33+09:00 | pineapple4566 <nyko2006@gmail.com>
+Package the Berlin v1.5 router, checkpoints and reproducible CPU evaluations
+
+
+ .gitignore                                         |    2 +
+ CMakeLists.txt                                     |   91 +-
+ README.md                                          |   41 +
+ SECTION_ROUTER.md                                  |   27 +
+ compose.yaml                                       |   11 +
+ docker/simulator/README.md                         |    3 +
+ docker/simulator/config/sim.yaml                   |   26 +
+ docker/simulator/config/sim_params.yaml            |   18 +
+ docker/simulator/f110_gym/LICENSE                  |   21 +
+ docker/simulator/f110_gym/__init__.py              |    5 +
+ docker/simulator/f110_gym/envs/__init__.py         |    5 +
+ docker/simulator/f110_gym/envs/base_classes.py     |  681 +++++
+ docker/simulator/f110_gym/envs/collision_models.py |  339 +++
+ docker/simulator/f110_gym/envs/dynamic_models.py   |  426 +++
+ docker/simulator/f110_gym/envs/f110_env.py         |  408 +++
+ docker/simulator/f110_gym/envs/laser_models.py     |  654 +++++
+ docker/simulator/f110_gym/envs/rendering.py        |  336 +++
+ docker/simulator/f1tenth_gym_ros/LICENSE           |   21 +
+ docker/simulator/f1tenth_gym_ros/__init__.py       |    0
+ docker/simulator/f1tenth_gym_ros/gym_bridge.py     |  653 +++++
+ docker/simulator/f1tenth_gym_ros/map_selection.py  |   29 +
+ docker/v1.5.Dockerfile                             |   33 +
+ docker/v1.5.Dockerfile.dockerignore                |   17 +
+ .../superpowers/plans/2026-11-24-berlin-laptime.md |   44 +
+ .../berlin-endurance/avoid-guide-comparison.md     |   96 +
+ .../berlin-endurance/berlin-verified-pace.md       |   40 +
+ experiments/berlin-endurance/entry-candidates.md   |   83 +
+ experiments/berlin-endurance/shared-scout-route.md |   50 +
+ experiments/berlin-endurance/v1.5/case-results.csv |  433 +++
+ experiments/berlin-endurance/v1.5/cases.json       | 2330 +++++++++++++++++
+ .../berlin-endurance/v1.5/entry-results.json       |  474 ++++
+ experiments/berlin-endurance/v1.5/paired-pass.csv  | 2752 ++++++++++++++++++++
+ experiments/berlin-endurance/v1.5/replays.json     |   17 +
+ experiments/berlin-endurance/v1.5/ros-cases.json   |   16 +
+ experiments/berlin-endurance/v1.5/ros-results.json |  116 +
+ .../berlin-endurance/v1.5/ros-selection.json       |   13 +
+ .../berlin-endurance/v1.5/same-state-results.json  |  254 ++
+ experiments/berlin-endurance/v1.5/suites.json      |   60 +
+ include/el/avoid_corridor.hpp                      |  216 +-
+ include/el/control_timing.hpp                      |    3 +
+ include/el/core.hpp                                |   14 +-
+ include/el/lap_plan.hpp                            |  184 +-
+ include/el/map_paths.hpp                           |   26 +
+ include/el/race_speed.hpp                          |   19 +
+ include/el/scan_localizer.hpp                      |    8 +-
+ include/el/section_router.hpp                      |  247 +-
+ models/v1.5/SHA256SUMS                             |    2 +
+ models/v1.5/avoid.pt                               |  Bin 0 -> 736250 bytes
+ models/v1.5/race.pt                                |  Bin 0 -> 785300 bytes
+ scripts/berlin_v15.py                              |  134 +
+ scripts/compare_berlin_v15.py                      |   95 +
+ scripts/local_gym_bridge.py                        |    8 +
+ scripts/run_sim.sh                                 |    7 +-
+ scripts/score_drive.py                             |    5 +-
+ scripts/smoke.sh                                   |   26 +-
+ scripts/warm_berlin_sim.py                         |   28 +
+ src/core.cpp                                       |    8 -
+ src/eval_avoid.cpp                                 |  145 +-
+ src/node.cpp                                       |   20 +-
+ src/offline_snapshot.hpp                           |   22 +
+ src/scenario.cpp                                   |    5 +-
+ src/teacher_unavailable.cpp                        |   13 +
+ tests/test_score_drive.py                          |   12 +
+ tests/tests.cpp                                    |  115 +
+ 64 files changed, 11879 insertions(+), 108 deletions(-)

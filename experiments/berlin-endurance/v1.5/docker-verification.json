@@ -1,0 +1,71 @@
+{
+  "implementation": "14dd4649d65c38213634696fd71617ae0c6e861a",
+  "platform": "linux/amd64",
+  "runtime": "LibTorch 2.9.1 CPU / ROS 2 Humble",
+  "offline_coupled": {
+    "cases": 54,
+    "passed": 54,
+    "identical": 54
+  },
+  "offline_exact_fields": [
+    "laps",
+    "min_sat_gap_m",
+    "reason",
+    "contact",
+    "guide_counts",
+    "steering_metrics"
+  ],
+  "ros": {
+    "pace-3-023_coupled": {
+      "accepted": true,
+      "duration_s": 180.0,
+      "covered_s": 180.0,
+      "physical_laps": 10,
+      "consecutive_laps": 10,
+      "lap_s": [
+        26.304979670438115,
+        17.066703199070616,
+        16.970091150682492,
+        17.025578821321687,
+        16.993565729359034,
+        17.020125562263274,
+        16.977446199585756,
+        16.987796651299504,
+        17.022072655148804,
+        17.052024648879524
+      ],
+      "best_lap_s": 16.970091150682492,
+      "collision_samples": 0,
+      "stopped_samples_before_finish": 0,
+      "emergency": null,
+      "controller_fault": null,
+      "failure": null,
+      "control_over_25ms": 0
+    },
+    "confirm-5-03_both": {
+      "accepted": true,
+      "duration_s": 180.0,
+      "covered_s": 180.0,
+      "physical_laps": 9,
+      "consecutive_laps": 9,
+      "lap_s": [
+        26.920858912939366,
+        18.49087544478789,
+        18.402085841769804,
+        18.46189669022715,
+        18.438168267704896,
+        18.467269381064398,
+        18.44571405710849,
+        18.500890140518095,
+        18.442661056367797
+      ],
+      "best_lap_s": 18.402085841769804,
+      "collision_samples": 0,
+      "stopped_samples_before_finish": 0,
+      "emergency": null,
+      "controller_fault": null,
+      "failure": null,
+      "control_over_25ms": 0
+    }
+  }
+}
