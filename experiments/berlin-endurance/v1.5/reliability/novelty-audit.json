@@ -1,0 +1,18 @@
+{
+  "prior_local_specs": 1918,
+  "prior_world_geometries": 1297,
+  "files": {
+    "results json": 202,
+    "results jsonl": 196,
+    "runs json": 332,
+    "runs jsonl": 89,
+    "experiments json": 32,
+    "config json": 31,
+    "../el-project json": 4676,
+    "../el-project jsonl": 723,
+    "../han0807 json": 1
+  },
+  "new_unique_world_geometries": 600,
+  "matches": [],
+  "noise_seed_matches": []
+}

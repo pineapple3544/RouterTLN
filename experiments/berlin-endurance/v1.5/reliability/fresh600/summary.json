@@ -1,0 +1,100 @@
+{
+  "1": {
+    "total": 200,
+    "clean": 196,
+    "rate": 0.98,
+    "interval95": [
+      0.9497121344948062,
+      0.9921956998236058
+    ],
+    "first_lap": 199,
+    "contact": 0,
+    "stops": 4,
+    "reasons": {
+      "no_corridor": 1,
+      "braking_footprint": 2,
+      "dynamic_braking_footprint": 1
+    },
+    "avg_best_s_completed": 15.734061070232237,
+    "avg_first_s_completed": 23.15179399250828,
+    "avg_laps_completed": 10.372448979591837,
+    "adoption": 0.8380175226875672,
+    "over25": 0,
+    "ticks": 1424503,
+    "max_ms": 21.011063
+  },
+  "3": {
+    "total": 200,
+    "clean": 198,
+    "rate": 0.99,
+    "interval95": [
+      0.9642775148038205,
+      0.9972533993962251
+    ],
+    "first_lap": 200,
+    "contact": 0,
+    "stops": 2,
+    "reasons": {
+      "braking_footprint": 2
+    },
+    "avg_best_s_completed": 16.870658559657894,
+    "avg_first_s_completed": 25.110420035445213,
+    "avg_laps_completed": 9.696969696969697,
+    "adoption": 0.8035135065951385,
+    "over25": 0,
+    "ticks": 1428150,
+    "max_ms": 18.514341
+  },
+  "5": {
+    "total": 200,
+    "clean": 188,
+    "rate": 0.94,
+    "interval95": [
+      0.8980673646931491,
+      0.9653481500987285
+    ],
+    "first_lap": 196,
+    "contact": 0,
+    "stops": 12,
+    "reasons": {
+      "no_corridor": 6,
+      "command_footprint": 1,
+      "dynamic_braking_footprint": 2,
+      "braking_footprint": 3
+    },
+    "avg_best_s_completed": 17.81225997766183,
+    "avg_first_s_completed": 26.806714981238372,
+    "avg_laps_completed": 9.058510638297872,
+    "adoption": 0.7861968652719438,
+    "over25": 1,
+    "ticks": 1381581,
+    "max_ms": 33.163741
+  },
+  "all": {
+    "total": 600,
+    "clean": 582,
+    "rate": 0.97,
+    "interval95": [
+      0.953078882410505,
+      0.980940900260977
+    ],
+    "first_lap": 595,
+    "contact": 0,
+    "stops": 18,
+    "reasons": {
+      "no_corridor": 7,
+      "braking_footprint": 7,
+      "dynamic_braking_footprint": 3,
+      "command_footprint": 1
+    },
+    "avg_best_s_completed": 16.79204680477355,
+    "avg_first_s_completed": 24.998758085949465,
+    "avg_laps_completed": 9.718213058419243,
+    "adoption": 0.8003265702387243,
+    "over25": 1,
+    "ticks": 4234234,
+    "max_ms": 33.163741
+  },
+  "regressions": [],
+  "recoveries": []
+}

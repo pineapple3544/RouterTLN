@@ -1,0 +1,2 @@
+name,count,seed,clean,was_clean,reason,rejection,progress,contact,contact_kind,laps,best_s,first_s,all_laps_s,seconds,min_gap_m,adopted,avoid,over25,ticks,max_ms
+holdout-5-035,5,1986379549,False,True,stopped,braking_footprint,230.83909824552515,False,,4,16.920062516696348,25.563726531642622,76.56635150172295,89.37000000000882,0.17777803540229797,908,1197,0,3574,13.58974

@@ -268,6 +268,15 @@ class SectionRouter {
       if(!decision.avoid_policy_verified)
         cmd.steer=corridor_.preview_steer(dyn,cmd,memory,dt,ticks,neural,&decision.avoid_policy_verified,settings.race_verified_pace && adaptive);
     }
+    if(avoiding_ && settings.whole_lap_path && lap_plan_.has_route()){
+      const float steer=corridor_.measured_pursuit(track,route_index,basic(dyn),lap_plan_.scout_line(),memory,.55f);
+      const Control turn{steer,cmd.speed};
+      if(std::isfinite(steer) && fabsf(steer-cmd.steer)>.015f && !command_refusal(memory,car,committed,turn,dyn,.15f,15,nullptr) &&
+         !command_refusal(memory,car,committed,turn,dyn,dt,ticks,nullptr)){
+        cmd=turn;
+        decision.avoid_policy_verified=decision.avoid_policy_verified && cmd.steer==decision.avoid_policy_steer;
+      }
+    }
     // A scout can unwind full lock while the next obstacle is still in the
     // stopping arc. Compare the queued turn and the requested turn before the
     // immediate guard loses all feasible actions. Re-evaluate on each scan.
@@ -281,6 +290,31 @@ class SectionRouter {
         if(clearance>nominal){
           cmd=keep_turn;
           decision.reason="hold_clear_turn";
+        }
+      }
+    }
+    // A command that can stop now can still use up the steering reserve before
+    // the next scan. Test continued actuation followed by a stop, including the
+    // queued wheel commands, while the car can still choose a different arc.
+    if(settings.avoid_policy_first && settings.lap_planning && !adaptive && !avoiding_ && cmd.speed>0 && have_pose_){
+      constexpr int preview_ticks=14;
+      constexpr float reserve_m=.05f;
+      auto clears_preview=[&](Control trial){
+        return !command_refusal(memory,car,committed,trial,dyn,.01f*preview_ticks,preview_ticks,nullptr,reserve_m);
+      };
+      if(!clears_preview(cmd)){
+        const float wheel_step=3.2f*dt;
+        const float slower=std::min(cmd.speed,.8f*car.v);
+        bool found=false;
+        for(float speed:{cmd.speed,slower}){
+          for(float delta:{0.f,wheel_step,-wheel_step,2*wheel_step,-2*wheel_step}){
+            Control trial{clamp(cmd.steer+delta,-.4f,.4f),speed};
+            if(trial.steer==cmd.steer && trial.speed==cmd.speed)continue;
+            if(clears_preview(trial) && !command_refusal(memory,car,committed,trial,dyn,dt,ticks,nullptr)){
+              cmd=trial;decision.reason="clear_braking_arc";found=true;break;
+            }
+          }
+          if(found || slower==cmd.speed)break;
         }
       }
     }
@@ -429,6 +463,8 @@ class SectionRouter {
         cluster_changed=corridor_.choose_cluster_entry(track,n,memory,*lap_plan_.avoidance_line(),dyn,speed,to_second,
                                                      settings.entry_candidates,previous_verified_,&entry_blend);
       }
+      if(settings.avoid_policy_first && settings.whole_lap_path && lap_plan_.has_route())
+        corridor_.follow_scout_bend(track,n,car,memory,lap_plan_.scout_line(),*lap_plan_.avoidance_line());
       if(hazard)side_=corridor_.side_at(first+.35f);
       if(guided){
         State aim=car;

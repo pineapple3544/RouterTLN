@@ -50,6 +50,10 @@ class AvoidCorridor {
     const Passage passage=prefer_reserve?preview_passage(track,start,car,memory):Passage{};
     // Do not switch sides just because the other side is representable on the
     // coarse grid. Evaluate the narrow side on the same fine lattice first.
+    if(prefer_reserve && !replay_line && reversing_bend(track,start) && obstacle_at_bend_entry(track,start,memory)){
+      if(trace){*trace=CorridorTrace{};trace->subdivisions=2;trace->wide=true;}
+      if(plan_lattice<2,2>(track,start,car,memory,replay_line,trace,true,{},true))return true;
+    }
     if(passage.valid){
       if(trace){*trace=CorridorTrace{};trace->subdivisions=4;}
       if(plan_lattice<4>(track,start,car,memory,replay_line,trace,false,passage))return true;
@@ -80,6 +84,44 @@ class AvoidCorridor {
  private:
   // Across an obstacle, check both the opening and its exit at every waypoint.
   // A wide opening that closes a few rows later is a poor steering target.
+  struct ObservedObstacles {
+    const Memory& memory;
+    float at(float x,float y) const {return memory.obstacle_at(x,y);}
+  };
+  // In a reversing bend the racing line moves from one wall to the other.
+  // Fit the observed opening in world space, using its local centre on
+  // each cross section rather than holding one racing-line offset.
+  static bool reversing_bend(const Track& track,int start){
+    const auto& wp=track.points;
+    float left=0,right=0;
+    for(int j=-15;j<=40;j+=5){
+      const auto& p=wp[(start+int(wp.size())+j)%wp.size()];
+      const auto& q=wp[(start+int(wp.size())+j+5)%wp.size()];
+      const float turn=wrap(q.yaw-p.yaw);
+      left=std::max(left,turn);right=std::min(right,turn);
+    }
+    return left>.23f && right<-.23f;
+  }
+  static bool obstacle_at_bend_entry(const Track& track,int start,const Memory& memory){
+    const auto& wp=track.points;
+    const int n=static_cast<int>(wp.size());
+    auto point=[&](int j)->const Waypoint&{return wp[(start+n+j)%n];};
+    int apex=0;float peak=0;
+    // Select the first tight arc, so a box beyond the reversal does not
+    // trigger a lane change on the approach to the preceding empty apex.
+    for(int j=-16;j<=30;j+=2){
+      const float turn=wrap(point(j+2).yaw-point(j-2).yaw);
+      if(fabsf(turn)>fabsf(peak)){peak=turn;apex=j;}
+      else if(fabsf(peak)>.24f && peak*turn<=0)break;
+    }
+    if(fabsf(peak)<.24f)return false;
+    const ObservedObstacles layer{memory};
+    for(int j=apex-24;j<=apex+4;j+=2){
+      const auto& p=point(j);
+      if(footprint(layer,{p.x,p.y,p.yaw},.15f)>.5f)return true;
+    }
+    return false;
+  }
   struct Passage {float offset=0,entry=0,exit=0;bool valid=false;};
   Passage preview_passage(const Track& track,int start,const State& car,const Memory& memory)const{
     struct ObstacleLayer {
@@ -193,7 +235,7 @@ class AvoidCorridor {
   }
   template<int subdivisions,int reach=1>
   bool plan_lattice(const Track& track,int start,const State& car,const Memory& memory,
-                    const std::vector<float>* replay_line,CorridorTrace* trace,bool wide,const Passage& passage){
+                    const std::vector<float>* replay_line,CorridorTrace* trace,bool wide,const Passage& passage,bool center_lane=false){
     constexpr int cols=(width-1)*subdivisions+1,center=cols/2,slope_extent=reach*subdivisions,slopes=2*slope_extent+1;
     constexpr float step_m=.10f/subdivisions;
     auto coarse=[](int col){return (col+subdivisions/2)/subdivisions;};
@@ -281,6 +323,12 @@ class AvoidCorridor {
           const float error=offset-passage.offset;
           penalty+=48.f*approach*exit*error*error;
         }
+        if(center_lane){
+          // Reward the middle of a connected free interval even when the
+          // nominal race line crosses the inside apex at the next turn.
+          const float deficit=std::max(0.f,.68f-room[j]);
+          penalty+=7.f*deficit*deficit;
+        }
         if(recorded)penalty+=3.f*(offset-preferred)*(offset-preferred);
         if(footprint(memory,pose,.16f)>.5f)penalty+=1.6f;
         if(footprint(memory,pose,.23f)>.5f)penalty+=.32f;
@@ -354,6 +402,131 @@ class AvoidCorridor {
       limit=std::min(limit,sqrtf(2.2f/std::max(curvature,.01f)+6.f*advance_distance));
     }
     return limit;
+  }
+  // Look for separated occupied bands with a consistent measured passing side.
+  // A single physical box can produce separated bands around a bend.
+  static bool paired_bend(const Track& track,int start,const Memory& memory,const std::vector<float>& scout){
+    const auto& wp=track.points;
+    if(scout.size()!=wp.size())return false;
+    const ObservedObstacles layer{memory};
+    int previous=-1000;
+    for(int j=-58;j<=64;j+=2){
+      const int k=(start+int(wp.size())+j)%wp.size();const auto& p=wp[k];
+      if(footprint(layer,{p.x,p.y,p.yaw},.17f)<=.5f)continue;
+      const int gap=j-previous;
+      // Samples are two waypoints apart. Four leaves at least one clear
+      // cross-section between bands, including short gaps on a tight bend.
+      if(gap>=4 && gap<=40 && previous<=25 && j>=-20){
+        const float a=scout[(start+int(wp.size())+previous)%wp.size()],b=scout[k];
+        if(std::isfinite(a) && std::isfinite(b) && a*b>.08f){
+          if(gap>=9)return true;
+          // A short break in returns does not establish a separate obstacle.
+          // Use its scout side only if the recorded crossing leaves clearance
+          // against the sensed faces on both ends of the break.
+          bool room=true;
+          for(int u=previous-4;u<=j+4 && room;u+=2){
+            const int idx=(start+int(wp.size())+u)%wp.size();
+            const auto& w=wp[idx];const float d=scout[idx];
+            if(!std::isfinite(d)){room=false;break;}
+            const State crossed{w.x-sinf(w.yaw)*d,w.y+cosf(w.yaw)*d,w.yaw};
+            room=footprint(layer,crossed,.18f)<=.5f;
+          }
+          if(room)return true;
+        }
+      }
+      previous=j;
+    }
+    return false;
+  }
+  // The larger window starts steering before a fast car reaches the reversal.
+  static float measured_pursuit(const Track& track,int start,const State& car,
+                                const std::vector<float>& line,const Memory& memory,float look){
+    const auto& wp=track.points;
+    if(line.size()!=wp.size())return NAN;
+    float left=0,right=0;
+    for(int j=-20;j<50;j+=5){
+      const auto& a=wp[(start+wp.size()+j)%wp.size()];
+      const auto& b=wp[(start+wp.size()+j+5)%wp.size()];
+      float angle=wrap(b.yaw-a.yaw);
+      left=std::max(left,angle);right=std::min(right,angle);
+    }
+    if(std::min(left,-right)<.12f || std::max(left,-right)<.30f)return NAN;
+    if(!paired_bend(track,start,memory,line))return NAN;
+    for(int j=1;j<=24;++j){
+      size_t k=(start+j)%wp.size();const auto& w=wp[k];
+      const float d=line[k];
+      if(!std::isfinite(d))return NAN;
+      const float x=w.x-sinf(w.yaw)*d-car.x,y=w.y+cosf(w.yaw)*d-car.y;
+      if(x*x+y*y<look*look || x*cosf(car.yaw)+y*sinf(car.yaw)<=0)continue;
+      if(footprint(memory,{x+car.x,y+car.y,w.yaw},.06f)>.5f)return NAN;
+      return clamp(atan2f(.6604f*(-sinf(car.yaw)*x+cosf(car.yaw)*y),x*x+y*y),-.4f,.4f);
+    }
+    return NAN;
+  }
+  bool follow_scout_bend(const Track& track,int start,const State& car,
+                         const Memory& memory,const std::vector<float>& scout,const std::vector<float>& planned){
+    const auto& wp=track.points;
+    if(scout.size()!=wp.size())return false;
+    float peak=0;
+    for(int i=0;i<25;i+=3){
+      const auto& a=wp[(start+i)%wp.size()];
+      const auto& b=wp[(start+i+3)%wp.size()];
+      peak=std::max(peak,fabsf(wrap(b.yaw-a.yaw))/std::max(.01f,hypotf(b.x-a.x,b.y-a.y)));
+    }
+    if(peak<.64f)return false;
+    struct ObjectLayer{
+      const Memory& cells;
+      float at(float x,float y)const{return cells.obstacle_at(x,y);}
+    } objects{memory};
+    const int n=int(wp.size());
+    bool active=false,isolated=false;
+    float open_distance=INFINITY;
+    auto index=[&](int ahead){return (start+n+ahead%n)%n;};
+    int previous=index(-56);
+    for(int j=-54;j<=40 && !active;j+=2){
+      const int k=index(j);
+      const auto& p=wp[k];
+      const float ds=hypotf(p.x-wp[previous].x,p.y-wp[previous].y);
+      previous=k;
+      if(footprint(objects,{p.x,p.y,p.yaw},.15f)<=.5f){open_distance+=ds;continue;}
+      if(open_distance>.4f)isolated=open_distance>1.f+1.4f*car.v;
+      open_distance=0.f;
+      if(!isolated || j< -8 || !std::isfinite(scout[k]))continue;
+      const float turn=wrap(p.yaw-wp[(k+n-18)%n].yaw);
+      // A switchback needs opposite steering before and after the box.
+      // Use the measured entry only if the whole-lap route passes on the
+      // same side. Closely spaced objects retain the live cluster guide.
+      const float exit_turn=wrap(wp[(k+18)%n].yaw-p.yaw);
+      if(fabsf(turn)>.55f && fabsf(exit_turn)>.55f && turn*exit_turn<0 && turn*scout[k]>.12f &&
+         (planned.empty() || !std::isfinite(planned[k]) || planned[k]*scout[k]>=0))active=true;
+    }
+    if(!active)return false;
+
+    auto offsets=offsets_;
+    const auto& first=wp[start];
+    const float lateral=-(car.x-first.x)*sinf(first.yaw)+(car.y-first.y)*cosf(first.yaw);
+    for(int i=0;i<=18;++i){
+      const size_t k=(start+2*i)%wp.size();
+      if(!std::isfinite(scout[k]))return false;
+      const float fade=clamp((18.f-i)/4.f,0,1);
+      const float join=clamp(i/4.f,0,1);
+      const float d=lateral*(1-join)+scout[k]*join;
+      offsets[i]+=fade*(d-offsets[i]);
+    }
+    const auto original=path_;
+    const auto prior=offsets_;
+    set_guide(track,start,offsets);
+    for(int j=1;j<=18;++j){
+      const auto& a=path_[j-1];const auto& b=path_[j];
+      const float yaw=atan2f(b.y-a.y,b.x-a.x);
+      for(float u:{.5f,1.f}){
+        State pose{a.x+u*(b.x-a.x),a.y+u*(b.y-a.y),yaw};
+        if(footprint(memory,pose,.045f)>.5f || gym_front_blocked(memory,pose,.02f)){
+          path_=original;offsets_=prior;return false;
+        }
+      }
+    }
+    return true;
   }
   // Project candidate steering onto the observed corridor using the same delayed
   // vehicle dynamics as the command guard. Near a bend the scout line can be

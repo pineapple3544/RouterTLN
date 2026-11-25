@@ -29,5 +29,7 @@ RUN cd models/v1.5 && sha256sum -c SHA256SUMS
 COPY config config
 COPY scripts scripts
 COPY experiments/berlin-endurance/v1.5/cases.json experiments/berlin-endurance/v1.5/ros-cases.json experiments/berlin-endurance/v1.5/suites.json experiments/berlin-endurance/v1.5/replays.json /opt/berlin-cases/
+COPY experiments/berlin-endurance/v1.5/reliability/paired300/manifest.json /opt/berlin-cases/reliability/paired300.json
+COPY experiments/berlin-endurance/v1.5/reliability/fresh600/manifest.json /opt/berlin-cases/reliability/fresh600.json
 ENTRYPOINT ["/ros_entrypoint.sh", "python3", "/workspace/scripts/berlin_v15.py"]
 CMD ["--help"]

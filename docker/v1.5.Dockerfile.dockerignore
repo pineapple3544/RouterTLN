@@ -15,3 +15,4 @@
 **/__pycache__/
 !experiments/berlin-endurance/v1.5/suites.json
 !experiments/berlin-endurance/v1.5/replays.json
+!experiments/berlin-endurance/v1.5/reliability/*/manifest.json

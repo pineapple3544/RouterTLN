@@ -6,6 +6,12 @@
 
 원형 TinyLidarNet은 2D 라이다 스캔으로 조향과 스로틀을 직접 예측한다. 코너 직후에 장애물이 있다면 첫 랩에는 시야에 들어온 뒤 대응할 수 있다. 두 번째 랩에는 코너에 들어가기 전부터 감속할 수 있지만, 그러려면 장애물을 만난 위치와 통과 경로를 기억하고 현재 위치와 연결해야 한다. RouterTLN에서는 매 제어 주기에 Race와 Avoid 중 하나가 명령을 만들고, C++ 라우터가 랩을 넘나드는 기억과 전환 계획을 맡는다. [TinyLidarNet 원 논문](https://arxiv.org/abs/2410.07447) · [랩 계획 구현](include/el/lap_plan.hpp)
 
+## v1.5 Berlin 180초 신뢰성 평가
+
+기존 300개 배치는 296개에서 **299개 통과**로 개선됐다. 종전 실패 4개는 모두 9랩을 완주했고, 종전 성공 1개가 제동 보호로 정지했다. 별도로 추첨한 신규 600개는 **582개 통과(97.0%)**, 첫 랩 595개 완주, 접촉 0건, 보호 정지 18건이었다. 장애물 1·3·5개를 각각 200번씩 평가해 196·198·188개가 통과했다. 5개 조건에서 정지 12건이 발생했다. 각 배치는 첫 랩부터 새 계획으로 180초간 오프라인 주행했다.
+
+시드, 장애물 위치, Docker 실행 명령과 배치별 주행 기록을 함께 공개한다. [900개 배치 재현 방법](experiments/berlin-endurance/v1.5/reliability/README.md) · [결과·랩타임·실패 분석](experiments/berlin-endurance/v1.5/reliability/report.md)
+
 ## v1.5 · 다른 PC에서 Berlin 주행하기
 
 Linux x86-64 PC 또는 Windows에서 Linux 컨테이너 모드의 Docker Desktop을 사용한다. Git과 Docker Compose v2가 있으면 된다. 공개 ROS 2 Humble 이미지, CPU용 LibTorch 2.9.1, 평가에 사용한 F1TENTH Gym·ROS 브리지, Berlin 지도, Race·Avoid 체크포인트를 하나의 이미지로 빌드한다. 호스트의 ROS, NVIDIA GPU, Forza 개발 이미지, 기존 빌드 볼륨은 필요하지 않다. 첫 빌드는 인터넷을 사용하고 이후 주행은 네트워크 없이 실행한다. ARM의 실시간 주행 성능은 검증하지 않았다.

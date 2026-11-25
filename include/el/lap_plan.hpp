@@ -229,6 +229,7 @@ class LapPlan {
   bool has_route() const {return route_.available();}
   const char* route_status() const {return route_.status();}
   float route_speed(size_t i) const {return route_.speed(i);}
+  const std::vector<float>& scout_line() const {return scout_lateral_;}
   const std::vector<float>* avoidance_line() const {
     if(route_.available())return &route_.line();
     return use_line_ ? &scout_lateral_ : nullptr;

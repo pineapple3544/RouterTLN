@@ -1,0 +1,95 @@
+{
+  "1": {
+    "total": 100,
+    "clean": 100,
+    "rate": 1.0,
+    "interval95": [
+      0.9630051925239981,
+      0.9999999999999999
+    ],
+    "first_lap": 100,
+    "contact": 0,
+    "stops": 0,
+    "reasons": {},
+    "avg_best_s_completed": 15.742346881028958,
+    "avg_first_s_completed": 23.087983756734207,
+    "avg_laps_completed": 10.35,
+    "adoption": 0.836974099423946,
+    "over25": 0,
+    "ticks": 719900,
+    "max_ms": 19.935628
+  },
+  "3": {
+    "total": 100,
+    "clean": 100,
+    "rate": 1.0,
+    "interval95": [
+      0.9630051925239981,
+      0.9999999999999999
+    ],
+    "first_lap": 100,
+    "contact": 0,
+    "stops": 0,
+    "reasons": {},
+    "avg_best_s_completed": 16.905229922500446,
+    "avg_first_s_completed": 25.23413198351454,
+    "avg_laps_completed": 9.64,
+    "adoption": 0.8202731746439338,
+    "over25": 0,
+    "ticks": 719900,
+    "max_ms": 24.911209
+  },
+  "5": {
+    "total": 100,
+    "clean": 99,
+    "rate": 0.99,
+    "interval95": [
+      0.9455124752390653,
+      0.9982326134344526
+    ],
+    "first_lap": 100,
+    "contact": 0,
+    "stops": 1,
+    "reasons": {
+      "braking_footprint": 1
+    },
+    "avg_best_s_completed": 17.68053411807281,
+    "avg_first_s_completed": 26.66281881746043,
+    "avg_laps_completed": 9.1010101010101,
+    "adoption": 0.7856256256256257,
+    "over25": 0,
+    "ticks": 716275,
+    "max_ms": 20.686769
+  },
+  "all": {
+    "total": 300,
+    "clean": 299,
+    "rate": 0.9966666666666667,
+    "interval95": [
+      0.9813628354450568,
+      0.9994113574238592
+    ],
+    "first_lap": 300,
+    "contact": 0,
+    "stops": 1,
+    "reasons": {
+      "braking_footprint": 1
+    },
+    "avg_best_s_completed": 16.773011899806516,
+    "avg_first_s_completed": 24.98940012359016,
+    "avg_laps_completed": 9.698996655518394,
+    "adoption": 0.8059590514036397,
+    "over25": 0,
+    "ticks": 2156075,
+    "max_ms": 24.911209
+  },
+  "regressions": [
+    "holdout-5-035"
+  ],
+  "recoveries": [
+    "holdout-5-005",
+    "holdout-5-064",
+    "holdout-5-069",
+    "holdout-5-099"
+  ]
+}

@@ -2,6 +2,7 @@
 import argparse
 import json
 import os
+from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timezone
 from pathlib import Path
 import subprocess
@@ -12,12 +13,14 @@ MODELS = Path("/workspace/models/v1.5")
 VARIANTS = ("both", "local", "half", "full", "continuity", "rescue", "coupled", "graduated")
 
 
-def evaluate(cases, output, stem):
+def evaluate(cases, output, stem, cpu=None):
     spec = output / (stem + ".json")
     spec.write_text(json.dumps({"device": "cpu", "teacher": False, "cases": cases}, indent=2))
     result = output / (stem + ".jsonl")
-    subprocess.run(["/build/el_eval_avoid", MODELS / "avoid.pt", result, spec,
-                    MODELS / "race.pt"], check=True)
+    command = ["/build/el_eval_avoid", MODELS / "avoid.pt", result, spec, MODELS / "race.pt"]
+    if cpu is not None:
+        command = ["taskset", "-c", str(cpu), *command]
+    subprocess.run(command, check=True)
     return [json.loads(line) for line in result.read_text().splitlines()]
 
 
@@ -72,6 +75,44 @@ def offline(args, output):
     return len(rows) == len(passed) == len(cases)
 
 
+def reliability(args, output):
+    cases = json.loads((CASES / "reliability" / (args.suite + ".json")).read_text())
+    if args.case:
+        cases = [case for case in cases if case["name"] == args.case]
+        if not cases:
+            raise SystemExit(f"Unknown case in {args.suite}: {args.case}")
+    cpus = [None]
+    if args.cpus:
+        try:
+            cpus = [int(cpu) for cpu in args.cpus.split(",")]
+        except ValueError:
+            raise SystemExit("--cpus expects comma-separated CPU IDs")
+        if len(set(cpus)) != len(cpus) or not set(cpus) <= os.sched_getaffinity(0):
+            raise SystemExit("--cpus must contain distinct CPU IDs available to this container")
+    (output / "traces").mkdir()
+    for case in cases:
+        case["phase_trace"] = str(output / "traces" / (case["name"] + ".csv"))
+    workers = min(len(cpus), len(cases))
+
+    def shard(index):
+        group = cases[index::workers]
+        rows = evaluate(group, output, f"rows-{index}", cpu=cpus[index])
+        if [r["spec"] for r in rows] != group:
+            raise RuntimeError("Evaluator results do not match the requested cases")
+        return rows
+
+    with ThreadPoolExecutor(workers) as pool:
+        rows = [r for group in pool.map(shard, range(workers)) for r in group]
+    passed = [r for r in rows if r["pose_source"] == "lidar_static_map" and
+              r["reason"] == "time_limit" and abs(r["time_s"] - 180) < 1e-5 and
+              r["laps"] and r["contact"] is None and r["first_rejection"] is None and
+              r["min_speed_after_first_half_m"] >= .05]
+    totals = {"suite": args.suite, "runs": len(rows), "passed": len(passed),
+              "contacts": sum(r["contact"] is not None for r in rows)}
+    (output / "totals.json").write_text(json.dumps(totals, indent=2))
+    print(json.dumps(totals))
+
+
 def ros(args, output):
     layout = json.loads((CASES / "ros-cases.json").read_text())[str(args.obstacles)]
     env = {**os.environ, **layout, "EL_MAP_DIR": "/workspace/maps/berlin",
@@ -105,6 +146,10 @@ def main():
     off = commands.add_parser("offline", help="run the 180 s simulator evaluation")
     off.add_argument("--case", default="pace-3-023", help="a layout name or all")
     off.add_argument("--trace", action="store_true", help="save per-control telemetry")
+    validation = commands.add_parser("reliability", help="reproduce the frozen 300/600 layout trials")
+    validation.add_argument("suite", choices=("paired300", "fresh600"))
+    validation.add_argument("--case", help="run one named layout from the chosen suite")
+    validation.add_argument("--cpus", help="one worker per listed CPU ID (default: one unpinned worker)")
     drive = commands.add_parser("ros", help="run sensor, controller and independent judge")
     drive.add_argument("--obstacles", type=int, choices=(3, 5), default=3)
     for child in (off, drive):
@@ -122,6 +167,8 @@ def main():
     output = parent / f"{args.command}-{label}-{stamp}-{uuid4().hex[:8]}"
     output.mkdir()
     print(f"Results: {output}", flush=True)
+    if args.command == "reliability":
+        return reliability(args, output)
     if args.command == "matrix":
         return matrix(output)
     if args.command == "replay":

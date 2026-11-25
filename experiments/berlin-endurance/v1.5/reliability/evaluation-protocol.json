@@ -1,0 +1,26 @@
+{
+  "image": "sha256:154713db28689aeb80752257bdd9adaace0e35a9587cc0a3ac3107f90fd5c097",
+  "baseline": "sha256:e2a49911212c412ff3968a92296ee29a6b6dcc02a5e3ccbf92756c7f62319342",
+  "hashes": {
+    "/workspace/include/el/section_router.hpp": "4bd70911866fde00cb2cbf75915973b8326f94a9244326897597408357644a9e",
+    "/workspace/include/el/avoid_corridor.hpp": "4771ed1f3f5c61e76a427413fb6d1c5954c7a0a2f0ecb82dda408753bfba5c62",
+    "/workspace/include/el/lap_plan.hpp": "f52d0c2293d0149e90f4a99d3dd22b508789f65c6f4f8c4cf29568707d45ac0c",
+    "/workspace/include/el/scan_localizer.hpp": "be99e75fb652afa4a44ec68b9eaf16cdcace74c437ea38116facaec426f3e84e",
+    "/workspace/models/v1.5/race.pt": "bdf35c2e543223762824eaa80be40af9832a737806e3fb4e93a1c77f4aef822a",
+    "/workspace/models/v1.5/avoid.pt": "695cabf66fab062c042a2eb3ff2659cd05d97e75c4d491f150de3c4e6dfb7b43",
+    "/build/el_eval_avoid": "c718afa70b9c5a0d126cb9882b6307f8f87b321212ebed12b1164576df7009c7",
+    "/build/el_controller": "7dd8a51b208c8b8a4d0ee4de2c1daee8776e4aa7396034a5aa7852b29d81de53"
+  },
+  "new_manifest_sha256": "a7647a7afbe999a9cec54130b287c5201d1744f03ef59945be21d258c8c89f5d",
+  "old_manifest_sha256": "6eec10eb6ad0c5bd381f1b8dc39a8af06fd84bf7eec698f2881f660eea260114",
+  "utc": "2026-11-25T13:36:19.965793+00:00",
+  "workers": 8,
+  "command": "el_eval_avoid",
+  "duration_s": 180,
+  "fresh_counts": {
+    "1": 200,
+    "3": 200,
+    "5": 200
+  },
+  "success": "time_limit at 180s, >=1 lap, no contact, no first_rejection, min speed after half metre >=0.05"
+}
