@@ -49,6 +49,18 @@ class JudgeTest(unittest.TestCase):
         short = score(self.controls,self.physics,self.map,0,.60)
         self.assertEqual(short['failure'], 'short_timed_run')
 
+    def test_judge_endpoint_respects_control_clock_precision(self):
+        points = self.line * 2 + [self.line[0]]
+        for lag, covered in [(0.0000003, True), (0.0000007, False)]:
+            with self.subTest(lag=lag):
+                write_csv(self.physics, ['stamp','x','y','speed','collision'],
+                          [(i*.01 - (lag if i == 8 else 0), x, y, 1, 'none')
+                           for i, (x,y) in enumerate(points)])
+                result = score(self.controls, self.physics, self.map, 0, .06)
+                self.assertEqual(result['accepted'], covered)
+                if not covered:
+                    self.assertEqual(result['failure'], 'incomplete_judge_coverage')
+
     def test_fault_is_scoped_to_the_timed_window(self):
         self.run_case(self.line * 2 + [self.line[0]])
         log = self.controls.with_name('car-controller.log')

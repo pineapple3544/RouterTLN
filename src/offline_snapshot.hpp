@@ -32,6 +32,10 @@ struct OfflineSnapshot {
     }
     flat(name,values.data(),values.size());
   }
+  static json scout_route(const LapPlan& plan){
+    return {{"free_mask",plan.route_.free_},{"traversed_mask",plan.route_.traversed_},{"scout_offsets",plan.scout_lateral_},
+            {"planned_offsets",plan.route_.offsets_},{"speed_squared",plan.route_.speeds2_}};
+  }
   void localization(ScanLocalizer& l){
     field("localization_locked",l.locked_);field("localization_stamp",l.stamp_);
     flat("localization_pose",&l.pose_,1);
@@ -57,6 +61,20 @@ struct OfflineSnapshot {
     auto& corridor=r.corridor_;
     vec("sections",plan.sections_,points);
     flat("pending",&plan.pending_,1);vec("scout_line",plan.scout_lateral_,points);
+    auto& route=plan.route_;
+    if(!reading || data.contains("scout_free")){
+      vec("scout_free",route.free_,points);
+      if(!reading || data.contains("scout_traversed"))vec("scout_traversed",route.traversed_,points);
+      else route.traversed_.assign(route.free_.size(),0);
+      if(route.free_.size()!=route.traversed_.size())throw std::runtime_error("invalid scout mask dimensions");
+      vec("whole_line",route.offsets_,points);
+      vec("whole_speed2",route.speeds2_,points);field("whole_last",route.last_);
+      field("whole_attempted",route.attempted_);
+      if(reading && ((!route.free_.empty() && route.free_.size()!=points) ||
+         (!route.offsets_.empty() && route.offsets_.size()!=points) ||
+         route.speeds2_.size()!=route.offsets_.size() || route.last_<-1 || route.last_>=int(points)))
+        throw std::runtime_error("invalid scout route snapshot");
+    }else route=ScoutRoute{};
     if(!reading || data.contains("race_speed2")){
       vec("race_speed2",plan.race_speed2_,points);field("race_cruise",plan.race_cruise_);
     }else{plan.race_speed2_.clear();plan.race_cruise_=0;}
@@ -68,6 +86,10 @@ struct OfflineSnapshot {
     flat("path",corridor.path_.data(),corridor.path_.size());
     flat("offsets",corridor.offsets_.data(),corridor.offsets_.size());
     flat("last_pose",&r.last_pose_,1);flat("last_command",&r.last_command_,1);
+    if(reading)r.previous_verified_=data.value("previous_verified",false);
+    else field("previous_verified",r.previous_verified_);
+    if(reading)r.cluster_station_=data.value("cluster_station",-1.f);
+    else field("cluster_station",r.cluster_station_);
     field("have_pose",r.have_pose_);field("merge_blocked",r.merge_blocked_);
     field("last_station",r.last_station_);field("position",r.position_);field("end",r.end_);
     field("clear_since",r.clear_since_);field("side",r.side_);field("avoiding",r.avoiding_);

@@ -20,12 +20,17 @@ struct SectionDecision {
   const char* reason;
   bool blocked;
   SpeedLimits speed_limits{};
+  float avoid_policy_steer=NAN;
+  bool avoid_policy_verified=false;
+  bool cluster_evaluated=false,cluster_changed=false,isolated_exit=false,exit_evaluated=false,exit_smoothed=false;
+  float entry_blend=0.f;
 };
 class SectionRouter {
   friend struct OfflineSnapshot;
  public:
   const LapPlan& lap_plan()const{return lap_plan_;}
   bool avoiding() const {return avoiding_;}
+  float distance_past_section()const{return position_-end_;}
   int side() const {return side_;}
   void reset() { *this = SectionRouter{}; }
   void stop(const char* reason) { if(!stop_reason_)stop_reason_=reason; }
@@ -48,11 +53,28 @@ class SectionRouter {
     int route_index=0;
     auto decision=route_observation(track,memory,car,scans,avoid.uses_corridor(),now,input,settings,cap,timing,trace,&route_index);
     if(timing)timing->mark(ControlTiming::corridor);
+    if(settings.whole_lap_path)lap_plan_.finish_route(track.points,requested_cap,settings.sim_avoid_min);
     if(decision.mode==Mode::Emergency)return stop_with(decision.reason);
     Control cmd=avoiding_?avoid.infer(input,timing):race.infer(input,timing);
     if (!std::isfinite(cmd.steer)||!std::isfinite(cmd.speed)) return stop_with("invalid_action");
+    if(settings.smooth_isolated_exit && adaptive && decision.isolated_exit && lap_plan_.has_route()){
+      const float threshold=settings.sim_avoid_min+.01f;
+      const float other=std::min({cmd.speed,lap_plan_.cap(),lap_plan_.route_speed(route_index)});
+      if(other>threshold && corridor_.speed_limit(settings.avoid_speed_cap,car.v)<=threshold){
+        decision.exit_evaluated=true;
+        if(corridor_.smooth_exit(track,route_index,memory,car.v,other)){
+          State aim=car;
+          if(have_pose_)for(int tick=0;tick<6;++tick)aim=predict_command_tick(aim,last_command_,.01f);
+          corridor_.condition(input,car,settings.lookahead_scale,true,&aim);
+          cmd=avoid.infer(input,timing);
+          if(!std::isfinite(cmd.steer)||!std::isfinite(cmd.speed))return stop_with("invalid_action");
+          decision.exit_smoothed=true;
+        }
+      }
+    }
     limits.policy=cmd.speed;
     const bool adaptive_avoid=adaptive && !settings.sim_race_only;
+    float available_race_cap=0.f;
     if(!avoiding_){
       cmd.speed*=settings.race_speed_scale;
       if(adaptive){
@@ -87,19 +109,30 @@ class SectionRouter {
         }
         if(settings.straight_boost && requested_cap>3.5f){
           // Use the extra speed only with an open stopping path after the scout.
-          const bool straight=std::max(fabsf(cmd.steer),fabsf(car.steer))<.09f &&
-            std::min(cap,lap_plan_.cap())>=requested_cap-.01f;
-          if(!straight || scans.empty() || !clear_for_boost(scans.back(),requested_cap)){
+          const bool aligned=std::max(fabsf(cmd.steer),fabsf(car.steer))<.09f;
+          const float envelope=std::min(cap,lap_plan_.cap());
+          available_race_cap=envelope;
+          if(settings.avoid_policy_first){
+            // A partly open straight can support an intermediate speed. Apply
+            // the same stopping-distance inequality to that speed directly.
+            const float visible=aligned && !scans.empty()?straight_boost_speed_limit(scans.back()):0.f;
+            policy_cap=std::max(3.5f,std::min({requested_cap,envelope,visible}));
+          }else if(!aligned || envelope<requested_cap-.01f || scans.empty() ||
+                   !clear_for_boost(scans.back(),requested_cap)){
             policy_cap=3.5f;
-            cap=std::min(cap,policy_cap);
           }
+          cap=std::min(cap,policy_cap);
         }
         cmd.speed*=policy_cap/3.f;
       }
     }
     if(settings.lap_planning){
-      limits.lap=avoiding_ && settings.sim_race_only ? lap_plan_.legacy_avoid_cap() : lap_plan_.cap();
+      limits.lap=avoiding_ && settings.sim_race_only && !settings.shared_speed_band ? lap_plan_.legacy_avoid_cap() : lap_plan_.cap();
       cap=std::min(cap,limits.lap);
+    }
+    if(settings.whole_lap_path && lap_plan_.has_route()){
+      limits.planned=lap_plan_.route_speed(route_index);
+      cap=std::min(cap,limits.planned);
     }
     cmd={clamp(cmd.steer,-.4f,.4f),clamp(cmd.speed,0,cap)};
     if(avoiding_ && avoid.uses_corridor())
@@ -117,14 +150,12 @@ class SectionRouter {
     // Keep the scout, zero commands and all footprint/braking checks intact.
     if (!adaptive_avoid && avoiding_ && lap_plan_.ready() && settings.sim_avoid_max>0 && cmd.speed>0)
       cmd.speed=std::clamp(cmd.speed,settings.sim_avoid_min,settings.sim_avoid_max);
+    // This is the nominal band for both experts. A zero action stays zero;
+    // steering, command latency, full-stop and sensor guards run afterwards.
+    if(adaptive && settings.shared_speed_band && cmd.speed>0)
+      cmd.speed=std::clamp(std::min(cmd.speed,cap),settings.sim_avoid_min,requested_cap);
     if (settings.lap_planning && cmd.speed<=0) lap_plan_.invalidate_scout();
-    float slip=0;
-    if(have_pose_ && hypotf(car.x-last_pose_.x,car.y-last_pose_.y)>.015f){
-      const float mid_yaw=last_pose_.yaw+.5f*wrap(car.yaw-last_pose_.yaw);
-      slip=wrap(atan2f(car.y-last_pose_.y,car.x-last_pose_.x)-mid_yaw);
-    }
-    const float pending=have_pose_?last_command_.steer:car.steer;
-    DynamicState dyn{{car.x,car.y,car.steer,car.v,car.yaw,car.yaw_rate,slip},{pending,pending}};
+    DynamicState dyn=delayed_state(car);
     const int ticks=std::max(1,int(std::ceil(dt/.01f-1e-5f)));
     // The first physics interval can still execute the preceding command.
     // physics_step then consumes the two queued steering inputs and applies
@@ -134,6 +165,47 @@ class SectionRouter {
     if((settings.race_exit_speed || settings.race_lap_speed) && adaptive && !avoiding_ && have_pose_){
       constexpr float exit_acceleration_mps2=4.f;
       cmd.speed=std::min(cmd.speed,std::max(last_command_.speed,car.v)+exit_acceleration_mps2*dt);
+    }
+    if(settings.race_verified_pace && settings.straight_boost && settings.sim_race_only &&
+       adaptive && !avoiding_ && !scans.empty() && cmd.speed>0 && have_pose_ && limits.curve>0 &&
+       lap_plan_.cap()>=requested_cap-.01f && fabsf(cmd.steer)<=fabsf(car.steer)){
+      // Use the same race policy in a gentle bend. Limit lateral acceleration
+      // using both the measured wheel and the requested angle, then verify
+      // the delayed arc and the following complete stop before accelerating.
+      const float turn=std::max(fabsf(car.steer),fabsf(cmd.steer));
+      const float corner=sqrtf(4.5f*.3302f/std::max(.001f,tanf(turn)));
+      const float sight=race_sight_speed_limit(scans.back(),6.f);
+      const float proposed=std::min({requested_cap,available_race_cap,corner,sight,
+                                     limits.policy*settings.race_speed_scale*requested_cap/3.f});
+      if(proposed>3.5f && proposed>cmd.speed){
+        Control trial{cmd.steer,proposed};
+        const int horizon=std::max(ticks,int(std::ceil(.25f/.01f)));
+        if(!command_refusal(memory,car,committed,trial,dyn,.01f*horizon,horizon,nullptr))
+          cmd=trial;
+      }
+    }
+    if(settings.race_verified_pace && adaptive && !avoiding_ && have_pose_ && cmd.speed>0){
+      // A steering or range error can erase the last admissible brake arc
+      // before the next measurement. Correct a narrowing arc while a full
+      // stop with reserve is still possible; keep the hard stop check below.
+      const int horizon=std::max(ticks,int(std::ceil(settings.race_brake_preview_s/.01f)));
+      constexpr float reserve=.06f;
+      if(command_refusal(memory,car,committed,cmd,dyn,.01f*horizon,horizon,nullptr,reserve)){
+        const auto& here=track.points[route_index];
+        const float lat=-(car.x-here.x)*sinf(here.yaw)+(car.y-here.y)*cosf(here.yaw);
+        const float toward=wrap(here.yaw-car.yaw)-atan2f(lat,1.f);
+        const float step=copysignf(3.2f*dt,toward);
+        bool found=false;
+        for(float target:{cmd.speed,std::min(cmd.speed,std::max(.8f,car.v-.8f))}){
+          for(float delta:{0.f,step,-step}){
+            Control trial{clamp(cmd.steer+delta,-.4f,.4f),target};
+            if(!command_refusal(memory,car,committed,trial,dyn,.01f*horizon,horizon,nullptr,reserve)){
+              cmd=trial;found=true;break;
+            }
+          }
+          if(found)break;
+        }
+      }
     }
     limits.before_guard=cmd.speed;
     if(settings.sim_race_only && adaptive && !avoiding_ && settings.race_brake_preview_s>0
@@ -157,8 +229,45 @@ class SectionRouter {
       }
     }
     if(trace)trace->policy_steer=cmd.steer;
-    if(avoiding_ && avoid.uses_corridor() && settings.lap_planning)
-      cmd.steer=corridor_.preview_steer(dyn,cmd,memory,dt,ticks);
+    if(avoiding_ && avoid.uses_corridor() && settings.lap_planning){
+      decision.avoid_policy_steer=cmd.steer;
+      // A passing rollout can skip the discrete search only when the original
+      // TLN command also passes the standard one-cycle and braking envelopes.
+      float neural=NAN;
+      if(settings.avoid_policy_first && !command_refusal(memory,car,committed,cmd,dyn,dt,ticks,nullptr))
+        neural=cmd.steer;
+      if(settings.avoid_corridor_steer_seed)
+        cmd.steer=input.context[4]*AvoidCorridor::steering_scale_rad;
+      if(trace)trace->preview_seed_steer=cmd.steer;
+      // Release only the previous section's approach limit. The current lap
+      // plan still accounts for the next obstacle, including clustered boxes.
+      if(settings.avoid_exit_pace && adaptive && std::isfinite(neural) &&
+         std::isfinite(end_) && distance_past_section()>.35f && !decision.blocked &&
+         !merge_blocked_ && !scans.empty() && fabsf(neural)<=fabsf(car.steer)){
+        const float sight=race_sight_speed_limit(scans.back(),1.8f);
+        const float exit_speed=std::min({limits.policy,limits.corridor,lap_plan_.cap(),
+                                        settings.sim_avoid_max,requested_cap,sight,
+                                        lap_plan_.has_route()?limits.planned:requested_cap,
+                                        committed.speed+1.8f*dt});
+        if(exit_speed>cmd.speed){
+          const Control trial{neural,exit_speed};
+          constexpr int preview_ticks=25;
+          if(predicted_merge_stays_ready(track,memory,basic(dyn),trial,true) &&
+             !command_refusal(memory,car,committed,trial,dyn,dt,ticks,nullptr) &&
+             !command_refusal(memory,car,committed,trial,dyn,.25f,preview_ticks,nullptr)){
+            const Control seed{cmd.steer,exit_speed};
+            corridor_.preview_steer(dyn,seed,memory,dt,ticks,neural,&decision.avoid_policy_verified);
+            if(decision.avoid_policy_verified){
+              cmd=trial;
+              limits.before_guard=exit_speed;
+              decision.reason="avoid_exit_pace";
+            }
+          }
+        }
+      }
+      if(!decision.avoid_policy_verified)
+        cmd.steer=corridor_.preview_steer(dyn,cmd,memory,dt,ticks,neural,&decision.avoid_policy_verified,settings.race_verified_pace && adaptive);
+    }
     // A scout can unwind full lock while the next obstacle is still in the
     // stopping arc. Compare the queued turn and the requested turn before the
     // immediate guard loses all feasible actions. Re-evaluate on each scan.
@@ -176,7 +285,18 @@ class SectionRouter {
       }
     }
     if(trace)trace->candidate_steer=cmd.steer;
-    const char* refusal=command_refusal(memory,car,committed,cmd,dyn,dt,ticks,trace);
+    // A scout hold can still replace the verified command before publication.
+    decision.avoid_policy_verified=decision.avoid_policy_verified && cmd.steer==decision.avoid_policy_steer;
+    const char* refusal=decision.avoid_policy_verified?nullptr:command_refusal(memory,car,committed,cmd,dyn,dt,ticks,trace);
+    if(refusal && !avoiding_ && adaptive && settings.lap_planning && cmd.speed>0){
+      // Keep the Race steering if a rolling deceleration clears the same
+      // immediate and full-stop envelopes on this scan.
+      Control slower{cmd.steer,std::min(cmd.speed,.8f*car.v)};
+      if(slower.speed>0 && slower.speed<cmd.speed &&
+         !command_refusal(memory,car,committed,slower,dyn,dt,ticks,nullptr)){
+        cmd=slower;refusal=nullptr;decision.reason="race_brake_alternative";
+      }
+    }
     if(refusal && avoiding_ && avoid.uses_corridor() && settings.lap_planning && cmd.speed>0){
       // Try a rolling slowdown only if the requested action failed the stop
       // envelope. Use the same guards for every replacement, including the
@@ -196,6 +316,7 @@ class SectionRouter {
     if(refusal)return stop_with(refusal);
     if(trace)trace->candidate_steer=cmd.steer;
     last_pose_=car;have_pose_=true;
+    previous_verified_=decision.avoid_policy_verified;
     last_command_=cmd;
     decision.speed_limits=limits;
     decision.command=cmd;
@@ -217,6 +338,7 @@ class SectionRouter {
     if (last_station_ >= 0) position_ += std::remainder(here.s-last_station_, length);
     last_station_ = here.s;
     float lateral = -(car.x-here.x)*sinf(here.yaw)+(car.y-here.y)*cosf(here.yaw);
+    if(settings.whole_lap_path)lap_plan_.observe_route(points,n,car,memory);
     if(plan_laps)lap_plan_.observe(n,points.size(),lateral);
     float entry = 2.0f + .45f*car.v + car.v*car.v/10;
     float merge_distance = entry + .7f + fabsf(lateral);
@@ -226,6 +348,14 @@ class SectionRouter {
       const Memory& mem;
       float at(float x,float y)const{return mem.obstacle_at(x,y);}
     } obstacles{memory};
+    const bool compare_guides=(settings.cluster_entry || settings.smooth_isolated_exit) && lap_plan_.has_route();
+    // A half-second steering preview and the normal 0.20 s clear hold span
+    // both obstacles only when their observed free gap is short enough.
+    const float pair_gap=settings.entry_candidates==EntryCandidates::coupled
+      ?std::min(merge_distance,.70f*std::max(0.f,car.v)):merge_distance;
+    float last_obstacle=-INFINITY,second_obstacle=INFINITY;
+    bool cluster_evaluated=false,cluster_changed=false,isolated_exit=false;
+    float entry_blend=0.f;
     bool merge_clear = true;
     for (size_t i=0; i<points.size(); ++i) {
       auto& w = points[(n+i)%points.size()];
@@ -242,6 +372,11 @@ class SectionRouter {
       }
       // Nearby obstacle faces can intersect the car's approach or merge even
       // when the mathematical reference line itself just clears the box.
+      if(compare_guides && footprint(obstacles,sample,.19f)>.5f){
+        if(std::isfinite(last_obstacle) && ahead-last_obstacle>.45f && ahead-last_obstacle<=pair_gap)
+          second_obstacle=std::min(second_obstacle,ahead);
+        last_obstacle=ahead;
+      }
       if (footprint(memory,sample)<=.5f && footprint(obstacles,sample,.19f)<=.5f) continue;
       if (std::isfinite(first) && ahead-end>merge_distance) break;
       first=std::min(first,ahead);
@@ -260,12 +395,17 @@ class SectionRouter {
       avoiding_=true;
     }
 
+    if(!avoiding_)cluster_station_=-1;
+    else if(compare_guides && std::isfinite(second_obstacle))
+      cluster_station_=std::max(cluster_station_,position_+second_obstacle);
     if (avoiding_) {
       bool ready=position_>end_+.35f && !hazard && merge_clear &&
                  fabsf(lateral)<.30f && fabsf(wrap(car.yaw-here.yaw))<.32f;
       if (!ready) clear_since_=-1;
       else if (clear_since_<0) clear_since_=now;
-      else if (now-clear_since_>=.20) {
+      else if (now-clear_since_>=.20 ||
+               (settings.avoid_policy_first && lap_plan_.ready() && now-clear_since_>=.05 &&
+                predicted_merge_stays_ready(track,memory,car,last_command_))) {
         if(plan_laps)lap_plan_.returned(position_);
         avoiding_=false; side_=0; clear_since_=-1; end_=-INFINITY; reason="return";
       }
@@ -277,14 +417,71 @@ class SectionRouter {
     if(avoiding_){
       const bool returning=position_>end_+.35f && !hazard && merge_clear;
       if(returning && !plan_laps)corridor_.follow_reference(track,n);
-      else if(!corridor_.plan(track,n,car,memory,plan_laps && !returning?lap_plan_.avoidance_line():nullptr,trace,plan_laps))
+      else if(!corridor_.plan(track,n,car,memory,plan_laps && (!returning || lap_plan_.has_route())?lap_plan_.avoidance_line():nullptr,trace,plan_laps))
         return {Mode::Emergency,{car.steer,0},"no_corridor",avoiding_};
+      isolated_exit=returning && cluster_station_<0 && first>std::max(5.f,entry);
+      const float to_second=cluster_station_-position_;
+      if(settings.cluster_entry && lap_plan_.has_route() && have_pose_ && to_second>.5f && to_second<5.8f){
+        DynamicState dyn=delayed_state(car);
+        dyn=physics_step(dyn,last_command_,Vehicle{});
+        const float speed=std::clamp(std::max(car.v,last_command_.speed),settings.sim_avoid_min,cruise);
+        cluster_evaluated=true;
+        cluster_changed=corridor_.choose_cluster_entry(track,n,memory,*lap_plan_.avoidance_line(),dyn,speed,to_second,
+                                                     settings.entry_candidates,previous_verified_,&entry_blend);
+      }
       if(hazard)side_=corridor_.side_at(first+.35f);
-      if(guided)corridor_.condition(input,car,settings.lookahead_scale,returning);
+      if(guided){
+        State aim=car;
+        if(returning && settings.avoid_policy_first && lap_plan_.ready() && have_pose_){
+          // Compensate a short actuation delay only for the return pursuit angle.
+          constexpr int preview_ticks=6;
+          for(int tick=0;tick<preview_ticks;++tick)aim=predict_command_tick(aim,last_command_,.01f);
+        }
+        corridor_.condition(input,car,settings.lookahead_scale,returning,&aim);
+      }
     }
-    return {avoiding_?Mode::Avoid:Mode::Race,{},reason,hazard};
+    SectionDecision decision{avoiding_?Mode::Avoid:Mode::Race,{},reason,hazard};
+    decision.cluster_evaluated=cluster_evaluated;decision.cluster_changed=cluster_changed;
+    decision.entry_blend=entry_blend;
+    decision.isolated_exit=isolated_exit;
+    return decision;
   }
  private:
+  DynamicState delayed_state(const State& car)const{
+    float slip=0;
+    if(have_pose_ && hypotf(car.x-last_pose_.x,car.y-last_pose_.y)>.015f){
+      const float mid_yaw=last_pose_.yaw+.5f*wrap(car.yaw-last_pose_.yaw);
+      slip=wrap(atan2f(car.y-last_pose_.y,car.x-last_pose_.x)-mid_yaw);
+    }
+    const float pending=have_pose_?last_command_.steer:car.steer;
+    return {{car.x,car.y,car.steer,car.v,car.yaw,car.yaw_rate,slip},{pending,pending}};
+  }
+  static bool predicted_merge_stays_ready(const Track& track,const Memory& memory,State car,Control committed,
+                                          bool following_avoid_exit=false){
+    // After several clear scans, require the pending command to stay inside
+    // the same lateral/heading limits and clear of occupied cells for 200 ms.
+    const auto& ref=track.points[track.closest(car)];
+    const float initial_offset=-(car.x-ref.x)*sinf(ref.yaw)+(car.y-ref.y)*cosf(ref.yaw);
+    // Avoid still commands the bypass path. It can converge from outside
+    // the Race handoff envelope, provided the offset does not grow.
+    const float lateral_limit=following_avoid_exit?std::max(.30f,fabsf(initial_offset)+1e-5f):.30f;
+    const float centered_tolerance=following_avoid_exit?.10f:0.f;
+    for(int tick=1;tick<=20;++tick){
+      car=predict_command_tick(car,committed,.01f);
+      if(tick%4)continue;
+      const auto& w=track.points[track.closest(car)];
+      const float lateral=-(car.x-w.x)*sinf(w.yaw)+(car.y-w.y)*cosf(w.yaw);
+      // Release early only if the delayed trajectory also ends closer to the
+      // racing line. The ordinary settled handoff handles parallel offsets.
+      // For an Avoid speed increment, a car already centered may track
+      // within the same 10 cm tolerance as its certified TLN rollout.
+      if(tick==20 && fabsf(lateral)>std::max(fabsf(initial_offset),centered_tolerance))return false;
+      if(!std::isfinite(lateral) || !std::isfinite(car.yaw) ||
+         fabsf(lateral)>=lateral_limit || fabsf(wrap(car.yaw-w.yaw))>=.32f ||
+         footprint(memory,car,.13f)>.5f || gym_front_blocked(memory,car,.13f))return false;
+    }
+    return true;
+  }
   static float narrow_bend_speed_cap(const Track& track,int index,const Memory& memory,const State& car,float cruise){
     constexpr float lateral_probe_m=.60f;
     constexpr float bend_speed_mps=3.9f;
@@ -362,18 +559,18 @@ class SectionRouter {
     return clearance;
   }
   static const char* command_refusal(const Memory& memory,const State& car,const Control& committed,
-                                     Control cmd,DynamicState dyn,float dt,int ticks,CorridorTrace* trace){
+                                     Control cmd,DynamicState dyn,float dt,int ticks,CorridorTrace* trace,float extra_margin=0.f){
     // Predict the command interval with the measured drive response. Keep the
     // slower braking envelope as an independent geometric clearance check.
     State prediction=predict_command_tick(car,committed,.01f);
     for(int i=0;i<ticks;++i){
       prediction=predict_command_tick(prediction,cmd,dt/ticks);
-      if(footprint(memory,prediction)>.5f || gym_front_blocked(memory,prediction)) return "command_footprint";
+      if(footprint(memory,prediction,.04f+extra_margin)>.5f || gym_front_blocked(memory,prediction,extra_margin)) return "command_footprint";
     }
     Control brake{prediction.steer,0};
     for(int i=0;prediction.v>=.045f && i<300;++i){
       prediction=advance(prediction,brake,.01f);
-      if(footprint(memory,prediction)>.5f || gym_front_blocked(memory,prediction)){
+      if(footprint(memory,prediction,.04f+extra_margin)>.5f || gym_front_blocked(memory,prediction,extra_margin)){
         if(trace){trace->brake_event=true;trace->brake_contact=prediction;}
         return "braking_footprint";
       }
@@ -384,13 +581,13 @@ class SectionRouter {
     for(int i=0;i<ticks+1;++i){
       dyn=physics_step(dyn,cmd,Vehicle{});
       if(!std::isfinite(dyn.z[0]) || !std::isfinite(dyn.z[1]) || !std::isfinite(dyn.z[4]) ||
-         footprint(memory,basic(dyn))>.5f || gym_front_blocked(memory,basic(dyn))) return "dynamic_command_footprint";
+         footprint(memory,basic(dyn),.04f+extra_margin)>.5f || gym_front_blocked(memory,basic(dyn),extra_margin)) return "dynamic_command_footprint";
     }
     brake={dyn.z[2],0};
     for(int i=0;dyn.z[3]>=.045f && i<300;++i){
       dyn=physics_step(dyn,brake,Vehicle{});
       if(!std::isfinite(dyn.z[0]) || !std::isfinite(dyn.z[1]) || !std::isfinite(dyn.z[4]) ||
-         footprint(memory,basic(dyn))>.5f || gym_front_blocked(memory,basic(dyn))) return "dynamic_braking_footprint";
+         footprint(memory,basic(dyn),.04f+extra_margin)>.5f || gym_front_blocked(memory,basic(dyn),extra_margin)) return "dynamic_braking_footprint";
     }
     if(!std::isfinite(dyn.z[3]) || dyn.z[3]>=.045f) return "braking_horizon";
     return nullptr;
@@ -400,6 +597,8 @@ class SectionRouter {
   bool have_pose_=false;
   LapPlan lap_plan_;
   bool merge_blocked_=false;
+  float cluster_station_=-1;
+  bool previous_verified_=false;
   AvoidCorridor corridor_;
   float last_station_=-1,position_=0,end_=-INFINITY;
   double clear_since_=-1;

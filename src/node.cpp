@@ -56,8 +56,22 @@ class Controller:public rclcpp::Node {
     router_settings_.race_lap_speed=declare_parameter<bool>("race_lap_speed",false);
     router_settings_.race_exit_speed=declare_parameter<bool>("race_exit_speed",false);
     router_settings_.straight_boost=declare_parameter<bool>("straight_boost",false);
+    router_settings_.avoid_corridor_steer_seed=declare_parameter<bool>("avoid_corridor_steer_seed",false);
+    router_settings_.avoid_policy_first=declare_parameter<bool>("avoid_policy_first",false);
+    router_settings_.cluster_entry=declare_parameter<bool>("cluster_entry",false);
+    router_settings_.entry_candidates=parse_entry_candidates(declare_parameter<std::string>("entry_candidates","both"));
+    router_settings_.smooth_isolated_exit=declare_parameter<bool>("smooth_isolated_exit",false);
+    router_settings_.shared_speed_band=declare_parameter<bool>("shared_speed_band",false);
+    router_settings_.whole_lap_path=declare_parameter<bool>("whole_lap_path",false);
+    router_settings_.avoid_exit_pace=declare_parameter<bool>("avoid_exit_pace",false);
+    router_settings_.race_verified_pace=declare_parameter<bool>("race_verified_pace",false);
+    if(router_settings_.avoid_policy_first && !router_settings_.avoid_corridor_steer_seed)
+      throw std::runtime_error("Avoid policy-first requires the corridor steering fallback");
+    if(router_settings_.avoid_corridor_steer_seed && !(router_settings_.lap_planning && avoid_->uses_corridor()))
+      throw std::runtime_error("corridor steering seed requires lap planning and a corridor-conditioned Avoid policy");
     router_settings_.sim_race_only=declare_parameter<bool>("sim_race_only",false);
     router_settings_.race_brake_preview_s=declare_parameter<double>("race_brake_preview_s",.18);
+    if(router_settings_.shared_speed_band)router_settings_.sim_avoid_max=vmax_;
     router_settings_.validate_sim_band(vmax_,local_sim_clock_);
     auto metrics=declare_parameter<std::string>("metrics","/workspace/runs/control.csv");
     std::filesystem::create_directories(std::filesystem::path(metrics).parent_path());metrics_.open(metrics);
@@ -69,7 +83,7 @@ class Controller:public rclcpp::Node {
     if(!metrics_)throw std::runtime_error("cannot create metrics");
     metrics_<<"step,stamp,x,y,speed,mode,hazard,valid,compute_ms,steer,target_speed,collision,remembered_cells,progress_m,reason,side,plan_ready,planned_entries,plan_brake_steps";
     ControlTiming::header(metrics_);
-    metrics_<<",scan_source_age_ms,pose_source_age_ms,policy_speed,lap_cap,corridor_cap,before_guard_speed,preview_brake,curve_cap,sight_cap,steering_cap,race_plan_cap\n";
+    metrics_<<",scan_source_age_ms,pose_source_age_ms,policy_speed,lap_cap,corridor_cap,before_guard_speed,preview_brake,curve_cap,sight_cap,steering_cap,race_plan_cap,avoid_policy_steer,avoid_policy_verified,whole_lap_path_ready,cluster_evaluated,cluster_changed,exit_evaluated,exit_smoothed\n";
     stop_laps_=declare_parameter<int>("stop_after_laps",0);
     drive_=create_publisher<ackermann_msgs::msg::AckermannDriveStamped>("/drive",1);
     debug_=create_publisher<std_msgs::msg::String>("/el/status",1);
@@ -157,7 +171,7 @@ class Controller:public rclcpp::Node {
     if(trace.waypoint>=0){
       corridor_log_<<nlohmann::json{{"step",step_},{"stamp",stamp},{"progress",progress_},
         {"pose",{state.x,state.y,state.yaw}},{"speed",state.v},{"waypoint",trace.waypoint},
-        {"brake_event",trace.brake_event},{"policy_steer",trace.policy_steer},{"candidate_steer",trace.candidate_steer},
+        {"brake_event",trace.brake_event},{"policy_steer",trace.policy_steer},{"preview_seed_steer",trace.preview_seed_steer},{"candidate_steer",trace.candidate_steer},
         {"brake_pose",{trace.brake_contact.x,trace.brake_contact.y,trace.brake_contact.yaw}},
         {"wide",trace.wide},{"subdivisions",trace.subdivisions},{"free_columns",trace.fine_free},{"reachable_columns",trace.fine_reachable},{"origin",trace.origin},{"free",trace.free},{"reachable",trace.reachable},
         {"first_empty",trace.first_empty},{"obstacle_cells",memory_->obstacle_cells()}}.dump()<<'\n';
@@ -166,7 +180,7 @@ class Controller:public rclcpp::Node {
     timing.write(metrics_);
     metrics_<<','<<(source_time-stamp)*1000<<','<<(source_time-stamp)*1000
       <<','<<result.speed_limits.policy<<','<<result.speed_limits.lap<<','<<result.speed_limits.corridor
-      <<','<<result.speed_limits.before_guard<<','<<result.speed_limits.preview_brake<<','<<result.speed_limits.curve<<','<<result.speed_limits.sight<<','<<result.speed_limits.steering<<','<<result.speed_limits.planned<<'\n';
+      <<','<<result.speed_limits.before_guard<<','<<result.speed_limits.preview_brake<<','<<result.speed_limits.curve<<','<<result.speed_limits.sight<<','<<result.speed_limits.steering<<','<<result.speed_limits.planned<<','<<result.avoid_policy_steer<<','<<(valid && selected==Mode::Avoid && result.avoid_policy_verified && candidate.steer==result.avoid_policy_steer)<<','<<router_.lap_plan().has_route()<<','<<result.cluster_evaluated<<','<<result.cluster_changed<<','<<result.exit_evaluated<<','<<result.exit_smoothed<<'\n';
     if(finished_)metrics_.flush();
     if(step_%40==0){metrics_.flush();std_msgs::msg::String msg;
       msg.data=nlohmann::json({{"mode",(int)selected},{"hazard",hazard},{"valid",valid},{"compute_ms",ms},{"progress_m",progress_},{"finished",finished_}}).dump();debug_->publish(msg);

@@ -13,11 +13,14 @@ class Scenario:public rclcpp::Node {
     index_=declare_parameter<int>("obstacle_index",100);offset_=declare_parameter<double>("lateral_offset",0.0);
     auto offsets=declare_parameter<std::vector<double>>("obstacle_offsets",std::vector<double>{});
     if(!offsets.empty() && offsets.size()!=size_t(count_))throw std::runtime_error("expected one offset per obstacle");
+    auto indices=declare_parameter<std::vector<int64_t>>("obstacle_indices",std::vector<int64_t>{});
+    if(!indices.empty() && indices.size()!=size_t(count_))throw std::runtime_error("expected one index per obstacle");
+    for(auto index:indices)if(index<0 || size_t(index)>=track_->points.size())throw std::runtime_error("obstacle index outside track");
     int stride=declare_parameter<int>("obstacle_stride",200);
     if(stride<1||count_<0||count_>20||start_<0||index_<0)throw std::runtime_error("invalid scenario");
     std::mt19937 rng(seed_);std::uniform_real_distribution<float> noise(-.12,.12);
     obstacles_.header.frame_id="map";
-    for(int i=0;i<count_;++i){auto w=track_->points[(index_+i*stride)%track_->points.size()];geometry_msgs::msg::Pose p;float d=offsets.empty()?offset_+noise(rng):offsets[i];
+    for(int i=0;i<count_;++i){auto w=track_->points[indices.empty()?(index_+i*stride)%track_->points.size():size_t(indices[i])];geometry_msgs::msg::Pose p;float d=offsets.empty()?offset_+noise(rng):offsets[i];
       p.position.x=w.x-sinf(w.yaw)*d;p.position.y=w.y+cosf(w.yaw)*d;p.orientation.z=sinf(w.yaw/2);p.orientation.w=cosf(w.yaw/2);obstacles_.poses.push_back(p);}
     pub_=create_publisher<geometry_msgs::msg::PoseArray>("/sim/obstacles",10);reset_=create_publisher<geometry_msgs::msg::PoseWithCovarianceStamped>("/initialpose",10);
     if (declare_parameter<bool>("publish_steady_clock",false)) {

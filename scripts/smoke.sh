@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -eo pipefail
 source /opt/ros/humble/setup.bash
-source /home/misys/forza_ws/race_stack/install/setup.bash
+if [[ -z ${EL_SIM_CONFIG_DIR:-} ]]; then source /home/misys/forza_ws/race_stack/install/setup.bash; fi
 duration=${1:-35}
 obstacles=${2:-0}
 mode=${3:-moe}
@@ -33,11 +33,24 @@ if [[ -n ${EL_SIM_CPUSET:-} ]]; then sim_affinity=(taskset -c "$EL_SIM_CPUSET");
 if [[ -n ${EL_CONTROL_CPUSET:-} ]]; then control_affinity=(taskset -c "$EL_CONTROL_CPUSET"); fi
 if [[ ${EL_CORRIDOR_TRACE:-0} == 1 ]]; then export EL_BRIDGE_TRACE_FILE="/workspace/runs/$tag-bridge.csv"; fi
 export EL_JUDGE_FILE="/workspace/runs/$tag-judge.csv"
+if [[ ${EL_SIM_WARMUP:-0} == 1 ]]; then
+  export EL_SIM_READY_FILE="/workspace/runs/$tag-ready-$$"
+fi
 EL_LOCAL_STEADY_SIM=1 setsid "${sim_affinity[@]}" bash /workspace/scripts/run_sim.sh > "/workspace/runs/$tag-sim.log" 2>&1 & sim=$!
 scenario_args=(-p use_sim_time:=true -p publish_steady_clock:=true -p "start_index:=${EL_START_INDEX:-0}")
 if [ -n "${EL_OBSTACLE_OFFSETS:-}" ]; then scenario_args+=(-p "obstacle_offsets:=$EL_OBSTACLE_OFFSETS"); fi
+if [ -n "${EL_OBSTACLE_INDICES:-}" ]; then scenario_args+=(-p "obstacle_indices:=$EL_OBSTACLE_INDICES"); fi
 setsid /build/el_scenario --ros-args "${scenario_args[@]}" -p "map_dir:=$EL_MAP_DIR" -p obstacle_count:="$obstacles" -p obstacle_stride:="${EL_OBSTACLE_STRIDE:-200}" -p obstacle_index:="${EL_OBSTACLE_INDEX:-100}" -p seed:="$seed" > "/workspace/runs/$tag-scenario.log" 2>&1 & scenario=$!
-sleep 5
+if [[ ${EL_SIM_WARMUP:-0} == 1 ]]; then
+  warm_deadline=$((SECONDS + 120))
+  until [[ -f $EL_SIM_READY_FILE ]]; do
+    kill -0 "$sim" "$scenario"
+    if (( SECONDS >= warm_deadline )); then echo "Simulator startup timed out" >&2; exit 1; fi
+    sleep 0.2
+  done
+else
+  sleep 5
+fi
 kill -0 "$sim" "$scenario"
 extra=(-p use_sim_time:=true -p local_steady_sim_clock:=true)
 if [[ ${EL_CORRIDOR_TRACE:-0} == 1 ]]; then extra+=(-p trace_corridor:=true); fi
@@ -50,6 +63,15 @@ if [[ -n ${EL_RACE_SIGHT_SPEED:-} ]]; then extra+=(-p "race_sight_speed:=$EL_RAC
 if [[ -n ${EL_RACE_LAP_SPEED:-} ]]; then extra+=(-p "race_lap_speed:=$EL_RACE_LAP_SPEED"); fi
 if [[ -n ${EL_RACE_EXIT_SPEED:-} ]]; then extra+=(-p "race_exit_speed:=$EL_RACE_EXIT_SPEED"); fi
 if [[ -n ${EL_STRAIGHT_BOOST:-} ]]; then extra+=(-p "straight_boost:=$EL_STRAIGHT_BOOST"); fi
+if [[ -n ${EL_AVOID_CORRIDOR_STEER_SEED:-} ]]; then extra+=(-p "avoid_corridor_steer_seed:=$EL_AVOID_CORRIDOR_STEER_SEED"); fi
+if [[ -n ${EL_AVOID_POLICY_FIRST:-} ]]; then extra+=(-p "avoid_policy_first:=$EL_AVOID_POLICY_FIRST"); fi
+if [[ -n ${EL_SHARED_SPEED_BAND:-} ]]; then extra+=(-p "shared_speed_band:=$EL_SHARED_SPEED_BAND"); fi
+if [[ -n ${EL_CLUSTER_ENTRY:-} ]]; then extra+=(-p "cluster_entry:=$EL_CLUSTER_ENTRY"); fi
+if [[ -n ${EL_ENTRY_CANDIDATES:-} ]]; then extra+=(-p "entry_candidates:=$EL_ENTRY_CANDIDATES"); fi
+if [[ -n ${EL_SMOOTH_ISOLATED_EXIT:-} ]]; then extra+=(-p "smooth_isolated_exit:=$EL_SMOOTH_ISOLATED_EXIT"); fi
+if [[ -n ${EL_WHOLE_LAP_PATH:-} ]]; then extra+=(-p "whole_lap_path:=$EL_WHOLE_LAP_PATH"); fi
+if [[ -n ${EL_AVOID_EXIT_PACE:-} ]]; then extra+=(-p "avoid_exit_pace:=$EL_AVOID_EXIT_PACE"); fi
+if [[ -n ${EL_RACE_VERIFIED_PACE:-} ]]; then extra+=(-p "race_verified_pace:=$EL_RACE_VERIFIED_PACE"); fi
 if [[ -n ${EL_SIM_RACE_ONLY:-} ]]; then extra+=(-p "sim_race_only:=$EL_SIM_RACE_ONLY"); fi
 if [[ -n ${EL_RACE_BRAKE_PREVIEW_S:-} ]]; then extra+=(-p "race_brake_preview_s:=$EL_RACE_BRAKE_PREVIEW_S"); fi
 if [[ -n ${EL_SIM_SECTION_SPEED_PROFILE:-} ]]; then extra+=(-p "sim_section_speed_profile:=$EL_SIM_SECTION_SPEED_PROFILE"); fi

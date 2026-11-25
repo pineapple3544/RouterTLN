@@ -40,6 +40,14 @@ int main(){try{
     Scan sight;
     sight.valid.fill(1);
     sight.ranges.fill(8);
+    const float full_boost=straight_boost_speed_limit(sight);
+    sight.ranges[beams/2]=6.f;
+    const float partial=straight_boost_speed_limit(sight);
+    require(full_boost>4.5f && partial>3.5f && partial<4.5f &&
+            .35f+.25f*partial+partial*partial/3.6f<=6.f,"intermediate straight boost respects braking distance");
+    sight.valid[beams/2]=0;
+    require(straight_boost_speed_limit(sight)==0.f,"unknown forward ray disables boost");
+    sight.valid[beams/2]=1;sight.ranges.fill(8);
     const float open = race_sight_speed_limit(sight, 6.f);
     sight.ranges.fill(2);
     const float narrow = race_sight_speed_limit(sight, 6.f);
@@ -59,6 +67,31 @@ int main(){try{
     try { profile.validate_sim_band(5.f, true); }
     catch (const std::runtime_error&) { rejected = true; }
     require(rejected, "Race envelope requires a Race-only scout profile");
+    RouterSettings pace;
+    require(!pace.race_verified_pace, "verified pace is opt-in");
+    RouterSettings exit;
+    require(!exit.avoid_exit_pace, "Avoid exit pace is opt-in");
+    exit.avoid_exit_pace = true;
+    exit.lap_planning = exit.sim_section_speed_profile = exit.sim_race_only = true;
+    exit.sim_avoid_min = 2.7f;
+    exit.sim_avoid_max = 3.f;
+    rejected = false;
+    try { exit.validate_sim_band(4.5f, true); }
+    catch (const std::runtime_error&) { rejected = true; }
+    require(rejected, "exit acceleration requires a certified TLN steering command");
+    exit.avoid_policy_first = exit.avoid_corridor_steer_seed = true;
+    exit.validate_sim_band(4.5f, true);
+
+    pace.race_verified_pace = true;
+    pace.lap_planning = pace.sim_section_speed_profile = pace.sim_race_only = true;
+    pace.sim_avoid_min = 2.7f;
+    pace.sim_avoid_max = 3.0f;
+    rejected = false;
+    try { pace.validate_sim_band(4.5f, true); }
+    catch (const std::runtime_error&) { rejected = true; }
+    require(rejected, "verified pace requires the planned straight boost");
+    pace.straight_boost = true;
+    pace.validate_sim_band(4.5f, true);
   }
   {
     // Replay the five 10 ms ticks of the accelerating wall approach.
@@ -141,15 +174,97 @@ int main(){try{
     for(int i=0;i<=40;++i){float a=2*pi*i/40;points.push_back({{"x_m",2*cosf(a)},{"y_m",2*sinf(a)},{"psi_rad",wrap(a+pi/2)},{"vx_mps",2},{"s_m",a*2}});}
     auto path=dir+"/circle.json";{std::ofstream f(path);f<<nlohmann::json{{"global_traj_wpnts_iqp",{{"wpnts",points}}}};}
     Track forward(path),reverse(path);orient_track(forward,false);orient_track(reverse,true);
+    {
+      // Two distinct LiDAR returns on opposite sides of a circular track.
+      Memory sensed(dir+"/map.yaml");
+      Scan returns{};
+      returns.explicit_angles=true;
+      for(int face=0;face<2;++face){
+        for(int ray=0;ray<31;++ray){
+          const int beam=face*31+ray;
+          const float x=(face?-2.f:2.f)-.27f, y=(ray-15)*.01f;
+          returns.valid[beam]=1;
+          returns.angles[beam]=std::atan2(y,x);
+          returns.ranges[beam]=std::hypot(x,y);
+        }
+      }
+      returns.stamp=1;
+      sensed.update(returns);
+      ScoutRoute route;
+      const auto& wp=forward.points;
+      std::vector<float> prior(wp.size());
+      for(size_t i=0;i<wp.size();++i){
+        const auto& p=wp[i];
+        // The scout really drove around both faces before this plan is built.
+        const float d=.55f*std::max(0.f,1.f-std::abs(p.y));
+        State pose{p.x-std::sin(p.yaw)*d,p.y+std::cos(p.yaw)*d,p.yaw};
+        prior[i]=d;
+        require(footprint(sensed,pose,.04f)<=.5f,"scout fixture must be traversable");
+        route.observe(wp,i,pose,sensed);
+      }
+      route.finish(wp,prior,4.5f,2.7f);
+      require(route.available(),"full scout should yield a closed route");
+      for(const State point : {State{2,0},State{-2,0}}){
+        const int at=forward.closest(point);
+        require(std::abs(route.line()[at])>.1f,"both observed obstacles must influence the same route");
+      }
+      for(size_t i=0;i<wp.size();++i){
+        require(std::isfinite(route.speed(i)) && route.speed(i)>0 && route.speed(i)<=4.5f,
+                "cyclic speed profile must stay bounded");
+      }
+      ScoutRoute incomplete;
+      incomplete.observe(wp,0,{wp[0].x,wp[0].y,wp[0].yaw},sensed);
+      incomplete.finish(wp,prior,4.5f,2.7f);
+      require(!incomplete.available(),"an unobserved section must not become a planned passage");
+    }
     Track straight_track=forward;
     straight_track.points.clear();
     for(int i=0;i<70;++i)straight_track.points.push_back({i*.1f,0,0,3,i*.1f});
     AvoidCorridor corridor;
+    {
+      Memory clear_map(dir+"/map.yaml");
+      Track open_track=straight_track;
+      for(auto& point:open_track.points)point.x-=2.f;
+      State car{-2,0,0,2};
+      require(corridor.plan(open_track,0,car,clear_map),"open straight corridor");
+      DynamicState initial{{-2,0,0,2,0,0,0},{0,0}};
+      std::vector<float> same_line(open_track.points.size(),0.f);
+      const float straight_cap=corridor.speed_limit(4.5f,2.7f);
+      Observation original_input{}, retained_input{};
+      corridor.condition(original_input,car,.5f,true);
+      for(const auto kind:{"both","half","full","continuity","rescue","coupled","graduated"}){
+        float blend=-1.f;
+        require(!corridor.choose_cluster_entry(open_track,0,clear_map,same_line,initial,2.7f,2.f,
+                                               parse_entry_candidates(kind),true,&blend) && blend==0.f,
+                "identical downstream entry must keep the local guide for every candidate set");
+      }
+      bool invalid_entry=false;
+      try{parse_entry_candidates("typo");}catch(const std::invalid_argument&){invalid_entry=true;}
+      require(invalid_entry,"unknown entry candidate name must fail before racing");
+      require(!corridor.smooth_exit(open_track,0,clear_map,2.7f,straight_cap),
+              "an exit already at its speed ceiling has no smoothing benefit");
+      corridor.condition(retained_input,car,.5f,true);
+      require(original_input.context==retained_input.context && corridor.speed_limit(4.5f,2.7f)==straight_cap,
+              "rejected candidates must restore the original guide for policy inference");
+      Control guide{0,2};
+      bool verified=false;
+      const float neural=.015f;
+      require(corridor.preview_steer(initial,guide,clear_map,.025f,3,neural,&verified)==neural && verified,
+              "clear neural steering must be executed verbatim");
+      initial.z[1]=.30f;
+      const float legacy=corridor.preview_steer(initial,guide,clear_map,.025f,3);
+      require(corridor.preview_steer(initial,guide,clear_map,.025f,3,neural,&verified)==legacy && !verified,
+              "insufficient tracking reserve must run the original search");
+    }
     corridor.follow_reference(straight_track,0);
     // Displaced farther from the racing line than the old 0.49 m chord.
     State merging{0,-.65f,0,2.7f};
     Observation guided{};
     corridor.condition(guided,merging,.5f,true);
+    Observation delayed_input{};State delayed=merging;delayed.yaw+=.1f;
+    corridor.condition(delayed_input,merging,.5f,true,&delayed);
+    require(fabsf(guided.context[4]-delayed_input.context[4])>.001f,"return steering includes the pending heading");
+    for(int k=5;k<15;++k)require(guided.context[k]==delayed_input.context[k],"observed corridor points stay ego-relative");
     const float look=.5f*(.65f+.12f*2.7f)+.65f*(2.7f-1.8f);
     const float steering=atan2f(2*.3302f*.65f,look*look+.65f*.65f)/.4f;
     require(fabsf(guided.context[4]-steering)<1e-5f,"merge uses interpolated forward preview");

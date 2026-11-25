@@ -6,6 +6,47 @@
 
 원형 TinyLidarNet은 2D 라이다 스캔으로 조향과 스로틀을 직접 예측한다. 코너 직후에 장애물이 있다면 첫 랩에는 시야에 들어온 뒤 대응할 수 있다. 두 번째 랩에는 코너에 들어가기 전부터 감속할 수 있지만, 그러려면 장애물을 만난 위치와 통과 경로를 기억하고 현재 위치와 연결해야 한다. RouterTLN에서는 매 제어 주기에 Race와 Avoid 중 하나가 명령을 만들고, C++ 라우터가 랩을 넘나드는 기억과 전환 계획을 맡는다. [TinyLidarNet 원 논문](https://arxiv.org/abs/2410.07447) · [랩 계획 구현](include/el/lap_plan.hpp)
 
+## v1.5 · 다른 PC에서 Berlin 주행하기
+
+Linux x86-64 PC 또는 Windows에서 Linux 컨테이너 모드의 Docker Desktop을 사용한다. Git과 Docker Compose v2가 있으면 된다. 공개 ROS 2 Humble 이미지, CPU용 LibTorch 2.9.1, 평가에 사용한 F1TENTH Gym·ROS 브리지, Berlin 지도, Race·Avoid 체크포인트를 하나의 이미지로 빌드한다. 호스트의 ROS, NVIDIA GPU, Forza 개발 이미지, 기존 빌드 볼륨은 필요하지 않다. 첫 빌드는 인터넷을 사용하고 이후 주행은 네트워크 없이 실행한다. ARM의 실시간 주행 성능은 검증하지 않았다.
+
+```bash
+git clone --branch v1.5 --single-branch https://github.com/pineapple3544/RouterTLN.git
+cd RouterTLN
+docker compose build berlin
+docker compose run --rm berlin offline --case pace-3-023 --variant coupled --trace
+docker compose run --rm berlin ros --obstacles 3 --variant coupled
+```
+
+`offline`은 시뮬레이션 시간 180초를 평가한다. `ros`는 독립 물리 심판과 센서·제어 노드를 띄워 실제 시간 180초를 평가한다. 초기 시뮬레이터의 JIT 준비가 끝나고 센서가 발행되면 제어기를 시작한다. 각 실행은 첫 랩부터 새 계획을 만들고, 저장소의 `results/` 아래 새 디렉터리에 결과를 쓴다. 오프라인 결과는 `results.jsonl`, ROS 판정은 `drive-score.json`이다. `accepted`, `consecutive_laps`, `best_lap_s`, `emergency`를 확인한다. 실제 랩타임과 제어 마감 초과 횟수는 CPU 성능과 부하에 따라 달라진다.
+
+| 목적 | 명령 |
+|---|---|
+| 고정된 54개 배치와 노이즈 시드 확인 | `docker compose run --rm berlin cases` |
+| 기존 1번으로 54배치 평가 | `docker compose run --rm berlin offline --case all --variant both` |
+| 장애물 5개 ROS 대조 | `docker compose run --rm berlin ros --obstacles 5 --variant both` |
+| 동일 상태의 진입 후보 8개 재생 | `docker compose run --rm berlin replay late` |
+| 8설정 × 54배치 전체 재측정과 구간 집계 | `docker compose run --rm berlin matrix` |
+
+`replay late`는 `pace-3-023`의 6랩 진입을 저장·복원한다. `early`와 `five`도 선택할 수 있다. `matrix`는 장시간 순차 실행하고 배치별 결과, 같은 장애물 쌍의 통과 시간·최소 여유·TLN 채택률을 기록한다. ROS 고정 배치는 3개일 때 `pace-3-023`, 5개일 때 `confirm-5-03`이다. 직접 시드와 장애물 수를 지정하는 방법은 아래 [랜덤 장애물 배치기와 평가기](#랜덤-장애물-배치기와-평가기-사용법)에 있다.
+
+이미 빌드한 이미지를 옮길 때는 첫 PC에서 `docker image save -o routertln-v1.5.tar routertln:v1.5`, 대상 PC에서 `docker image load -i routertln-v1.5.tar`를 실행한다. 저장소 없이도 `docker run --rm --network none routertln:v1.5 cases`로 확인할 수 있다. 결과를 호스트에 보관하려면 위 Compose 명령을 사용하거나 `/workspace/runs`에 출력 폴더를 마운트한다. CUDA 교사 데이터 생성과 재학습에는 아래의 [기존 개발 환경](docker/Dockerfile)을 사용한다.
+
+### v1.5에서 바뀐 점과 측정 결과
+
+- 첫 랩에서 관측한 점유 격자와 자차 추정 위치로 한 바퀴의 회피 경로와 감속 계획을 만든다. 후속 랩은 Race와 Avoid가 2.7~4.5m/s의 정상 속도 범위를 공유한다. 정찰 랩 상한은 2.2m/s, 센서 보호 기준은 150ms다.
+- Avoid는 TLN 조향을 먼저 검증하고 안전 여유가 부족하면 로컬 경로를 탐색한다. 기본 주행 프로필 `both`는 연속 장애물에서 첫 랩 경로를 50%·100% 섞은 후보를 비교한다. `coupled`는 두 장애물 사이의 관측된 빈 구간이 현재 속도로 0.70초 이내일 때만 이 비교를 한다. 단독 출구 평활화는 `--smooth-exit`로 켤 수 있다.
+- Race는 고속 Race TLN에 WSP를 적용한 체크포인트, Avoid는 해당 검증에 쓴 혼합 속도 모델을 사용한다. 두 파일의 SHA-256은 이미지 빌드 때 검사한다. [가중치 체크섬](models/v1.5/SHA256SUMS) · [진입 후보·동일 상태 재생 실험](experiments/berlin-endurance/entry-candidates.md)
+
+| 개발 배치 오프라인 180초 | `both` | `coupled` |
+|---|---:|---:|
+| 무정지·무충돌 완주 | 54/54 | 54/54 |
+| 첫 랩 제외 Avoid TLN 직접 채택률 | 84.53% | 85.77% |
+| 공통 53배치 평균 최고 랩 | 16.747초 | 16.759초 |
+| 같은 연속 장애물 구간 평균 시간 | 1.889초 | 1.901초 |
+
+`coupled`는 합산 채택률을 높였지만 54개 중 20개 배치에서 개별 채택률이 85% 미만이었다. ROS 대조에서 두 설정 모두 무정지·무충돌로 장애물 3개 배치에서 10랩, 5개 배치에서 9랩을 완주했다. 5개 배치 최고 랩은 기존 18.290초, `coupled` 18.603초였다. 기본 실행은 랩타임이 더 빠른 `both`다. 표는 이전 개발 환경에서 측정한 결과이며 아래의 과거 300회 평가와 배치·조건이 다르다. [오프라인 432회](experiments/berlin-endurance/v1.5/case-results.csv) · [물리 심판 ROS 기록](experiments/berlin-endurance/v1.5/ros-results.json) · [동일 상태 분기 결과](experiments/berlin-endurance/v1.5/same-state-results.json)
+
 ## Berlin 정방향에서 확인한 완주율과 랩타임
 
 **첫 랩에서 만든 Race 속도 계획은 같은 4.25m/s 상한에서 오프라인 180초 완주를 1/6에서 6/6으로 늘렸다.** 장애물 1개인 개발 배치 `new-1-051`에서는 센서 노이즈 시드를 바꾼 ROS 두 주행이 각각 12랩을 정지·충돌 없이 마쳤다. 베스트랩은 **14.086초와 13.837초**였고, 두 주행 모두 첫 랩을 제외한 중앙값이 약 14.16초였다. 이 설정은 선택형 실험 옵션이다. [구현·배치별 결과](experiments/berlin-endurance/scout-speed-plan.md) · [분기 재생과 평가 명령](runs/berlin-scout-speed-plan/README.md)

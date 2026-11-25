@@ -1,6 +1,7 @@
 #pragma once
 #include "el/core.hpp"
 #include "el/dynamics.hpp"
+#include "el/map_paths.hpp"
 #include <algorithm>
 #include <array>
 #include <limits>
@@ -32,6 +33,7 @@ struct CorridorTrace {
   std::array<std::array<uint32_t,4>,32> fine_free{},fine_reachable{};
   bool wide=false, brake_event=false;
   float policy_steer=0,candidate_steer=0;
+  float preview_seed_steer=NAN;
   State brake_contact{};
 
   int waypoint=-1, origin=-1, first_empty=-1;
@@ -356,7 +358,9 @@ class AvoidCorridor {
   // Project candidate steering onto the observed corridor using the same delayed
   // vehicle dynamics as the command guard. Near a bend the scout line can be
   // traversable yet a faster vehicle can cut across its inner boundary.
-  float preview_steer(const DynamicState& initial,Control policy,const Memory& memory,float dt,int ticks) const {
+  float preview_steer(const DynamicState& initial,Control policy,const Memory& memory,float dt,int ticks,
+                      float neural=NAN,bool* verified=nullptr,bool rank_clearance=false) const {
+    if(verified)*verified=false;
     if(!valid_)return policy.steer;
     // On a sharp inside entry the near point may lie on the outside of the
     // bend while the open passage already demands steering into the turn.
@@ -364,6 +368,7 @@ class AvoidCorridor {
     // turning demand. Delayed rollouts and the command guard still decide.
     const float bend=wrap(path_[7].yaw-path_[0].yaw);
     const float direction=bend<0?-1.f:1.f;
+    bool meets_bend=true;
     if(fabsf(bend)>.60f && direction*(offsets_[7]-offsets_[0])>.15f && direction*offsets_[7]>.15f){
       const State car=basic(initial);
       for(int i=1;i<12;++i){
@@ -371,7 +376,10 @@ class AvoidCorridor {
         const float squared=x*x+y*y;
         if(squared<.90f)continue;
         const float needed=clamp(atan2f(2*.3302f*(-sinf(car.yaw)*x+cosf(car.yaw)*y),squared),-.4f,.4f);
-        if(direction*needed>0 && direction*needed>direction*policy.steer)policy.steer=needed;
+        if(direction*needed>0){
+          meets_bend=direction*neural>=direction*needed;
+          if(direction*needed>direction*policy.steer)policy.steer=needed;
+        }
         break;
       }
     }
@@ -391,23 +399,30 @@ class AvoidCorridor {
     const float turning=fabsf(wrap(path_[7].yaw-measured.yaw));
     const int horizon=turning>.50f && std::abs(offsets_[7])>.12f
       ?std::clamp(int(std::ceil(1.70f/(.01f*std::max(1.f,measured.v)))),50,140):50;
-    auto score=[&](float steer){
+    auto score=[&](float steer,bool require_reserve=false,float guide_look=.65f,bool* reached_continuation=nullptr,int* clear_until=nullptr){
       DynamicState state=initial;
       float loss=2.f*(steer-policy.steer)*(steer-policy.steer);
       State next=basic(initial);
       const Control candidate{steer,policy.speed};
       for(int i=0;i<ticks;++i)next=predict_command_tick(next,candidate,dt/ticks);
-      loss+=1000.f*braking_cost(next,.04f);
+      const float initial_brake=braking_cost(next,require_reserve?.08f:.04f);
+      if(require_reserve && initial_brake>0)return std::numeric_limits<float>::infinity();
+      if(clear_until && initial_brake>0)*clear_until=0;
+      loss+=1000.f*initial_brake;
       int segment=0;
       float continuation=steer;
       for(int tick=1;tick<=horizon;++tick){
         state=physics_step(state,{tick<=15?steer:continuation,policy.speed},Vehicle{});
-        if(tick%5)continue;
+        if(tick%5 && !(require_reserve && tick==horizon))continue;
         const State car=basic(state);
         if(!std::isfinite(car.x)||!std::isfinite(car.y)||!std::isfinite(car.yaw))
           return std::numeric_limits<float>::infinity();
-        if(tick==10 || tick==20 || tick==30)
-          loss+=4.f*braking_cost(car,.08f);
+        if(tick==10 || tick==20 || tick==30 || (require_reserve && tick==horizon)){
+          const float risk=braking_cost(car,.08f);
+          if(require_reserve && risk>0)return std::numeric_limits<float>::infinity();
+          if(clear_until && risk>0)*clear_until=std::min(*clear_until,tick);
+          loss+=4.f*risk;
+        }
         // Find the nearest point on this local polyline, then look ahead along
         // its arc. This also works when the corridor doubles back in a hairpin.
         float best=std::numeric_limits<float>::infinity(),fraction=0;
@@ -421,10 +436,21 @@ class AvoidCorridor {
           if(distance<best){best=distance;nearest=j;fraction=t;}
         }
         segment=nearest;
-        loss+=best;
-        if(footprint(memory,car,.065f)>.5f || gym_front_blocked(memory,car,.05f))loss+=12.f;
-        if(footprint(memory,car,.13f)>.5f)loss+=.35f;
-        float look=.65f;
+        if(require_reserve){
+          // No weighted tradeoff for the fast path: stay near the guide and
+          // keep the enlarged body and Gym front envelope free at every sample.
+          if(best>.10f*.10f || footprint(memory,car,.13f)>.5f ||
+             gym_front_blocked(memory,car,.13f))return std::numeric_limits<float>::infinity();
+        }else{
+          loss+=best;
+          if(footprint(memory,car,.065f)>.5f || gym_front_blocked(memory,car,.05f)){
+            if(clear_until)*clear_until=std::min(*clear_until,tick);
+            loss+=12.f;
+          }
+          if(footprint(memory,car,.13f)>.5f)loss+=.35f;
+        }
+        if(reached_continuation && tick==15)*reached_continuation=true;
+        float look=guide_look;
         for(int j=nearest;j<count-1;++j){
           const auto& a=path_[j];const auto& b=path_[j+1];
           const float dx=b.x-a.x,dy=b.y-a.y,length=std::max(.001f,hypotf(dx,dy));
@@ -440,19 +466,173 @@ class AvoidCorridor {
       }
       return loss;
     };
-    float selected=policy.steer,best=score(selected);
+    if(std::isfinite(neural) && meets_bend){
+      bool reached_continuation=false;
+      bool safe=std::isfinite(score(neural,true,.65f,&reached_continuation));
+      // The first 150 ms are identical. A second guide continuation with the
+      // speed-dependent pursuit distance must pass every original check too.
+      if(!safe && reached_continuation){
+        const float look=.65f+.12f*std::max(0.f,measured.v);
+        safe=std::isfinite(score(neural,true,look));
+      }
+      if(safe){
+        if(verified)*verified=true;
+        return neural;
+      }
+    }
+    // Prefer a fallback that keeps a braking arc open throughout the preview.
+    // If every arc conflicts, postpone the first predicted conflict and
+    // break ties with the existing tracking cost. The hard command guard follows.
+    int best_clear=horizon+1;
+    float selected=policy.steer,best=score(selected,false,.65f,nullptr,rank_clearance?&best_clear:nullptr);
     for(int k=-4;k<=4;++k){
       const float steer=.1f*k;
-      const float loss=score(steer);
-      if(loss<best){selected=steer;best=loss;}
+      int clear=horizon+1;
+      const float loss=score(steer,false,.65f,nullptr,rank_clearance?&clear:nullptr);
+      if(std::isfinite(loss) && (clear>best_clear || (clear==best_clear && loss<best))){
+        selected=steer;best=loss;best_clear=clear;
+      }
     }
     return selected;
   }
+  // Keep the endpoints in the original lattice and validate the swept body
+  // between stations. The normal command and full-stop checks still follow.
+  bool smooth_exit(const Track& track,int start,const Memory& memory,float speed,float cap){
+    const auto original=path_;
+    const auto offsets=offsets_;
+    const float before=speed_limit(cap,speed);
+    for(int pass=0;pass<3;++pass){
+      const auto prior=offsets_;
+      for(int i=1;i<count-1;++i)
+        offsets_[i]=.25f*(prior[i-1]+2*prior[i]+prior[i+1]);
+    }
+    set_guide(track,start,offsets_);
+    if(speed_limit(cap,speed)>before+.01f && guide_clearance(path_,memory)>=
+       std::max(.065f,guide_clearance(original,memory)))return true;
+    path_=original;offsets_=offsets;
+    return false;
+  }
+
+  bool choose_cluster_entry(const Track& track,int start,const Memory& memory,
+                            const std::vector<float>& scout,const DynamicState& initial,
+                            float speed,float next_distance,EntryCandidates candidates=EntryCandidates::both,
+                            bool previous_verified=false,float* selected_blend=nullptr){
+    if(selected_blend)*selected_blend=0.f;
+    const auto original=offsets_;
+    const auto original_path=path_;
+    const auto& wp=track.points;
+    const float length=wp.back().s+std::hypot(wp.front().x-wp.back().x,wp.front().y-wp.back().y);
+    int goal=1;
+    for(;goal<count-1;++goal){
+      float ahead=std::fmod(wp[(start+2*goal)%wp.size()].s-wp[start].s+length,length);
+      if(ahead>=next_distance)break;
+    }
+    if(goal>=count-2 || goal<3)return false;
+    // The same downstream position and heading are used to score all entries.
+    auto planned=[&](int i){
+      size_t k=(start+2*i)%wp.size();const auto& w=wp[k];float d=scout[k];
+      return State{w.x-std::sin(w.yaw)*d,w.y+std::cos(w.yaw)*d,w.yaw};
+    };
+    State target=planned(goal);const auto after=planned(goal+1),before=planned(goal-1);
+    target.yaw=std::atan2(after.y-before.y,after.x-before.x);
+    auto score=[&](bool& aligned){
+      aligned=false;
+      DynamicState sim=initial;int nearest=0;
+      float reserve=.16f;
+      const int horizon=std::min(320,int(100*(next_distance+1.5f)/speed)+25);
+      for(int tick=0;tick<horizon;++tick){
+        const State car=basic(sim);
+        while(nearest<goal){
+          const State &p=path_[nearest],&q=path_[nearest+1];
+          if(std::hypot(car.x-p.x,car.y-p.y)<std::hypot(car.x-q.x,car.y-q.y))break;
+          ++nearest;
+        }
+        if(!(tick%3) || nearest==goal){
+          reserve=std::min(reserve,pose_clearance(car,memory));
+          if(reserve<.065f)return INFINITY;
+        }
+        if(nearest==goal){
+          const float miss=std::hypot(car.x-target.x,car.y-target.y);
+          const float heading=std::abs(wrap(car.yaw-target.yaw));
+          // A guide arriving within one lattice step can be left alone when
+          // its heading and swept body reserve also support the next entry.
+          aligned=miss<=.20f && heading<=.20f && reserve>=.10f;
+          return miss+.7f*heading+2.f*(.16f-reserve)+.001f*tick;
+        }
+        const auto& aim=path_[std::min(count-1,nearest+3)];
+        const float dx=aim.x-car.x,dy=aim.y-car.y;
+        float steer=std::atan2(2*.3302f*(-std::sin(car.yaw)*dx+std::cos(car.yaw)*dy),
+                               std::max(.01f,dx*dx+dy*dy));
+        sim=physics_step(sim,{clamp(steer,-.4f,.4f),speed},Vehicle{});
+      }
+      return INFINITY;
+    };
+    bool aligned=false;
+    float best=score(aligned);auto selected=original;
+    if(candidates==EntryCandidates::graduated && aligned)return false;
+    // Keep a certified neural approach unless the downstream rollout gains
+    // enough to justify changing the guide. An unsafe rollout still scores infinity.
+    if(candidates==EntryCandidates::rescue && std::isfinite(best))return false;
+    if(candidates==EntryCandidates::continuity && previous_verified)best-=.12f;
+    for(float blend:{.5f,1.f}){
+      if((candidates==EntryCandidates::half && blend!=.5f) ||
+         (candidates==EntryCandidates::full && blend!=1.f))continue;
+      auto candidate=original;
+      for(int i=1;i<count;++i){
+        float weight=blend*std::min(1.f,.25f*i);
+        candidate[i]+=weight*(scout[(start+2*i)%wp.size()]-original[i]);
+      }
+      set_guide(track,start,candidate);
+      const float value=score(aligned);
+      if(value+.015f<best && guide_clearance(path_,memory)>=.065f){
+        selected=candidate;best=value;
+        if(selected_blend)*selected_blend=blend;
+        if(candidates==EntryCandidates::graduated && aligned)break;
+      }
+    }
+    if(selected==original){
+      if(selected_blend)*selected_blend=0.f;
+      offsets_=original;
+      path_=original_path;
+      return false;
+    }
+    set_guide(track,start,selected);
+    return true;
+  }
+
+ private:
+  void set_guide(const Track& track,int start,const std::array<float,count>& offsets){
+    offsets_=offsets;
+    for(int i=0;i<count;++i){
+      const auto& w=track.points[(start+2*i)%track.points.size()];
+      path_[i]={w.x-std::sin(w.yaw)*offsets[i],w.y+std::cos(w.yaw)*offsets[i],w.yaw};
+    }
+  }
+  static float pose_clearance(const State& car,const Memory& memory){
+    for(float margin:{.16f,.10f,.065f})
+      if(footprint(memory,car,margin)<=.5f && !gym_front_blocked(memory,car,margin))return margin;
+    return 0.f;
+  }
+  static float guide_clearance(const std::array<State,count>& path,const Memory& memory){
+    float margin=.16f;
+    for(int i=1;i<count;++i){
+      const State &p=path[i-1],&q=path[i];
+      float yaw=std::atan2(q.y-p.y,q.x-p.x);
+      for(float t:{0.f,.5f,1.f}){
+        margin=std::min(margin,pose_clearance({p.x+t*(q.x-p.x),p.y+t*(q.y-p.y),yaw},memory));
+        if(margin==0)return 0;
+      }
+    }
+    return margin;
+  }
+ public:
   int side_at(float ahead)const{
     int i=std::clamp(int(std::lround(ahead/.20f)),1,count-1);
     return offsets_[i]>.05f?1:offsets_[i]<-.05f?-1:0;
   }
-  void condition(Observation& o,const State& car,float lookahead_scale=1.f,bool returning=false)const{
+  // context[4] stores the corridor pursuit angle normalized by the steering limit.
+  static constexpr float steering_scale_rad=.4f;
+  float pursuit_angle(const State& car,float lookahead_scale,bool returning)const{
     float x=0,y=0,look=lookahead_scale*(.65f+.12f*std::max(0.f,car.v));
     const float extra=std::max(0.f,car.v-1.8f);
     if(extra>0){
@@ -476,7 +656,11 @@ class AvoidCorridor {
       if(hypotf(x,y)>=look)break;
     }
     float lat=-sinf(car.yaw)*x+cosf(car.yaw)*y;
-    o.context[4]=clamp(atan2f(2*.3302f*lat,x*x+y*y)/.4f,-1,1);
+    return clamp(atan2f(2*.3302f*lat,x*x+y*y)/steering_scale_rad,-1,1);
+  }
+  void condition(Observation& o,const State& car,float lookahead_scale=1.f,bool returning=false,
+                 const State* aim=nullptr)const{
+    o.context[4]=pursuit_angle(aim?*aim:car,lookahead_scale,returning);
     for(int i=0;i<5;++i){
       const State& p=path_[(i+1)*5];
       float x=p.x-car.x,y=p.y-car.y;

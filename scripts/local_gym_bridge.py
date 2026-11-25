@@ -1,6 +1,7 @@
 """Run the local Gym physics step and its sensor publication as one ordered sample."""
 import os
 from time import monotonic
+from pathlib import Path
 
 import rclpy
 from rclpy.clock import Clock, ClockType
@@ -10,7 +11,11 @@ from f1tenth_gym_ros.gym_bridge import GymBridge
 
 class LocalBridge(GymBridge):
     def __init__(self):
+        if os.environ.get('EL_SIM_WARMUP') == '1':
+            from warm_berlin_sim import warm
+            warm(Path(os.environ['EL_MAP_DIR']), os.environ['EL_SIM_CONFIG_DIR'])
         super().__init__()
+        self.ready_file = os.environ.get('EL_SIM_READY_FILE')
         noise_seed = os.environ.get('EL_SCAN_NOISE_SEED')
         if noise_seed is not None:
             import numpy as np
@@ -41,6 +46,9 @@ class LocalBridge(GymBridge):
         self.ts = acquired
         updated = monotonic()
         self.timer_callback()
+        if self.ready_file:
+            Path(self.ready_file).touch()
+            self.ready_file = None
         if self.judge:
             stamp = acquired.sec + acquired.nanosec * 1e-9
             kind = self.env.unwrapped.sim.agents[0].collision_kind or 'none'

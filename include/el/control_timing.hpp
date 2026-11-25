@@ -19,6 +19,9 @@ class ControlTiming {
     cpu_[stage] += (current.cpu_ns-last_.cpu_ns)*1e-6;
     last_ = current;
   }
+  void restart_interval(){last_=sample();}
+  double wall_ms(Stage stage)const{return wall_[stage];}
+  double cpu_ms(Stage stage)const{return cpu_[stage];}
   static void header(std::ostream& out) {
     for (auto name:names) out << ',' << name << "_ms," << name << "_cpu_ms";
   }

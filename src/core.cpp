@@ -59,10 +59,6 @@ Memory::Memory(const std::string& path){
     base_[row*width_+col]=occ<free?0.f:1.f; // Unknown base-map cells remain blocked.
   }
 }
-int Memory::index(float x,float y)const{
-  int c=(int)floor((x-x0_)/resolution_),r=(int)floor((y-y0_)/resolution_);
-  return c<0||r<0||c>=width_||r>=height_?-1:r*width_+c;
-}
 float Memory::occupancy(int i)const{
   if(i<0)return 1.f;
   if(base_[i]>.5f)return 1.f;
@@ -83,10 +79,6 @@ float Memory::base_hit_range(float sx,float sy,float dx,float dy,float limit)con
     else{t=next_x;next_x+=delta_x;next_y+=delta_y;x+=step_x;y+=step_y;}
   }
   return INFINITY;
-}
-float Memory::at(float x,float y)const{
-  int k=index(x,y);
-  return k<0 || base_[k]>.5f || odds_[k]>.5f || current_hit_mask_[k];
 }
 std::vector<int> Memory::obstacle_cells()const{
   std::vector<int> cells;

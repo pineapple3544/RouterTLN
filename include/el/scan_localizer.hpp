@@ -159,9 +159,11 @@ class ScanLocalizer {
     const bool inconsistent=fabsf(v-next.v)>3.f;
     if(inconsistent){
       // A scan can slide along a corridor wall with little change in residual.
-      // If this implies a reverse jump while driving forward, fit lateral
-      // position and heading once with the predicted forward motion fixed.
-      if(used_motion_prior_ || v>=0 || prior.v<=0 || previous.speed<=0)return {};
+      // A reverse jump or a jump ahead of both the prediction and the requested
+      // speed can have an equally good longitudinal fit. Test the lateral and
+      // heading measurement with forward travel fixed for this one scan.
+      const bool longitudinal_jump=v<0.f || v>std::max(prior.v,previous.speed);
+      if(used_motion_prior_ || !longitudinal_jump || prior.v<=0 || previous.speed<=0)return {};
       if(hypotf(next.x-prior.x,next.y-prior.y)>.18f)return {};
       const float mid=pose_.yaw+.5f*wrap(prior.yaw-pose_.yaw);
       const Point lateral{-sinf(mid),cosf(mid)};

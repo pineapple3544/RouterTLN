@@ -1,0 +1,13 @@
+{
+  "candidate": "coupled",
+  "eligible": [
+    "coupled",
+    "graduated"
+  ],
+  "complete": [
+    "full",
+    "continuity",
+    "coupled",
+    "graduated"
+  ]
+}

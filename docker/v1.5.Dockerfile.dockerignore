@@ -1,0 +1,17 @@
+**
+!CMakeLists.txt
+!include/**
+!src/**
+!tools/replay_corridor.cpp
+!tests/scan_localizer_test.cpp
+!tests/fixtures/corridor/**
+!maps/berlin/**
+!docker/simulator/**
+!scripts/**
+!config/**
+!models/v1.5/**
+!experiments/berlin-endurance/v1.5/cases.json
+!experiments/berlin-endurance/v1.5/ros-cases.json
+**/__pycache__/
+!experiments/berlin-endurance/v1.5/suites.json
+!experiments/berlin-endurance/v1.5/replays.json

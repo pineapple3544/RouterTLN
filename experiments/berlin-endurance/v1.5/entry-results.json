@@ -1,0 +1,474 @@
+{
+  "local": {
+    "clean": 53,
+    "contact": 0,
+    "fails": {
+      "pace-3-023": "no_corridor"
+    },
+    "common": 53,
+    "best": 16.76770822549499,
+    "flying": 16.836563994704157,
+    "gap": 0.10977208614349365,
+    "adoption": 86.27950107276628,
+    "adoption_common": 86.27950107276628,
+    "suites": {
+      "verified": {
+        "clean": 24,
+        "adopt": 86.38506134112895,
+        "best_common": 16.687099285453655
+      },
+      "holdout": {
+        "clean": 29,
+        "adopt": 86.19559825601128,
+        "best_common": 16.834419072425746
+      }
+    },
+    "cases_under_85": 21,
+    "over": 2,
+    "blend": {},
+    "cluster": {
+      "cases": 26,
+      "passes": 337,
+      "sec": 1.914486046769961,
+      "gap": 0.113839,
+      "adopt": 88.68909914135558
+    },
+    "paired_clusters": {
+      "cases": 26,
+      "passes": 337,
+      "sec": 1.914486046769961,
+      "gap": 0.113839,
+      "adopt": 88.68909914135558
+    },
+    "paired_delta_sec": 0.025873698851397897,
+    "paired_gap_losses_1cm": 4,
+    "target023": {
+      "ok": false,
+      "laps": 1,
+      "best": 26.29188644697657,
+      "gap": 0.17657983303070068,
+      "flysec": null,
+      "A": 0,
+      "D": 0,
+      "over": 0,
+      "contact": false,
+      "rejection": "no_corridor",
+      "obs": 3
+    }
+  },
+  "half": {
+    "clean": 53,
+    "contact": 0,
+    "fails": {
+      "pace-3-023": "no_corridor"
+    },
+    "common": 53,
+    "best": 16.75159589884008,
+    "flying": 16.816830163118482,
+    "gap": 0.09909375011920929,
+    "adoption": 86.09135006955407,
+    "adoption_common": 86.14967509340156,
+    "suites": {
+      "verified": {
+        "clean": 24,
+        "adopt": 85.90087730784339,
+        "best_common": 16.664735732831204
+      },
+      "holdout": {
+        "clean": 29,
+        "adopt": 86.24122609311611,
+        "best_common": 16.82348017415777
+      }
+    },
+    "cases_under_85": 20,
+    "over": 3,
+    "blend": {
+      "0.0": 4541,
+      "0.5": 23140
+    },
+    "cluster": {
+      "cases": 26,
+      "passes": 337,
+      "sec": 1.8982032490821272,
+      "gap": 0.142838,
+      "adopt": 87.97519994085135
+    },
+    "paired_clusters": {
+      "cases": 26,
+      "passes": 337,
+      "sec": 1.8982032490821272,
+      "gap": 0.142838,
+      "adopt": 87.97519994085135
+    },
+    "paired_delta_sec": 0.009590901163564203,
+    "paired_gap_losses_1cm": 4,
+    "target023": {
+      "ok": false,
+      "laps": 5,
+      "best": 17.114940864248474,
+      "gap": 0.09909375011920929,
+      "flysec": 17.157038901699295,
+      "A": 1163,
+      "D": 921,
+      "over": 0,
+      "contact": false,
+      "rejection": "no_corridor",
+      "obs": 3
+    }
+  },
+  "full": {
+    "clean": 54,
+    "contact": 0,
+    "fails": {},
+    "common": 53,
+    "best": 16.746057205323112,
+    "flying": 16.813571317976965,
+    "gap": 0.10977208614349365,
+    "adoption": 84.5587026594338,
+    "adoption_common": 84.61258454123865,
+    "suites": {
+      "verified": {
+        "clean": 24,
+        "adopt": 84.33626139069042,
+        "best_common": 16.651084036005958
+      },
+      "holdout": {
+        "clean": 30,
+        "adopt": 84.73016756948311,
+        "best_common": 16.824655690275236
+      }
+    },
+    "cases_under_85": 23,
+    "over": 0,
+    "blend": {
+      "1.0": 23200,
+      "0.0": 4681
+    },
+    "cluster": {
+      "cases": 26,
+      "passes": 337,
+      "sec": 1.887008164364545,
+      "gap": 0.142206,
+      "adopt": 82.93525579784941
+    },
+    "paired_clusters": {
+      "cases": 27,
+      "passes": 346,
+      "sec": 1.8788870766458705,
+      "gap": 0.129198,
+      "adopt": 82.16314050010294
+    },
+    "paired_delta_sec": -0.0015068890077558628,
+    "paired_gap_losses_1cm": 8,
+    "target023": {
+      "ok": true,
+      "laps": 10,
+      "best": 16.918677277087284,
+      "gap": 0.129197895526886,
+      "flysec": 16.99084640238319,
+      "A": 2558,
+      "D": 2089,
+      "over": 0,
+      "contact": false,
+      "rejection": "time_limit",
+      "obs": 3
+    }
+  },
+  "both": {
+    "clean": 54,
+    "contact": 0,
+    "fails": {},
+    "common": 53,
+    "best": 16.74680773908971,
+    "flying": 16.81384759939265,
+    "gap": 0.10977208614349365,
+    "adoption": 84.52838287369889,
+    "adoption_common": 84.55562438508909,
+    "suites": {
+      "verified": {
+        "clean": 24,
+        "adopt": 84.34829851336,
+        "best_common": 16.66044725208449
+      },
+      "holdout": {
+        "clean": 30,
+        "adopt": 84.66676787611964,
+        "best_common": 16.818278486956096
+      }
+    },
+    "cases_under_85": 25,
+    "over": 3,
+    "blend": {
+      "1.0": 19733,
+      "0.5": 4785,
+      "0.0": 3269
+    },
+    "cluster": {
+      "cases": 26,
+      "passes": 337,
+      "sec": 1.888612347918563,
+      "gap": 0.132009,
+      "adopt": 82.50064592022653
+    },
+    "paired_clusters": {
+      "cases": 27,
+      "passes": 346,
+      "sec": 1.8803939656536264,
+      "gap": 0.13197,
+      "adopt": 81.76945955777127
+    },
+    "paired_delta_sec": 0.0,
+    "paired_gap_losses_1cm": 0,
+    "target023": {
+      "ok": true,
+      "laps": 10,
+      "best": 16.946877064390662,
+      "gap": 0.13196998834609985,
+      "flysec": 16.99754673672323,
+      "A": 2570,
+      "D": 2135,
+      "over": 0,
+      "contact": false,
+      "rejection": "time_limit",
+      "obs": 3
+    }
+  },
+  "continuity": {
+    "clean": 54,
+    "contact": 0,
+    "fails": {},
+    "common": 53,
+    "best": 16.756345298835097,
+    "flying": 16.823802939736197,
+    "gap": 0.10977208614349365,
+    "adoption": 84.48352245119617,
+    "adoption_common": 84.53581983083664,
+    "suites": {
+      "verified": {
+        "clean": 24,
+        "adopt": 84.39439209377154,
+        "best_common": 16.675375162139353
+      },
+      "holdout": {
+        "clean": 30,
+        "adopt": 84.5522180327454,
+        "best_common": 16.823355067135026
+      }
+    },
+    "cases_under_85": 25,
+    "over": 6,
+    "blend": {
+      "0.0": 16377,
+      "1.0": 10594,
+      "0.5": 955
+    },
+    "cluster": {
+      "cases": 26,
+      "passes": 337,
+      "sec": 1.8977757092833913,
+      "gap": 0.137813,
+      "adopt": 82.7211735017871
+    },
+    "paired_clusters": {
+      "cases": 27,
+      "passes": 346,
+      "sec": 1.8891383653502924,
+      "gap": 0.13197,
+      "adopt": 81.90754124677859
+    },
+    "paired_delta_sec": 0.008744399696666072,
+    "paired_gap_losses_1cm": 4,
+    "target023": {
+      "ok": true,
+      "laps": 10,
+      "best": 16.89581342322913,
+      "gap": 0.13196998834609985,
+      "flysec": 16.973796864395723,
+      "A": 2566,
+      "D": 2096,
+      "over": 0,
+      "contact": false,
+      "rejection": "time_limit",
+      "obs": 3
+    }
+  },
+  "rescue": {
+    "clean": 53,
+    "contact": 0,
+    "fails": {
+      "pace-3-023": "no_corridor"
+    },
+    "common": 53,
+    "best": 16.768533388532052,
+    "flying": 16.832298280694868,
+    "gap": 0.10977208614349365,
+    "adoption": 86.22818499127399,
+    "adoption_common": 86.22818499127399,
+    "suites": {
+      "verified": {
+        "clean": 24,
+        "adopt": 86.30820490094703,
+        "best_common": 16.687753337850832
+      },
+      "holdout": {
+        "clean": 29,
+        "adopt": 86.16453200684136,
+        "best_common": 16.835385844268234
+      }
+    },
+    "cases_under_85": 21,
+    "over": 0,
+    "blend": {
+      "0.0": 27205,
+      "1.0": 173,
+      "0.5": 8
+    },
+    "cluster": {
+      "cases": 26,
+      "passes": 337,
+      "sec": 1.910314034789386,
+      "gap": 0.13974,
+      "adopt": 89.01358742628706
+    },
+    "paired_clusters": {
+      "cases": 26,
+      "passes": 337,
+      "sec": 1.910314034789386,
+      "gap": 0.13974,
+      "adopt": 89.01358742628706
+    },
+    "paired_delta_sec": 0.021701686870823078,
+    "paired_gap_losses_1cm": 4,
+    "target023": {
+      "ok": false,
+      "laps": 1,
+      "best": 26.29188644697657,
+      "gap": 0.17657983303070068,
+      "flysec": null,
+      "A": 0,
+      "D": 0,
+      "over": 0,
+      "contact": false,
+      "rejection": "no_corridor",
+      "obs": 3
+    }
+  },
+  "coupled": {
+    "clean": 54,
+    "contact": 0,
+    "fails": {},
+    "common": 53,
+    "best": 16.758894004279323,
+    "flying": 16.824727968030892,
+    "gap": 0.10977208614349365,
+    "adoption": 85.76717576310965,
+    "adoption_common": 85.81747363984508,
+    "suites": {
+      "verified": {
+        "clean": 24,
+        "adopt": 85.41728103804188,
+        "best_common": 16.672009589245
+      },
+      "holdout": {
+        "clean": 30,
+        "adopt": 86.03702065828543,
+        "best_common": 16.830798347756
+      }
+    },
+    "cases_under_85": 20,
+    "over": 0,
+    "blend": {
+      "1.0": 9413,
+      "0.0": 1770,
+      "0.5": 2867
+    },
+    "cluster": {
+      "cases": 26,
+      "passes": 337,
+      "sec": 1.9013139160224473,
+      "gap": 0.137609,
+      "adopt": 87.5656431115654
+    },
+    "paired_clusters": {
+      "cases": 27,
+      "passes": 346,
+      "sec": 1.8926251053092187,
+      "gap": 0.13197,
+      "adopt": 86.71986702036973
+    },
+    "paired_delta_sec": 0.012231139655592305,
+    "paired_gap_losses_1cm": 5,
+    "target023": {
+      "ok": true,
+      "laps": 10,
+      "best": 16.946877064390662,
+      "gap": 0.13196998834609985,
+      "flysec": 16.99754673672323,
+      "A": 2570,
+      "D": 2135,
+      "over": 0,
+      "contact": false,
+      "rejection": "time_limit",
+      "obs": 3
+    }
+  },
+  "graduated": {
+    "clean": 54,
+    "contact": 0,
+    "fails": {},
+    "common": 53,
+    "best": 16.757137100392793,
+    "flying": 16.82657868566026,
+    "gap": 0.10977208614349365,
+    "adoption": 85.56250089195245,
+    "adoption_common": 85.60899020149449,
+    "suites": {
+      "verified": {
+        "clean": 24,
+        "adopt": 85.64643453765272,
+        "best_common": 16.680805352705068
+      },
+      "holdout": {
+        "clean": 30,
+        "adopt": 85.4976986495372,
+        "best_common": 16.820308201927464
+      }
+    },
+    "cases_under_85": 21,
+    "over": 0,
+    "blend": {
+      "0.0": 18777,
+      "0.5": 6655,
+      "1.0": 2579
+    },
+    "cluster": {
+      "cases": 26,
+      "passes": 337,
+      "sec": 1.9023742568874682,
+      "gap": 0.14532,
+      "adopt": 86.40992189357574
+    },
+    "paired_clusters": {
+      "cases": 27,
+      "passes": 346,
+      "sec": 1.8936461742903499,
+      "gap": 0.13197,
+      "adopt": 85.59213279397572
+    },
+    "paired_delta_sec": 0.013252208636723495,
+    "paired_gap_losses_1cm": 2,
+    "target023": {
+      "ok": true,
+      "laps": 10,
+      "best": 16.946877064390662,
+      "gap": 0.13196998834609985,
+      "flysec": 16.99754673672323,
+      "A": 2570,
+      "D": 2135,
+      "over": 0,
+      "contact": false,
+      "rejection": "time_limit",
+      "obs": 3
+    }
+  }
+}

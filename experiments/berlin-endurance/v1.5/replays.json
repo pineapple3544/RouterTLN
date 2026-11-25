@@ -1,0 +1,17 @@
+{
+  "early": {
+    "case": "pace-3-023",
+    "producer": "both",
+    "at_m": 60.57807237680315
+  },
+  "late": {
+    "case": "pace-3-023",
+    "producer": "half",
+    "at_m": 255.71375665940639
+  },
+  "five": {
+    "case": "confirm-5-03",
+    "producer": "both",
+    "at_m": 80.37114412362932
+  }
+}

@@ -4,6 +4,7 @@
 #include <deque>
 #include <string>
 #include <vector>
+#include <type_traits>
 #include <cmath>
 #ifdef __CUDACC__
 #define EL_HD __host__ __device__
@@ -43,12 +44,15 @@ EL_HD inline State advance(State s,Control u,float dt){
   return advance_with_acceleration(s,u,dt,clamp((clamp(u.speed,0.f,10.f)-s.v)/.15f,-6.f,4.f));
 }
 // Dense footprint samples with a conservative boundary margin (meters).
+class Memory;
 template<class GridType> EL_HD inline float footprint(const GridType& g,const State& s,float margin=.04f){
   float c=cosf(s.yaw),q=sinf(s.yaw),value=0;
   for(int i=0;i<7;++i)for(int j=0;j<5;++j){
     float half_length=.29f+margin,half_width=.1016f+margin;
     float x=-half_length+i*(2*half_length/6),y=-half_width+j*(2*half_width/4);
     value=fmaxf(value,g.at(s.x+c*x-q*y,s.y+q*x+c*y));
+    // Memory::at is binary: an occupied sample already attains the maximum.
+    if constexpr(std::is_same_v<GridType,Memory>){if(value==1.f)return value;}
   }return value;
 }
 EL_HD inline int nearest(const Problem& p,const State& s){
@@ -82,7 +86,10 @@ class Memory {
   void reset();
   size_t occupied()const;
   std::vector<int> obstacle_cells()const;
-  float at(float x,float y)const;
+  float at(float x,float y)const{
+    int k=index(x,y);
+    return k<0 || base_[k]>.5f || odds_[k]>.5f || current_hit_mask_[k];
+  }
   float obstacle_at(float x,float y)const;
   size_t associated_wall_returns()const{return associated_wall_returns_;}
   bool base_free_disc(float x,float y,float radius)const;
@@ -98,7 +105,10 @@ class Memory {
   std::vector<uint8_t> current_hit_mask_;
   void replace_current_hits(std::vector<int> hits);
   size_t associated_wall_returns_=0;
-  int index(float,float)const;
+  int index(float x,float y)const{
+    int c=(int)floor((x-x0_)/resolution_),r=(int)floor((y-y0_)/resolution_);
+    return c<0||r<0||c>=width_||r>=height_?-1:r*width_+c;
+  }
   float occupancy(int)const;
   float base_hit_range(float sx,float sy,float dx,float dy,float limit)const;
 };

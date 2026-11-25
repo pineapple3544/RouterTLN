@@ -1,0 +1,11 @@
+services:
+  berlin:
+    image: routertln:v1.5
+    platform: linux/amd64
+    build:
+      context: .
+      dockerfile: docker/v1.5.Dockerfile
+    network_mode: none
+    shm_size: 256mb
+    volumes:
+      - ./results:/workspace/runs

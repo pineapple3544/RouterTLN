@@ -7,9 +7,27 @@
 namespace el {
 inline constexpr char default_map_dir[] = "/workspace/maps/berlin";
 
+enum class EntryCandidates { both, half, full, continuity, rescue, coupled, graduated };
+inline EntryCandidates parse_entry_candidates(const std::string& name){
+  if(name=="both")return EntryCandidates::both;
+  if(name=="half")return EntryCandidates::half;
+  if(name=="full")return EntryCandidates::full;
+  if(name=="continuity")return EntryCandidates::continuity;
+  if(name=="graduated")return EntryCandidates::graduated;
+  if(name=="coupled")return EntryCandidates::coupled;
+  if(name=="rescue")return EntryCandidates::rescue;
+  throw std::invalid_argument("unknown entry candidate setting: "+name);
+}
 struct RouterSettings {
+  EntryCandidates entry_candidates=EntryCandidates::both;
   std::string race_checkpoint="/workspace/models/race-teachers-expanded-v5.pt";
   bool lap_planning=false;
+  bool avoid_corridor_steer_seed=false;
+  bool avoid_policy_first=false;
+  bool race_verified_pace=false;
+  bool shared_speed_band=false, whole_lap_path=false;
+  bool avoid_exit_pace=false;
+  bool cluster_entry=false, smooth_isolated_exit=false;
   float plan_lead_time=.25f,plan_speed_fraction=.75f;
   float scout_speed_cap=2.2f;
   float avoid_speed_cap=10.f;
@@ -27,6 +45,14 @@ struct RouterSettings {
       throw std::runtime_error("choose either the scout speed plan or the earlier Race envelope");
     if((race_lap_speed || race_sight_speed || race_exit_speed) && (!sim_race_only || straight_boost))
       throw std::runtime_error("Race envelope requires Race-only planning without straight_boost");
+    if((cluster_entry || smooth_isolated_exit) && !(whole_lap_path && shared_speed_band))
+      throw std::runtime_error("Avoid guide comparison requires a whole-lap path and shared speeds");
+    if((whole_lap_path || shared_speed_band) && !(lap_planning && sim_race_only && avoid_policy_first))
+      throw std::runtime_error("scout route and shared band require planned TLN-first Race/Avoid");
+    if(avoid_exit_pace && !(avoid_policy_first && sim_race_only && lap_planning))
+      throw std::runtime_error("Avoid exit pace requires planned TLN-first Avoid with the legacy speed band");
+    if(race_verified_pace && !(straight_boost && sim_race_only && lap_planning))
+      throw std::runtime_error("verified Race pace requires the planned straight boost profile");
     if(straight_boost && !sim_race_only)throw std::runtime_error("straight boost requires Race-only speed profile");
     if(sim_race_only && !sim_section_speed_profile)
       throw std::runtime_error("Race-only speed control requires the section speed profile");

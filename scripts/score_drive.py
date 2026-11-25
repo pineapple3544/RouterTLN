@@ -42,7 +42,10 @@ def score(metrics, physics, waypoints, target, duration=0):
         return {'accepted': False, 'failure': 'missing_control_or_judge_samples'}
     times = [float(r['stamp']) for r in samples]
     stamps = [float(r['stamp']) for r in controls]
-    if any(b <= a for a, b in zip(times, times[1:])) or times[0] > stamps[0] or times[-1] < stamps[-1]:
+    # Control CSV timestamps are rounded to microseconds; compare the endpoints
+    # at their common precision while preserving raw physics time for scoring.
+    if (any(b <= a for a, b in zip(times, times[1:])) or
+            round(times[0], 6) > stamps[0] or round(times[-1], 6) < stamps[-1]):
         return {'accepted': False, 'failure': 'incomplete_judge_coverage'}
     begin = max(0, bisect.bisect_right(times, stamps[0])-1)
     samples, times = samples[begin:], times[begin:]

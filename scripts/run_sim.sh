@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 set -eo pipefail
 source /opt/ros/humble/setup.bash
-source /home/misys/forza_ws/race_stack/install/setup.bash
 base=/home/misys/forza_ws/race_stack
+if [[ -z ${EL_SIM_CONFIG_DIR:-} ]]; then source "$base/install/setup.bash"; fi
+sim_config=${EL_SIM_CONFIG_DIR:-$base/stack_master/config/SIM}
 map_dir=${EL_MAP_DIR:-/workspace/maps/berlin}
 map_dir=${map_dir%/}
 stem="$map_dir/${map_dir##*/}"
@@ -18,7 +19,7 @@ bridge=(ros2 run f1tenth_gym_ros gym_bridge)
 if [[ ${EL_LOCAL_STEADY_SIM:-0} == 1 ]]; then bridge=(python3 /workspace/scripts/local_gym_bridge.py); fi
 exec "${bridge[@]}" --ros-args \
   "${clock_args[@]}" -r __node:=bridge \
-  --params-file "$base/stack_master/config/SIM/sim.yaml" \
+  --params-file "$sim_config/sim.yaml" \
   -p map_path:="$stem.yaml" \
-  -p sim_params:="$base/stack_master/config/SIM/sim_params.yaml" \
+  -p sim_params:="$sim_config/sim_params.yaml" \
   -p kb_teleop:=false -p sx:="$sx" -p sy:="$sy" -p stheta:="$stheta"

@@ -1,4 +1,6 @@
 #include "avoid_support.hpp"
+#include <chrono>
+#include <sys/resource.h>
 #include "el/map_paths.hpp"
 #include "el/eval_metrics.hpp"
 #include "el/section_router.hpp"
@@ -80,8 +82,22 @@ json run(const std::string& map,int layout,int count,Policy& policy,bool baselin
   router_settings.race_lap_speed=spec.value("race_lap_speed",false);
   router_settings.race_exit_speed=spec.value("race_exit_speed",false);
   router_settings.straight_boost=spec.value("straight_boost",false);
+  router_settings.avoid_corridor_steer_seed=spec.value("avoid_corridor_steer_seed",false);
+  router_settings.avoid_policy_first=spec.value("avoid_policy_first",false);
+  router_settings.cluster_entry=spec.value("cluster_entry",false);
+  router_settings.entry_candidates=parse_entry_candidates(spec.value("entry_candidates",std::string("both")));
+  router_settings.smooth_isolated_exit=spec.value("smooth_isolated_exit",false);
+  router_settings.shared_speed_band=spec.value("shared_speed_band",false);
+  router_settings.whole_lap_path=spec.value("whole_lap_path",false);
+  router_settings.avoid_exit_pace=spec.value("avoid_exit_pace",false);
+  router_settings.race_verified_pace=spec.value("race_verified_pace",false);
+  if(router_settings.avoid_policy_first && !router_settings.avoid_corridor_steer_seed)
+    throw std::runtime_error("Avoid policy-first requires the corridor steering fallback");
+  if(router_settings.avoid_corridor_steer_seed && !(router_lap && router_settings.lap_planning && policy.uses_corridor()))
+    throw std::runtime_error("corridor steering seed requires full-lap planning and a corridor-conditioned Avoid policy");
   router_settings.sim_race_only=spec.value("sim_race_only",false);
   router_settings.race_brake_preview_s=spec.value("race_brake_preview_s",.18f);
+  if(router_settings.shared_speed_band)router_settings.sim_avoid_max=cap;
   router_settings.validate_sim_band(cap,race && spec.value("full_lap",false) && !recovery);
   const int laps=spec.value("laps",1);
   const double horizon=spec.value("duration_s",0.0);
@@ -156,7 +172,46 @@ json run(const std::string& map,int layout,int count,Policy& policy,bool baselin
   float entry_speed=-1, peak_avoid_speed=0;
   double avoid_speed_sum=0, avoid_command_sum=0;
   int avoid_steps=0;
+  // These counters cover decisions executed in this invocation, including
+  // when the dynamics and historical policy sums resume from a checkpoint.
+  int cluster_checks=0,cluster_changes=0,exit_checks=0,exit_changes=0;
+  int observed_avoid_steps=0,policy_verified_steps=0,policy_match_steps=0;
+  int control_samples=0,over_25ms=0;
+  double worst_ms=0,avoid_seconds=0;
+  using Clock=std::chrono::steady_clock;
   std::vector<float> obstacle_speeds;
+  json crossings=json::array(),slow_controls=json::array(),worst_control=nullptr;
+  const bool profile_stages=spec.value("profile_control_stages",false);
+  const int profile_step=spec.value("profile_step",-1);
+  json watched_control=nullptr;
+  std::ifstream schedstat;
+  if(spec.value("profile_scheduler",false)){
+    if(!profile_stages)throw std::runtime_error("scheduler profiling requires stage profiling");
+    schedstat.open("/proc/thread-self/schedstat");
+    if(!schedstat)throw std::runtime_error("thread schedstat unavailable");
+  }
+  struct Scheduling {
+    long long queue_ns=0, involuntary=0, voluntary=0, major_faults=0;
+    Scheduling operator-(const Scheduling& other)const{
+      return {queue_ns-other.queue_ns,involuntary-other.involuntary,
+              voluntary-other.voluntary,major_faults-other.major_faults};
+    }
+  };
+  auto scheduling=[&](){
+    long long runtime=0,delay=0;
+    schedstat.clear();schedstat.seekg(0);
+    rusage usage{};
+    if(!(schedstat>>runtime>>delay) || getrusage(RUSAGE_THREAD,&usage)!=0)
+      throw std::runtime_error("thread scheduler counters unavailable");
+    return Scheduling{delay,usage.ru_nivcsw,usage.ru_nvcsw,usage.ru_majflt};
+  };
+  std::ofstream phase_log;
+  double previous_interval_gap=INFINITY; // Judge-only minimum over the preceding physics ticks.
+  if(spec.contains("phase_trace")){
+    phase_log.exceptions(std::ios::failbit|std::ios::badbit);
+    phase_log.open(spec.at("phase_trace").get<std::string>());
+    phase_log<<"step,t,s,lap,passed,mode,hazard,past,merge_blocked,lateral,heading,steer,policy,v,adopted,target,policy_speed,curve_cap,lap_cap,preview_brake,entry_checked,entry_blend,prev_interval_gap_m\n";
+  }
   int passed=0;std::string reason="timeout";
   float min_moving_speed=std::numeric_limits<float>::infinity();
   bool full_lap=spec.value("full_lap",false);
@@ -192,7 +247,7 @@ json run(const std::string& map,int layout,int count,Policy& policy,bool baselin
     ticks_log.exceptions(std::ios::failbit|std::ios::badbit);ticks_log.open(path);
   }
   std::unique_ptr<Py> module;
-  json identity=spec;identity.erase("name");identity.erase("checkpoint");identity.erase("trace_avoid");
+  json identity=spec;identity.erase("name");identity.erase("checkpoint");identity.erase("trace_avoid");identity.erase("phase_trace");identity.erase("profile_control_stages");identity.erase("profile_step");identity.erase("profile_scheduler");
   if(!checkpoint.empty()){
     module=std::make_unique<Py>(snapshot_module());
     auto files=runtime.at("files");
@@ -254,6 +309,14 @@ json run(const std::string& map,int layout,int count,Policy& policy,bool baselin
     router_settings.race_exit_speed=branch.at("race_exit_speed").get<bool>();
     router_settings.validate_sim_band(cap,true);
   }
+  if(checkpoint.contains("entry_branch")){
+    if(restore.empty() || !sensor_only || !router_settings.whole_lap_path || !branch_ticks)
+      throw std::runtime_error("entry branch requires a bounded sensor-only whole-lap replay");
+    const auto variant=checkpoint.at("entry_branch").get<std::string>();
+    router_settings.cluster_entry=variant!="local";
+    router_settings.entry_candidates=variant=="local"?EntryCandidates::both:parse_entry_candidates(variant);
+    router_settings.validate_sim_band(cap,true);
+  }
   const bool steer_replay=checkpoint.value("compare_teacher_steering",false);
   if(steer_replay){
     if(!sensor_only || !router_lap || !branch_ticks || restore.empty() || !router_settings.race_lap_speed)
@@ -275,6 +338,15 @@ json run(const std::string& map,int layout,int count,Policy& policy,bool baselin
     Control cmd=previous;
     if(!resumed){
       if(sim.stamp-sim.scan.stamp>.150){reason="sensor_timeout";save_before_failure();break;}
+      // Exclude cold global localization (ROS acquires pose at rest), physics,
+      // judge bookkeeping and trace serialization from the control measurement.
+      const bool measure=timed_race && localizer && localizer->locked();
+      std::optional<ControlTiming> stages;
+      const bool track_scheduler=measure && schedstat.is_open();
+      Scheduling sense_before{},sense_delta{},route_before{};
+      if(track_scheduler)sense_before=scheduling();
+      if(profile_stages && measure)stages.emplace();
+      const auto sense_start=Clock::now();
       Scan observation=sim.scan;
       State car{};
       if(localizer){
@@ -283,7 +355,11 @@ json run(const std::string& map,int layout,int count,Policy& policy,bool baselin
         if(!estimate){reason="localization_lost";break;}
         car=*estimate;observation.pose=car;
       }else car=basic(sim.state); // Teacher / training rollouts.
+      if(stages)stages->mark(ControlTiming::scan);
       memory.update(observation);scans.push_back(observation);if(scans.size()>history)scans.pop_front();
+      const auto sense_end=Clock::now();
+      if(stages)stages->mark(ControlTiming::memory);
+      if(track_scheduler)sense_delta=scheduling()-sense_before;
       if(count>=2 && progress<stations[0]-.35 && jointly_visible(sim,boxes))++visible_frames;
       if(recovery && !taking_over && previous_mode==Mode::Avoid){
         auto& w=track.points[track.closest(car)];
@@ -343,14 +419,57 @@ json run(const std::string& map,int layout,int count,Policy& policy,bool baselin
         Policy& actor=prefix && learner_switch.is_null()?*prefix:policy;
         CorridorTrace trace;
         ReplayRacePolicy replay_race{*race,steer_replay?teacher.get():nullptr,tc,track,memory,car,previous,cap,teacher_steps};
-        auto result=router.step(track,memory,car,scans,replay_race,actor,(!router.lap_plan().ready() && scout_then_cruise)?std::min(cap,router_settings.scout_speed_cap):cap,control_dt,sim.stamp,router_settings,nullptr,ticks_log.is_open()?&trace:nullptr);
+        if(track_scheduler)route_before=scheduling();
+        if(stages)stages->restart_interval();
+        const auto route_start=Clock::now();
+        auto result=router.step(track,memory,car,scans,replay_race,actor,(!router.lap_plan().ready() && scout_then_cruise)?std::min(cap,router_settings.scout_speed_cap):cap,control_dt,sim.stamp,router_settings,stages?&*stages:nullptr,ticks_log.is_open()?&trace:nullptr);
+        if(measure){
+          const double ms=std::chrono::duration<double,std::milli>(sense_end-sense_start+ (Clock::now()-route_start)).count();
+          if(stages){
+            stages->mark(ControlTiming::safety);
+            if(ms>worst_ms || ms>25 || step==profile_step){
+              const Scheduling route_delta=track_scheduler?scheduling()-route_before:Scheduling{};
+              json frame={{"step",step},{"time_s",sim.stamp},{"mode",int(result.mode)},{"elapsed_ms",ms},
+                          {"tln",result.avoid_policy_verified}};
+              for(int i=0;i<ControlTiming::count;++i){
+                auto stage=static_cast<ControlTiming::Stage>(i);
+                frame["stages"][ControlTiming::names[i]]={stages->wall_ms(stage),stages->cpu_ms(stage)};
+              }
+              if(track_scheduler){
+                frame["run_queue_ms"]=(sense_delta.queue_ns+route_delta.queue_ns)*1e-6;
+                frame["involuntary_switches"]=sense_delta.involuntary+route_delta.involuntary;
+                frame["voluntary_switches"]=sense_delta.voluntary+route_delta.voluntary;
+                frame["major_faults"]=sense_delta.major_faults+route_delta.major_faults;
+              }
+              if(step==profile_step)watched_control=frame;
+              if(ms>worst_ms)worst_control=frame;
+              if(ms>25)slow_controls.push_back(std::move(frame));
+            }
+          }
+          ++control_samples;
+          if(ms>25.)++over_25ms;
+          worst_ms=std::max(worst_ms,ms);
+        }
         if(replay_race.no_plan){reason="teacher_no_plan";break;}
+        cluster_checks+=result.cluster_evaluated;cluster_changes+=result.cluster_changed;
+        exit_checks+=result.exit_evaluated;exit_changes+=result.exit_smoothed;
         cmd=result.command;
+        if(phase_log.is_open()){
+          const auto& w=track.points[track.closest(car)];
+          const float lat=-(car.x-w.x)*sinf(w.yaw)+(car.y-w.y)*cosf(w.yaw);
+          phase_log<<step<<','<<sim.stamp<<','<<progress<<','<<lap+1<<','<<passed<<','<<int(result.mode)
+            <<','<<result.blocked<<','<<router.distance_past_section()<<','<<router.merge_blocked()<<','<<lat
+            <<','<<wrap(car.yaw-w.yaw)<<','<<cmd.steer<<','<<result.avoid_policy_steer<<','<<car.v
+            <<','<<result.avoid_policy_verified<<','<<cmd.speed<<','<<result.speed_limits.policy
+            <<','<<result.speed_limits.curve<<','<<result.speed_limits.lap<<','<<result.speed_limits.preview_brake
+            <<','<<result.cluster_evaluated<<','<<result.entry_blend<<','<<previous_interval_gap<<'\n';
+        }
         if(ticks_log.is_open()){
           json tick={{"step",step},{"t",sim.stamp},{"s",progress},{"car",{car.x,car.y,car.yaw,car.v,car.steer}},
             {"speed_limits",{{"policy",result.speed_limits.policy},{"lap",result.speed_limits.lap},
               {"curve",result.speed_limits.curve},{"sight",result.speed_limits.sight},{"steering",result.speed_limits.steering},{"race_plan",result.speed_limits.planned},
               {"corridor",result.speed_limits.corridor},{"before_guard",result.speed_limits.before_guard},{"preview_brake",result.speed_limits.preview_brake}}},
+            {"policy_steer",trace.policy_steer},{"preview_seed_steer",trace.preview_seed_steer},
             {"command",{cmd.steer,cmd.speed}},{"mode",int(result.mode)},{"reason",result.reason},{"ready",router.lap_plan().ready()},
             {"first_empty",trace.first_empty},{"wide",trace.wide},{"planned_offsets",trace.planned_offsets},{"gate",{trace.gate_entry,trace.gate_exit,trace.gate_offset}},{"subdivisions",trace.subdivisions},{"scan",sim.scan.ranges}};
           if(result.mode==Mode::Emergency && first_rejection.is_null()){
@@ -372,6 +491,9 @@ json run(const std::string& map,int layout,int count,Policy& policy,bool baselin
           first_rejection={{"reason",result.reason},{"speed_mps",car.v},{"progress_m",progress},
                            {"router_avoiding",router.avoiding()},{"previous_mode",int(previous_mode)}};
         if(result.mode==Mode::Avoid){
+          ++observed_avoid_steps;
+          if(result.avoid_policy_verified)++policy_verified_steps;
+          if(std::abs(cmd.steer-result.avoid_policy_steer)<=1e-6f)++policy_match_steps;
           if(entry_speed<0)entry_speed=car.v;
           peak_avoid_speed=std::max(peak_avoid_speed,car.v);
           avoid_speed_sum+=car.v;avoid_command_sum+=cmd.speed;++avoid_steps;
@@ -408,6 +530,7 @@ json run(const std::string& map,int layout,int count,Policy& policy,bool baselin
         while(recent.size()>1 && recent[1].first<=sim.stamp-lookback)recent.pop_front();
       }
     }
+    previous_interval_gap=INFINITY;
     float pre_step_speed=0;
     for(int j=0;j<physics_ticks;++j){
       pre_step_speed=basic(sim.state).v;
@@ -415,9 +538,11 @@ json run(const std::string& map,int layout,int count,Policy& policy,bool baselin
       peak_speed=std::max(peak_speed,static_cast<double>(basic(sim.state).v));
       peak_command=std::max(peak_command,static_cast<double>(cmd.speed));
       if(progress>.5)min_moving_speed=std::min(min_moving_speed,basic(sim.state).v);
-      for(auto& box:boxes)min_gap=std::min(min_gap,double(separation(sim.state,box)));
+      for(auto& box:boxes)previous_interval_gap=std::min(previous_interval_gap,double(separation(sim.state,box)));
+      min_gap=std::min(min_gap,previous_interval_gap);
       if(sim.collision||min_gap<=0||(horizon>0 && sim.stamp+1e-8>=horizon))break;
     }
+    if(previous_mode==Mode::Avoid)avoid_seconds+=sim.stamp-interval_start;
     if(min_gap<=0||sim.collision){
       std::string contact_kind=sim.collision ? "gym_unknown" : "rectangle_overlap";
       if(sim.collision && PyObject_HasAttrString(sim.car.p,"collision_kind")){
@@ -435,8 +560,11 @@ json run(const std::string& map,int layout,int count,Policy& policy,bool baselin
     double previous_progress=progress;
     progress+=route_delta(s,last,length);last=s;
     double lap_progress=progress-lap*length;
-    while(obstacle_speeds.size()<size_t(count*(lap+1)) && lap_progress>=stations[obstacle_speeds.size()%count])
+    while(obstacle_speeds.size()<size_t(count*(lap+1)) && lap_progress>=stations[obstacle_speeds.size()%count]){
+      const auto index=obstacle_speeds.size()%count;
+      crossings.push_back({{"lap",lap+1},{"index",index},{"time_s",crossing_time(lap*length+stations[index],previous_progress,progress,interval_start,sim.stamp)}});
       obstacle_speeds.push_back(basic(sim.state).v);
+    }
     while(passed<count&&lap_progress>stations[passed]+.6)++passed;
     if(race && !taking_over && previous_mode==Mode::Emergency && fabs(basic(sim.state).v)<.05){reason="stopped";break;}
     if(timed_race && min_moving_speed<.05f){reason="stopped";break;}
@@ -466,7 +594,14 @@ json run(const std::string& map,int layout,int count,Policy& policy,bool baselin
       {"joint_frames",visible_frames},{"boxes",boxes},{"scenario",spec}};
     DatasetWriter writer(save+"/"+name+".elds",meta.dump(2));for(auto& r:records)writer.append(r);writer.flush();
   }
-  return {{"peak_speed_mps",peak_speed},{"peak_command_mps",peak_command},{"pose_source",sensor_only?"lidar_static_map":"training_or_diagnostic_simulator"},{"control_ms",control_dt*1000},{"snapshot_written",written},{"branch_entry",entry},{"contact",contact},{"avoid_trace",avoid_trace},{"laps",lap_results},{"first_rejection",first_rejection},{"avoid_entry_mps",entry_speed},{"peak_avoid_mps",peak_avoid_speed},{"mean_avoid_mps",avoid_speed_sum/std::max(1,avoid_steps)},{"mean_avoid_command_mps",avoid_command_sum/std::max(1,avoid_steps)},{"at_obstacles_mps",obstacle_speeds},{"min_speed_after_first_half_m",min_moving_speed},{"avoid_speed_cap_mps",router_settings.avoid_speed_cap},{"learner_switch",learner_switch},{"family",family},{"handoff",handoff},{"accepted_recovery",recovery_ok},{"teacher_steps",teacher_steps},{"no_guide_steps",no_guide},{"labeled_frames",records.size()},{"first_hidden_at_reset",hidden},{"joint_frames",visible_frames},{"spec",spec},{"map",map},{"reverse",bool(layout%2)},{"layout",layout},{"boxes",boxes},{"stations_m",stations},{"seed",seed},{"events",events},{"hold_steps",hold_steps},{"started_before",started_before},{"early_return",early_return},{"returned_after",returned_after},{"final_speed",basic(sim.state).v},{"controller",recovery?"offline_recovery":race?"section_router":baseline?"svg_mppi":"avoid_tln"},{"passed",passed},{"reason",reason},{"progress_m",progress},{"min_sat_gap_m",min_gap},{"time_s",sim.stamp}};
+  if(spec.contains("scout_route_trace")){
+    std::ofstream out(spec.at("scout_route_trace").get<std::string>());
+    out.exceptions(std::ios::failbit|std::ios::badbit);
+    out<<OfflineSnapshot::scout_route(router.lap_plan())<<'\n';
+  }
+  return {{"guide_counts",{{"cluster_checks",cluster_checks},{"cluster_changes",cluster_changes},{"exit_checks",exit_checks},{"exit_changes",exit_changes}}},{"whole_lap_path_status",router.lap_plan().route_status()},{"whole_lap_path_ready",router.lap_plan().has_route()},{"configured_avoid_upper",router_settings.sim_avoid_max},{"steering_metrics",{{"avoid_steps",observed_avoid_steps},{"verified_steps",policy_verified_steps},
+    {"output_match_steps",policy_match_steps},{"avoid_seconds",avoid_seconds}}},
+    {"obstacle_crossings",crossings},{"slow_controls",slow_controls},{"worst_control",worst_control},{"watched_control",watched_control},{"control_wall",{{"samples",control_samples},{"over_25ms",over_25ms},{"max_ms",worst_ms}}},{"peak_speed_mps",peak_speed},{"peak_command_mps",peak_command},{"pose_source",sensor_only?"lidar_static_map":"training_or_diagnostic_simulator"},{"control_ms",control_dt*1000},{"snapshot_written",written},{"branch_entry",entry},{"contact",contact},{"avoid_trace",avoid_trace},{"laps",lap_results},{"first_rejection",first_rejection},{"avoid_entry_mps",entry_speed},{"peak_avoid_mps",peak_avoid_speed},{"mean_avoid_mps",avoid_speed_sum/std::max(1,avoid_steps)},{"mean_avoid_command_mps",avoid_command_sum/std::max(1,avoid_steps)},{"at_obstacles_mps",obstacle_speeds},{"min_speed_after_first_half_m",min_moving_speed},{"avoid_speed_cap_mps",router_settings.avoid_speed_cap},{"learner_switch",learner_switch},{"family",family},{"handoff",handoff},{"accepted_recovery",recovery_ok},{"teacher_steps",teacher_steps},{"no_guide_steps",no_guide},{"labeled_frames",records.size()},{"first_hidden_at_reset",hidden},{"joint_frames",visible_frames},{"spec",spec},{"map",map},{"reverse",bool(layout%2)},{"layout",layout},{"boxes",boxes},{"stations_m",stations},{"seed",seed},{"events",events},{"hold_steps",hold_steps},{"started_before",started_before},{"early_return",early_return},{"returned_after",returned_after},{"final_speed",basic(sim.state).v},{"controller",recovery?"offline_recovery":race?"section_router":baseline?"svg_mppi":"avoid_tln"},{"passed",passed},{"reason",reason},{"progress_m",progress},{"min_sat_gap_m",min_gap},{"time_s",sim.stamp}};
 }
 int main(int argc,char** argv){try{
   if(argc<3||argc>5)throw std::runtime_error("expected checkpoint and output jsonl");

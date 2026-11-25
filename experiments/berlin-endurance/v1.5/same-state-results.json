@@ -1,0 +1,254 @@
+{
+  "early": {
+    "initial": {
+      "heading_error_rad": 0.054294586181640625,
+      "lateral_m": -0.007480251602828503,
+      "plan_ready": true,
+      "s": 60.652986984867326,
+      "stamp": 30.050000000001898,
+      "step": 1202,
+      "v": 3.169344425201416,
+      "x": 0.983042299747467,
+      "y": -12.252985000610352,
+      "yaw": 1.777220368385315
+    },
+    "variants": {
+      "local": {
+        "completed": false,
+        "finished": "stopped",
+        "rejection": "no_corridor",
+        "s_max": 68.0062
+      },
+      "half": {
+        "completed": true,
+        "finished": "branch_horizon",
+        "rejection": null,
+        "s_max": 76.6349,
+        "sec": 1.7301600897961187,
+        "gap": 0.145417,
+        "adopt": 55.49544781773694
+      },
+      "full": {
+        "completed": true,
+        "finished": "branch_horizon",
+        "rejection": null,
+        "s_max": 76.9786,
+        "sec": 1.6728767592331693,
+        "gap": 0.13197,
+        "adopt": 50.423175304304564
+      },
+      "both": {
+        "completed": true,
+        "finished": "branch_horizon",
+        "rejection": null,
+        "s_max": 76.9786,
+        "sec": 1.6728767592331693,
+        "gap": 0.13197,
+        "adopt": 50.423175304304564
+      },
+      "continuity": {
+        "completed": true,
+        "finished": "branch_horizon",
+        "rejection": null,
+        "s_max": 76.9786,
+        "sec": 1.6728767592331693,
+        "gap": 0.13197,
+        "adopt": 50.423175304304564
+      },
+      "rescue": {
+        "completed": false,
+        "finished": "stopped",
+        "rejection": "no_corridor",
+        "s_max": 68.0062
+      },
+      "coupled": {
+        "completed": true,
+        "finished": "branch_horizon",
+        "rejection": null,
+        "s_max": 76.9786,
+        "sec": 1.6728767592331693,
+        "gap": 0.13197,
+        "adopt": 50.423175304304564
+      },
+      "graduated": {
+        "completed": true,
+        "finished": "branch_horizon",
+        "rejection": null,
+        "s_max": 76.9786,
+        "sec": 1.6728767592331693,
+        "gap": 0.13197,
+        "adopt": 50.423175304304564
+      }
+    }
+  },
+  "late": {
+    "initial": {
+      "heading_error_rad": 0.06048619747161865,
+      "lateral_m": -0.009881740435957909,
+      "plan_ready": true,
+      "s": 255.75479197442363,
+      "stamp": 98.62000000001355,
+      "step": 3945,
+      "v": 3.1851277351379395,
+      "x": 0.9904232025146484,
+      "y": -12.286076545715332,
+      "yaw": 1.7727797031402588
+    },
+    "variants": {
+      "local": {
+        "completed": true,
+        "finished": "branch_horizon",
+        "rejection": null,
+        "s_max": 271.626,
+        "sec": 1.749608851570315,
+        "gap": 0.110867,
+        "adopt": 39.415029876613424
+      },
+      "half": {
+        "completed": false,
+        "finished": "stopped",
+        "rejection": "no_corridor",
+        "s_max": 263.132
+      },
+      "full": {
+        "completed": true,
+        "finished": "branch_horizon",
+        "rejection": null,
+        "s_max": 272.065,
+        "sec": 1.6572968617428927,
+        "gap": 0.153581,
+        "adopt": 51.72862397394038
+      },
+      "both": {
+        "completed": true,
+        "finished": "branch_horizon",
+        "rejection": null,
+        "s_max": 272.065,
+        "sec": 1.6572968617428927,
+        "gap": 0.153581,
+        "adopt": 51.72862397394038
+      },
+      "continuity": {
+        "completed": true,
+        "finished": "branch_horizon",
+        "rejection": null,
+        "s_max": 272.066,
+        "sec": 1.6571963014227151,
+        "gap": 0.146568,
+        "adopt": 48.7388912424053
+      },
+      "rescue": {
+        "completed": false,
+        "finished": "stopped",
+        "rejection": "no_corridor",
+        "s_max": 263.147
+      },
+      "coupled": {
+        "completed": true,
+        "finished": "branch_horizon",
+        "rejection": null,
+        "s_max": 272.065,
+        "sec": 1.6572968617428927,
+        "gap": 0.153581,
+        "adopt": 51.72862397394038
+      },
+      "graduated": {
+        "completed": true,
+        "finished": "branch_horizon",
+        "rejection": null,
+        "s_max": 272.065,
+        "sec": 1.6572968617428927,
+        "gap": 0.153581,
+        "adopt": 51.72862397394038
+      }
+    }
+  },
+  "five": {
+    "initial": {
+      "heading_error_rad": -0.1655270755290985,
+      "lateral_m": 0.5884973406791687,
+      "plan_ready": true,
+      "s": 80.3757956822956,
+      "stamp": 38.920000000000826,
+      "step": 1557,
+      "v": 2.700000047683716,
+      "x": 1.7145955562591553,
+      "y": 0.7269288301467896,
+      "yaw": -0.4510553479194641
+    },
+    "variants": {
+      "local": {
+        "completed": true,
+        "finished": "branch_horizon",
+        "rejection": null,
+        "s_max": 98.1625,
+        "sec": 1.9743967394881636,
+        "gap": 0.523251,
+        "adopt": 100.0
+      },
+      "half": {
+        "completed": true,
+        "finished": "branch_horizon",
+        "rejection": null,
+        "s_max": 98.2298,
+        "sec": 1.9601643383279495,
+        "gap": 0.409692,
+        "adopt": 95.4085482405636
+      },
+      "full": {
+        "completed": true,
+        "finished": "branch_horizon",
+        "rejection": null,
+        "s_max": 98.2249,
+        "sec": 1.9467900329631647,
+        "gap": 0.37058,
+        "adopt": 83.04901944162383
+      },
+      "both": {
+        "completed": true,
+        "finished": "branch_horizon",
+        "rejection": null,
+        "s_max": 98.2249,
+        "sec": 1.9467900329631647,
+        "gap": 0.37058,
+        "adopt": 83.04901944162383
+      },
+      "continuity": {
+        "completed": true,
+        "finished": "branch_horizon",
+        "rejection": null,
+        "s_max": 98.2249,
+        "sec": 1.9467900329631647,
+        "gap": 0.37058,
+        "adopt": 83.04901944162383
+      },
+      "rescue": {
+        "completed": true,
+        "finished": "branch_horizon",
+        "rejection": null,
+        "s_max": 98.1625,
+        "sec": 1.9743967394881636,
+        "gap": 0.523251,
+        "adopt": 100.0
+      },
+      "coupled": {
+        "completed": true,
+        "finished": "branch_horizon",
+        "rejection": null,
+        "s_max": 98.2249,
+        "sec": 1.9467900329631647,
+        "gap": 0.37058,
+        "adopt": 83.04901944162383
+      },
+      "graduated": {
+        "completed": true,
+        "finished": "branch_horizon",
+        "rejection": null,
+        "s_max": 98.1529,
+        "sec": 1.977345784215693,
+        "gap": 0.407111,
+        "adopt": 88.3682458659484
+      }
+    }
+  }
+}
