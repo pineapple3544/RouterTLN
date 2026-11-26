@@ -27,6 +27,7 @@ struct PathPoint {float x=0,y=0,yaw=0,kappa=0,speed=0,s=0;};
 struct Path {
   PathPoint p[points]{}; Hypothesis hypothesis{};float cost=invalid_cost;
   int candidate=-1;
+  double created=0;uint64_t generation=0;
 };
 EL_HD inline float knot_offset(const Row& r,int choice){
   const float zero=clamp(0,r.lo,r.hi);
@@ -118,7 +119,7 @@ struct Request {
   float optional_budget_ms=60;
   MapView view()const{auto v=map;v.data=cells.data();return v;}
 };
-struct Result {uint64_t generation=0,epoch=0;double timestamp=0;std::vector<Path> paths;float compute_ms=0;};
+struct Result {uint64_t generation=0,epoch=0,revision=0;double timestamp=0;std::vector<Path> paths;float compute_ms=0;};
 class Optimizer {
  public:
   Optimizer();~Optimizer();Optimizer(const Optimizer&)=delete;Optimizer& operator=(const Optimizer&)=delete;

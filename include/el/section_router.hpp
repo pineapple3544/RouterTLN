@@ -37,7 +37,7 @@ class SectionRouter {
   // Independent safety wrapper for the experimental planner. No TLN or lap plan
   // is evaluated here; keep the same measured actuator and braking envelopes.
   SectionDecision guard_external(const Memory& memory,const State& car,Control command,
-                                 float cap,float dt,bool plan_valid,const char* reason){
+                                 float cap,float dt,bool plan_valid,const char* reason,Mode mode=Mode::Avoid){
     auto emergency=[&](const char* why){stop(why);return SectionDecision{Mode::Emergency,{car.steer,0},why,true};};
     if(stop_reason_)return emergency(stop_reason_);
     if(!std::isfinite(command.steer)||!std::isfinite(command.speed))return emergency("invalid_action");
@@ -62,7 +62,7 @@ class SectionRouter {
       if(!found)return emergency(refusal);
     }
     last_pose_=car;last_command_=command;have_pose_=true;
-    SectionDecision d{Mode::Avoid,command,reason,!plan_valid};
+    SectionDecision d{mode,command,reason,mode==Mode::Avoid||!plan_valid};
     d.speed_limits.before_guard=command.speed;return d;
   }
 

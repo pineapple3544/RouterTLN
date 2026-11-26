@@ -26,7 +26,8 @@ struct Settings {
 };
 struct Action {
   Control base{},correction{},command{};
-  bool valid_plan=false;int hypotheses=0,chosen=-1;
+  bool valid_plan=false,race_clear=false;int hypotheses=0,chosen=-1;
+  float race_speed_cap=0;
   float planner_ms=0,age_ms=-1,visible_m=0;
   uint64_t generation=0;
   const char* reason="scenario_wait";

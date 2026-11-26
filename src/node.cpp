@@ -35,11 +35,17 @@ class Controller:public rclcpp::Node {
     local_sim_clock_=declare_parameter<bool>("local_steady_sim_clock",false);
     if (local_sim_clock_ && !get_parameter("use_sim_time").as_bool())
       throw std::runtime_error("local_steady_sim_clock requires use_sim_time");
-    const auto device_name=declare_parameter<std::string>("inference_device",local_sim_clock_?"cpu":"cuda");
+    const auto device_name=declare_parameter<std::string>("inference_device",(scenario_mode_||local_sim_clock_)?"cpu":"cuda");
     if(device_name!="cuda" && device_name!="cpu")throw std::runtime_error("inference_device must be cpu or cuda");
     const auto device=device_name=="cpu" ? InferenceDevice::cpu : InferenceDevice::cuda;
     RCLCPP_INFO(get_logger(),"TLN inference device: %s",device_name.c_str());
     const auto shared_path=declare_parameter<std::string>("unified_checkpoint","");
+    scenario_race_=scenario_mode_&&declare_parameter<bool>("scenario_race_tln",true);
+    if(scenario_mode_&&scenario_race_){
+      if(device_name!="cpu")throw std::runtime_error("scenario RaceTLN must use CPU inference");
+      race_=std::make_shared<Policy>(declare_parameter<std::string>("race_checkpoint","/workspace/models/v1.5/race.pt"),InferenceDevice::cpu);
+      if(race_->uses_corridor())throw std::runtime_error("scenario RaceTLN needs an unconditioned Race checkpoint");
+    }
     if(!scenario_mode_){
     if(shared_path.empty()){
       race_=std::make_shared<Policy>(declare_parameter<std::string>("race_checkpoint",router_settings_.race_checkpoint),device);
@@ -117,7 +123,7 @@ class Controller:public rclcpp::Node {
       if(scan_log_.is_open())scan_log_<<scan_received_<<','<<rclcpp::Time(m->header.stamp).seconds()<<'\n';});
     reset_=create_service<std_srvs::srv::Trigger>("/el/reset_memory",[this](const std::shared_ptr<std_srvs::srv::Trigger::Request>,std::shared_ptr<std_srvs::srv::Trigger::Response> response){
       response->success=(!localizer_->locked() || (!scans_.empty() && fabs(scans_.back().pose.v)<.1));
-      if(response->success){if(scenario_){scenario_->invalidate();++scenario_epoch_;}memory_->reset();router_.reset();localizer_->reset();scans_.clear();pending_scans_.clear();last_scan_=-1;last_progress_=-1;progress_=0;last_={};reported_fault_=false;finished_=false;}
+      if(response->success){if(scenario_){scenario_->invalidate();++scenario_epoch_;scenario_clear_since_=-1;}memory_->reset();router_.reset();localizer_->reset();scans_.clear();pending_scans_.clear();last_scan_=-1;last_progress_=-1;progress_=0;last_={};reported_fault_=false;finished_=false;}
       response->message=response->success?"memory reset":"stop vehicle before memory reset";
     });
     last_publish_=steady();watchdog_=std::thread([this]{while(alive_){std::this_thread::sleep_for(std::chrono::milliseconds(20));if(rclcpp::ok()&&steady()-last_publish_.load()>.18){try{publish({0,0});}catch(...){}}}});
@@ -176,7 +182,7 @@ class Controller:public rclcpp::Node {
     int n=track_->closest(state);float position=track_->points[n].s;
     float length=track_->points.back().s+hypotf(track_->points.back().x-track_->points.front().x,track_->points.back().y-track_->points.front().y);
     if(scenario_&&last_progress_>=0&&position-last_progress_<-length/2){
-      memory_->reset();scans_.clear();scenario_->invalidate();++scenario_epoch_;
+      memory_->reset();scans_.clear();scenario_->invalidate();++scenario_epoch_;scenario_clear_since_=-1;
     }
     memory_->update(current);scans_.push_back(current);while(scans_.size()>history)scans_.pop_front();last_scan_=stamp;
     timing.mark(ControlTiming::memory);
@@ -186,7 +192,21 @@ class Controller:public rclcpp::Node {
     if(scenario_){
       action=scenario_->step(*track_,*memory_,current,vmax_);
       timing.mark(ControlTiming::corridor);
-      result=router_.guard_external(*memory_,state,action.command,vmax_,.025f,action.valid_plan,action.reason);
+      Mode proposed=Mode::Avoid;
+      if(scenario_race_&&action.valid_plan&&action.race_clear){
+        if(scenario_clear_since_<0)scenario_clear_since_=tick_time;
+        if(tick_time-scenario_clear_since_>=.20){
+          auto input=observe(scans_,state,*memory_,*track_,0,0);
+          auto cmd=race_->infer(input,&timing);
+          if(std::isfinite(cmd.steer)&&std::isfinite(cmd.speed)){
+            cmd.speed=std::min({cmd.speed*router_settings_.race_speed_scale,float(vmax_),action.race_speed_cap});
+            // Avoid the learned correction when the Race expert is in charge.
+            action.base=cmd;action.correction={};action.command=cmd;action.reason="scenario_race_tln";
+            proposed=Mode::Race;
+          }
+        }
+      }else scenario_clear_since_=-1;
+      result=router_.guard_external(*memory_,state,action.command,vmax_,.025f,action.valid_plan,action.reason,proposed);
     }else result=router_.step(*track_,*memory_,state,scans_,*race_,*avoid_,vmax_,.025f,stamp,router_settings_,&timing,corridor_log_.is_open()?&trace:nullptr);
     timing.mark(ControlTiming::safety);
     auto selected=result.mode;auto candidate=result.command;bool hazard=result.blocked,valid=selected!=Mode::Emergency;
@@ -207,7 +227,7 @@ class Controller:public rclcpp::Node {
     if(scenario_){
       scenario_metrics_<<step_<<','<<std::fixed<<stamp<<','<<scenario_epoch_<<','<<action.generation<<','<<action.hypotheses<<','<<action.chosen<<','<<action.valid_plan<<','<<action.planner_ms<<','<<action.age_ms<<','<<action.visible_m<<','<<action.base.steer<<','<<action.base.speed<<','<<action.correction.steer<<','<<action.correction.speed<<','<<action.command.steer<<','<<action.command.speed<<','<<candidate.steer<<','<<candidate.speed<<','<<result.reason<<'\n';
       if(step_%40==0)scenario_metrics_.flush();
-      if(valid)scenario_->record(*memory_,current,action,scenario_run_);
+      if(valid&&selected==Mode::Avoid)scenario_->record(*memory_,current,action,scenario_run_);
     }
     if(trace.waypoint>=0){
       corridor_log_<<nlohmann::json{{"step",step_},{"stamp",stamp},{"progress",progress_},
@@ -230,7 +250,8 @@ class Controller:public rclcpp::Node {
   }catch(const std::exception& e){refuse("control_exception");RCLCPP_ERROR_THROTTLE(get_logger(),*get_clock(),2000,"control rejected: %s",e.what());}}
   std::unique_ptr<Track> track_;std::unique_ptr<Memory> memory_;std::shared_ptr<Policy> race_,avoid_;
   rclcpp::Clock sim_clock_{RCL_STEADY_TIME};
-  bool local_sim_clock_=false,scenario_mode_=false;
+  bool local_sim_clock_=false,scenario_mode_=false,scenario_race_=false;
+  double scenario_clear_since_=-1;
   std::unique_ptr<scenario::Driver> scenario_;std::string scenario_run_;uint64_t scenario_epoch_=1;
   std::ofstream scenario_metrics_;
   SectionRouter router_;RouterSettings router_settings_;double vmax_=0,deadline_=0,last_scan_=-1,scan_received_=0;Control last_;

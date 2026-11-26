@@ -194,7 +194,7 @@ struct Driver::Impl {
   std::mutex mutex;std::condition_variable cv;std::unique_ptr<Request> pending;
   std::shared_ptr<const Result> published;std::atomic<bool> stopping{false},failed{false};
   std::atomic<uint64_t> epoch{1};std::thread worker;
-  uint64_t generation=0,used_generation=0;size_t used_count=0;
+  uint64_t generation=0,used_revision=0;
   double last_request=-1;Path active{};uint64_t active_generation=0;double active_stamp=0;
   Features last_features{};int last_near=-1;std::ofstream log;int log_tick=0;
   Impl(const Track& t,const Memory& m,Settings c):cfg(std::move(c)),widths(analyze(t,m)),net(cfg.residual_checkpoint){
@@ -208,20 +208,46 @@ struct Driver::Impl {
   ~Impl(){stopping=true;cv.notify_all();if(worker.joinable())worker.join();}
   void run(){
     try{
-      Optimizer opt;
+      Optimizer opt;std::vector<Path> cache;uint64_t cache_epoch=0,revision=0;
       while(!stopping){
         std::unique_ptr<Request> req;
         {std::unique_lock<std::mutex> lock(mutex);cv.wait(lock,[&]{return stopping||pending!=nullptr;});if(stopping)return;req=std::move(pending);}
         auto begin=seconds();auto view=req->view();opt.upload(view);
+        if(cache_epoch!=req->epoch){cache.clear();cache_epoch=req->epoch;}
+        cache.erase(std::remove_if(cache.begin(),cache.end(),[&](const Path& p){return begin-p.created>cfg.plan_age;}),cache.end());
         Result result;result.generation=req->generation;result.epoch=req->epoch;result.timestamp=req->timestamp;
+        Path nominal{};
         auto save=[&](const std::vector<Path>& paths){
-          for(auto& p:paths)if(p.candidate>=0&&std::isfinite(p.cost))result.paths.push_back(p);
+          for(auto p:paths)if(p.candidate>=0&&std::isfinite(p.cost)){
+            p.created=req->timestamp;p.generation=req->generation;
+            if(p.hypothesis.count==0)nominal=p;
+            else{
+              auto same=[&](const Path& old){
+                if(old.hypothesis.count!=p.hypothesis.count)return false;
+                for(int j=0;j<p.hypothesis.count;++j){
+                  const auto x=old.hypothesis.boxes[j],y=p.hypothesis.boxes[j];
+                  if(hypotf(x.x-y.x,x.y-y.y)>.12f||fabsf(x.size-y.size)>.01f)return false;
+                }return true;
+              };
+              cache.erase(std::remove_if(cache.begin(),cache.end(),same),cache.end());
+              cache.push_back(p);if(cache.size()>48)cache.erase(cache.begin());
+            }
+          }
+          result.paths.clear();if(nominal.candidate>=0)result.paths.push_back(nominal);
+          result.paths.insert(result.paths.end(),cache.begin(),cache.end());
+          result.revision=++revision;
           result.compute_ms=float((seconds()-begin)*1000);
           auto ready=std::make_shared<const Result>(result);
           if(epoch.load()==req->epoch)std::atomic_store(&published,std::move(ready));
         };
         save(opt.solve(req->frame,{Hypothesis{}}));
         auto hypotheses=generate(req->frame,view,cfg);
+        // Keep the leading nominal-size batch; rotate remaining jobs to avoid
+        // permanently starving optional size variants in overlapping windows.
+        if(hypotheses.size()>5){
+          auto first=hypotheses.begin()+5;
+          std::rotate(first,first+(req->generation*batch_size)%(hypotheses.end()-first),hypotheses.end());
+        }
         for(size_t i=1;i<hypotheses.size()&&!stopping&&epoch.load()==req->epoch;){
           if((seconds()-begin)*1000>=req->optional_budget_ms)break;
           {std::lock_guard<std::mutex> lock(mutex);if(pending)break;}
@@ -239,7 +265,7 @@ void Driver::invalidate(){
   auto& a=*impl_;a.epoch.fetch_add(1);
   {std::lock_guard<std::mutex> lock(a.mutex);a.pending.reset();}
   std::atomic_store(&a.published,std::shared_ptr<const Result>{});
-  a.active=Path{};a.active_stamp=0;a.last_request=-1;a.used_generation=0;a.used_count=0;a.last_near=-1;
+  a.active=Path{};a.active_stamp=0;a.last_request=-1;a.used_revision=0;a.last_near=-1;
 }
 Action Driver::step(const Track& t,const Memory& m,const Scan& scan,float cap){
   auto& a=*impl_;const auto& car=scan.pose;Action out;out.command=out.base={car.steer,0};a.last_near=-1;
@@ -257,18 +283,23 @@ Action Driver::step(const Track& t,const Memory& m,const Scan& scan,float cap){
   bool active_ok=now-a.active_stamp<=a.cfg.plan_age&&path_valid(a.active,near,m,car);
   if(ready&&ready->epoch==a.epoch&&now-ready->timestamp<=a.cfg.plan_age){
     out.planner_ms=ready->compute_ms;out.hypotheses=int(ready->paths.size());
-    bool fresh=ready->generation!=a.used_generation||ready->paths.size()!=a.used_count;
+    bool fresh=ready->revision!=a.used_revision;
     if(fresh||!active_ok){
       // Rank by observed evidence, not simulator positions; try a bounded number.
       std::vector<std::pair<float,int>> rank;rank.reserve(ready->paths.size());
       for(int i=0;i<int(ready->paths.size());++i){
-        const auto& p=ready->paths[i];float penalty=0;
+        const auto& p=ready->paths[i];
+        if(now-p.created>a.cfg.plan_age||nearest_path(p,car)<0)continue;
+        float penalty=.3f*float(now-p.created);bool matches=true;
         for(int j=0;j<p.hypothesis.count;++j){
           auto h=p.hypothesis.boxes[j];float best=INFINITY;
           for(auto xy:observed)best=fminf(best,hypotf(xy[0]-h.x,xy[1]-h.y));
-          penalty+=best<.30f?-.25f:(m.scenario_cell(h.x,h.y,scan.stamp)==Free?.8f:.15f);
+          if(best>.30f)matches=false;
+          else penalty-=.10f;
         }
-        rank.emplace_back(p.cost+penalty,i);
+        // A hypothetical obstacle is not a confirmed reason to take a bypass.
+        if(!matches)continue;
+        rank.emplace_back(p.cost/std::max(1.f,p.p[points-1].s)+penalty,i);
       }
       std::sort(rank.begin(),rank.end());
       int tried=0;for(auto r:rank){
@@ -276,10 +307,10 @@ Action Driver::step(const Track& t,const Memory& m,const Scan& scan,float cap){
         if(!path_valid(p,n,m,car))continue;
         // Avoid swapping to a different tangent/offset mid-command.
         if(active_ok&&fabsf(wrap(p.p[n].yaw-a.active.p[near].yaw))>.20f)continue;
-        a.active=p;a.active_stamp=ready->timestamp;a.active_generation=ready->generation;
+        a.active=p;a.active_stamp=p.created;a.active_generation=p.generation;
         active_ok=true;near=n;break;
       }
-      a.used_generation=ready->generation;a.used_count=ready->paths.size();
+      a.used_revision=ready->revision;
     }
   }
   if(!active_ok)return out;
@@ -301,6 +332,31 @@ Action Driver::step(const Track& t,const Memory& m,const Scan& scan,float cap){
   out.command={clamp(out.base.steer+out.correction.steer,-.4f,.4f),
     clamp(out.base.speed+out.correction.speed,0.f,safe)};
   out.command.speed=fminf(out.command.speed,sqrtf(a.cfg.lateral_accel*.3302f/fmaxf(.01f,fabsf(tanf(out.command.steer)))));
+  // RaceTLN is only eligible on its original racing line, not on a bypass.
+  // Scan/local memory and the full vehicle envelope are checked along that line.
+  const auto frame=frame_for(t,a.widths,car,cap,a.cfg);
+  bool race_clear=fabsf(frame.offset)<.14f&&fabsf(wrap(car.yaw-frame.ref[0].yaw))<.18f;
+  const float horizon=std::min(5.5f,1.5f+.25f*car.v+car.v*car.v/(2*a.cfg.brake));
+  float race_visible=0,curve_cap=cap;bool visibility_open=true;
+  for(int i=0;i<points&&i*station_step<=horizon+.5f;++i){
+    const auto& r=frame.ref[i];State s{r.x,r.y,r.yaw};
+    if(footprint(m,s,.11f)>.5f||gym_front_blocked(m,s,.06f)){race_clear=false;break;}
+    if(i<points-1){
+      const float k=wrap(frame.ref[i+1].yaw-r.yaw)/station_step;
+      const float local=sqrtf(a.cfg.lateral_accel/fmaxf(.01f,fabsf(k)));
+      curve_cap=fminf(curve_cap,sqrtf(local*local+2*a.cfg.brake*fmaxf(0.f,i*station_step-.20f*car.v)));
+    }
+    if(i>=2&&visibility_open){
+      for(float d:{-.10f,0.f,.10f}){
+        if(!recently_free(m,r.x+.29f*cosf(r.yaw)-d*sinf(r.yaw),r.y+.29f*sinf(r.yaw)+d*cosf(r.yaw),scan.stamp)){
+          visibility_open=false;break;
+        }
+      }
+      if(visibility_open)race_visible=i*station_step;
+    }
+  }
+  out.race_clear=race_clear;
+  out.race_speed_cap=fminf(curve_cap,braking_cap(race_visible,a.cfg.brake));
   out.valid_plan=true;out.chosen=p.candidate;out.visible_m=visibility;out.age_ms=float((now-a.active_stamp)*1000);
   out.generation=a.active_generation;out.reason="scenario_track";return out;
 }
