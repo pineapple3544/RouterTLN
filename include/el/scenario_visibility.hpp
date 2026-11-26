@@ -65,7 +65,7 @@ inline float first_visible_lead(const std::vector<VisibilityRow>& rows,float len
   return 0;
 }
 struct VisibilityAtlas {
-  float length=0,nominal_size=.15f;
+  float length=0,nominal_size=default_obstacle_size;
   std::vector<VisibilityEntry> entries;
   void build(const std::vector<VisibilityRow>& rows,float loop_length,MapView map,float nominal,float lateral_step,
              const SensorGeometry& sensor,bool assume_passable){

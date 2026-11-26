@@ -1,10 +1,11 @@
 #pragma once
 #include "el/core.hpp"
 #include <memory>
+#include <array>
 #include <vector>
 #include <cstdint>
 namespace el::scenario {
-constexpr int points=49, knots=4, span=12, bins=5, candidates=625, batch_size=4;
+constexpr int points=49, knots=4, span=12, bins=5, lattice_candidates=625, candidates=3*lattice_candidates, batch_size=4;
 constexpr float station_step=.125f, invalid_cost=1.e20f;
 enum Cell:uint8_t { Unknown=0, Free=1, Occupied=2 };
 struct MapView {
@@ -17,7 +18,8 @@ struct MapView {
 };
 struct Row {float x=0,y=0,yaw=0,lo=0,hi=0,wall_lo=0,wall_hi=0;};
 // Full side length; a circumscribed disc covers every square orientation.
-struct Obstacle {float x=0,y=0,size=.15f;};
+constexpr float default_obstacle_size=.30f;
+struct Obstacle {float x=0,y=0,size=default_obstacle_size;};
 struct SensorGeometry {
   float angle_min=-2.35f,angle_max=2.35f,range=18.f,offset=.27f;
   int rays=beams,min_hits=2;
@@ -25,8 +27,9 @@ struct SensorGeometry {
 struct VisibilityWatch {Obstacle obstacle{};float ahead=0,weight=0;};
 constexpr int visibility_watches=2;
 struct Frame {
-  State car{}; Row ref[points]{}; float offset=0,slope=0,cap=3.5f;
+  State car{}; Row ref[points]{}; float spacing=station_step,lattice_radius=1.e6f; bool recovery_sweep=false; float offset=0,slope=0,cap=3.5f;
   float lateral_accel=3.f,accel=2.5f,brake=3.f,station=0;
+  float guide[points]{};bool have_guide=false;
   SensorGeometry sensor{};
   VisibilityWatch watch[visibility_watches]{};
   int watch_count=0;
@@ -85,16 +88,18 @@ struct Hypothesis {int count=0;Obstacle boxes[2]{};};
 struct PathPoint {float x=0,y=0,yaw=0,kappa=0,speed=0,s=0;};
 struct Path {
   PathPoint p[points]{}; Hypothesis hypothesis{};float cost=invalid_cost;
+  bool short_horizon=false,refined_lattice=false,recovery_sweep=false;
   int candidate=-1;
   double created=0;uint64_t generation=0;
 };
-EL_HD inline float knot_offset(const Row& r,int choice){
+EL_HD inline float knot_offset(const Row& r,int choice,float radius){
   const float zero=clamp(0,r.lo,r.hi);
   if(choice==0)return zero;
-  if(choice==1)return .5f*(zero+r.hi);
-  if(choice==2)return r.hi;
-  if(choice==3)return .5f*(zero+r.lo);
-  return r.lo;
+  const float hi=fminf(r.hi,zero+radius),lo=fmaxf(r.lo,zero-radius);
+  if(choice==1)return .5f*(zero+hi);
+  if(choice==2)return hi;
+  if(choice==3)return .5f*(zero+lo);
+  return lo;
 }
 // Conservative grid-cell overlap test against an expanded oriented rectangle.
 // Unknown cells are not asserted free: visibility is separately speed-limited at runtime.
@@ -118,35 +123,113 @@ EL_HD inline bool collision(MapView map,const Hypothesis& h,const PathPoint& p,f
   }
   return false;
 }
-EL_HD inline float evaluate(const Frame& f,MapView map,const Hypothesis& h,int id,Path& out){
-  out.candidate=-1;out.cost=invalid_cost;out.hypothesis=h;
-  float d[knots+1],m[knots+1];d[0]=f.offset;m[0]=f.slope*station_step*span;
-  int code=id;
-  for(int k=1;k<=knots;++k){const auto& r=f.ref[k*span];if(r.lo>r.hi)return invalid_cost;d[k]=knot_offset(r,code%bins);code/=bins;}
-  for(int k=1;k<knots;++k)m[k]=.5f*(d[k+1]-d[k-1]);m[knots]=0;
+struct Rejection {const char* reason="valid";int row=-1;};
+EL_HD inline float reject_candidate(Rejection* trace,const char* reason,int row){
+  if(trace){trace->reason=reason;trace->row=row;}
+  return invalid_cost;
+}
+// Forward-integrate a rate-limited bicycle toward the lateral guides. This
+// family covers bends where a Cartesian spline through four knots violates
+// curvature even though a driveable trajectory passes between those knots.
+EL_HD inline bool rollout(const Frame& f,const float* d,Path& path,bool guided){
+  float x=f.car.x,y=f.car.y,yaw=f.car.yaw,steer=f.car.steer;
+  int station=0;
   for(int i=0;i<points;++i){
+    auto& p=path.p[i];p.x=x;p.y=y;p.yaw=yaw;
+    if(i==points-1)break;
+    float best=1.e9f;
+    int nearest=station;
+    for(int j=station;j<points && j<=station+5;++j){
+      const auto& r=f.ref[j];
+      float ex=x-r.x,ey=y-r.y,dist=ex*ex+ey*ey;
+      if(dist<best){best=dist;nearest=j;}
+    }
+    station=nearest;
+    const int ahead=int(.72f/f.spacing+.5f);
+    const int target=station+ahead<points?station+ahead:points-1;
+    const int knot=target/span<knots?target/span:knots-1;
+    float q=float(target-knot*span)/span;
+    float offset=d[knot]+q*(d[knot+1]-d[knot]);
+    if(guided)offset+=f.guide[target];
+    const auto& r=f.ref[target];
+    float extra=fmaxf(0,float(station+ahead-(points-1))*f.spacing);
+    float dx=r.x-offset*sinf(r.yaw)+extra*cosf(r.yaw)-x;
+    float dy=r.y+offset*cosf(r.yaw)+extra*sinf(r.yaw)-y;
+    float desired=clamp(atan2f(.6604f*(-sinf(yaw)*dx+cosf(yaw)*dy),fmaxf(.02f,dx*dx+dy*dy)),-.385f,.385f);
+    const float rate=3.f*f.spacing/fmaxf(1.5f,f.car.v);
+    steer+=clamp(desired-steer,-rate,rate);
+    float turn=f.spacing*tanf(steer)/.3302f;
+    x+=f.spacing*cosf(yaw+.5f*turn);y+=f.spacing*sinf(yaw+.5f*turn);yaw=wrap(yaw+turn);
+  }
+  return station>=points-12 && fabsf(wrap(yaw-f.ref[station].yaw))<.85f;
+}
+EL_HD inline float evaluate(const Frame& f,MapView map,const Hypothesis& h,int id,Path& out,Rejection* trace=nullptr){
+  out.candidate=-1;out.cost=invalid_cost;out.hypothesis=h;
+  out.recovery_sweep=f.recovery_sweep;
+  out.short_horizon=f.spacing<station_step;
+  out.refined_lattice=f.lattice_radius<1.e6f;
+  float d[knots+1],m[knots+1];d[0]=f.offset;m[0]=f.slope*f.spacing*span;
+  const bool shooting=id>=lattice_candidates;
+  const bool guided=id>=2*lattice_candidates;
+  if(guided&&!f.have_guide)return reject_candidate(trace,"no_guide",0);
+  int code=id%lattice_candidates;
+  for(int k=1;k<=knots;++k){const auto& r=f.ref[k*span];if(r.lo>r.hi)return reject_candidate(trace,"width",k*span);const int choice=code%bins;
+    d[k]=guided?(choice==0?0.f:(choice<=2?.13f*choice:-.13f*(choice-2))):knot_offset(r,choice,f.lattice_radius);code/=bins;}
+  for(int k=1;k<knots;++k)m[k]=.5f*(d[k+1]-d[k-1]);m[knots]=0;
+  if(shooting){
+    if(guided)d[0]=0;
+    if(!rollout(f,d,out,guided))return reject_candidate(trace,"progress",points-1);
+  }else for(int i=0;i<points;++i){
     int k=i/span;if(k>=knots)k=knots-1;
     float t=float(i-k*span)/span,t2=t*t,t3=t2*t;
     float off=(2*t3-3*t2+1)*d[k]+(t3-2*t2+t)*m[k]+(-2*t3+3*t2)*d[k+1]+(t3-t2)*m[k+1];
-    auto r=f.ref[i];if(i>0&&(off<r.lo-.015f||off>r.hi+.015f))return invalid_cost;
+    auto r=f.ref[i];if(i>0&&(off<r.lo-.015f||off>r.hi+.015f))return reject_candidate(trace,"offset",i);
     out.p[i].x=r.x-sinf(r.yaw)*off;out.p[i].y=r.y+cosf(r.yaw)*off;
   }
   out.p[0].x=f.car.x;out.p[0].y=f.car.y;
   float length=0,soft=0;
+  int guide_station=0;
   for(int i=0;i<points;++i){
     auto& p=out.p[i];const auto& a=out.p[i>0?i-1:0];const auto& b=out.p[i+1<points?i+1:points-1];
-    p.yaw=atan2f(b.y-a.y,b.x-a.x);
-    if(i==0&&fabsf(wrap(p.yaw-f.car.yaw))>.24f)return invalid_cost;
-    if(i){const float ds=hypotf(p.x-a.x,p.y-a.y);if(ds<.035f||ds>.38f)return invalid_cost;length+=ds;}
+    if(!shooting)p.yaw=atan2f(b.y-a.y,b.x-a.x);
+    if(i==0&&fabsf(wrap(p.yaw-f.car.yaw))>.24f)return reject_candidate(trace,"heading",i);
+    if(i){const float ds=hypotf(p.x-a.x,p.y-a.y);if(ds<.035f||ds>.38f)return reject_candidate(trace,"spacing",i);length+=ds;}
     p.s=length;
+    if(f.have_guide){
+      float nearest=1.e9f;int station=guide_station;
+      for(int j=guide_station;j<points && j<=guide_station+4;++j){
+        float dx=p.x-f.ref[j].x,dy=p.y-f.ref[j].y,ds=dx*dx+dy*dy;
+        if(ds<nearest){nearest=ds;station=j;}
+      }
+      guide_station=station;
+      const auto& r=f.ref[station];
+      float offset=-(p.x-r.x)*sinf(r.yaw)+(p.y-r.y)*cosf(r.yaw);
+      float error=offset-f.guide[station];soft+=.055f*error*error;
+    }
     // Inflate by more than half the nominal station step for between-sample risk.
-    if(collision(map,h,p,.085f))return invalid_cost;
-    if(collision(map,h,p,.14f))soft+=.018f;
+    const float reach=f.recovery_sweep?fminf(1.f,p.s/.70f):1.f;
+    if(f.recovery_sweep && i && a.s<.70f){
+      const float from_yaw=i==1?f.car.yaw:a.yaw;
+      const float dyaw=wrap(p.yaw-from_yaw),ds=p.s-a.s;
+      const float sweep_pad=(ds+.40f*fabsf(dyaw))/8;
+      for(int sample=0;sample<=4;++sample){
+        const float q=sample*.25f;
+        PathPoint sweep; sweep.x=a.x+q*(p.x-a.x);sweep.y=a.y+q*(p.y-a.y);sweep.yaw=from_yaw+q*dyaw;
+        if(collision(map,h,sweep,.04f+.045f*fminf(1.f,(a.s+q*ds)/.70f)+sweep_pad))
+          return reject_candidate(trace,"sweep",i);
+      }
+    }else{
+      PathPoint pose=p;
+      if(f.recovery_sweep && i==0)pose.yaw=f.car.yaw;
+      if(collision(map,h,pose,.04f+.045f*reach))return reject_candidate(trace,"footprint",i);
+    }
+    if(collision(map,h,p,.21f))soft+=.045f;
+    if(collision(map,h,p,.14f))soft+=.085f;
   }
   for(int i=0;i<points;++i){
     auto& p=out.p[i];const auto& a=out.p[i>0?i-1:0];const auto& b=out.p[i+1<points?i+1:points-1];
     p.kappa=wrap(b.yaw-a.yaw)/fmaxf(.035f,b.s-a.s);
-    if(fabsf(atanf(.3302f*p.kappa))>.39f)return invalid_cost;
+    if(fabsf(atanf(.3302f*p.kappa))>.39f)return reject_candidate(trace,"curvature",i);
     p.speed=fminf(f.cap,sqrtf(f.lateral_accel/fmaxf(.01f,fabsf(p.kappa))));
     if(i){
       const float dk=atanf(.3302f*p.kappa)-atanf(.3302f*a.kappa);
@@ -164,15 +247,15 @@ EL_HD inline float evaluate(const Frame& f,MapView map,const Hypothesis& h,int i
   float v=fminf(out.p[0].speed,fmaxf(0.f,f.car.v)),cost=0;
   for(int i=1;i<points;++i){
     auto& p=out.p[i];const float ds=p.s-out.p[i-1].s;
-    p.speed=fminf(p.speed,sqrtf(v*v+2*f.accel*ds));
-    cost+=2*ds/fmaxf(.1f,v+p.speed);v=p.speed;
+    const float attainable=fminf(p.speed,sqrtf(v*v+2*f.accel*ds));
+    cost+=2*ds/fmaxf(.1f,v+attainable);v=attainable;
   }
   // Optional soft visibility cost: encourage earlier sight of the most urgent
   // unresolved obstacle hypotheses along the candidate's actual pose sequence.
   // Never turn those hypotheses into occupied cells or override safety limits.
   for(int w=0;w<f.watch_count&&w<visibility_watches;++w){
     const auto& target=f.watch[w];
-    int goal=int(target.ahead/station_step+.5f);
+    int goal=int(target.ahead/f.spacing+.5f);
     if(goal<2||goal>=points)continue;
     float lead=0,detect_speed=f.cap;int consecutive=0;
     for(int i=0;i<goal;i+=2){
@@ -186,12 +269,16 @@ EL_HD inline float evaluate(const Frame& f,MapView map,const Hypothesis& h,int i
     soft+=target.weight*seconds*seconds;
   }
   // A mild continuity preference at the horizon end, not a hard in-course bonus.
-  cost+=soft+.06f*fabsf(d[knots]);
+  const auto& end=out.p[points-1];const auto& goal=f.ref[points-1];
+  float along=(goal.x-end.x)*cosf(goal.yaw)+(goal.y-end.y)*sinf(goal.yaw);
+  cost+=soft+.06f*fabsf(d[knots])+.35f*fmaxf(0,along);
   out.cost=cost;out.candidate=id;return cost;
 }
 struct Request {
   Frame frame{};MapView map{};std::vector<uint8_t> cells;
   std::vector<Hypothesis> hypotheses;
+  bool measured_obstacle=false, defer_speculation=false, gate_features_valid=false;
+  std::array<float,64> gate_features{};
   uint64_t generation=0,epoch=0;double timestamp=0;
   float optional_budget_ms=60;
   MapView view()const{auto v=map;v.data=cells.data();return v;}
@@ -204,7 +291,7 @@ class Optimizer {
  public:
   Optimizer();~Optimizer();Optimizer(const Optimizer&)=delete;Optimizer& operator=(const Optimizer&)=delete;
   void upload(MapView map);
-  std::vector<Path> solve(const Frame&,const std::vector<Hypothesis>&);
+  std::vector<Path> solve(const Frame&,const std::vector<Hypothesis>&,float* kernel_ms=nullptr);
  private:struct Impl;std::unique_ptr<Impl> impl_;
 };
 }

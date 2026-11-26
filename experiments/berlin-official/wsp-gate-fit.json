@@ -1,0 +1,41 @@
+{
+  "horizon_s": 0.5,
+  "fit": {
+    "frames": 777,
+    "upcoming_hazards": 319,
+    "requested_deferrals": 312,
+    "deferred_hazards": 80,
+    "expected_deferred_hazards_uniform": 128.09266409266408,
+    "coverage": 0.4015444015444015
+  },
+  "calibration": {
+    "frames": 295,
+    "upcoming_hazards": 106,
+    "requested_deferrals": 130,
+    "deferred_hazards": 27,
+    "expected_deferred_hazards_uniform": 46.71186440677966,
+    "coverage": 0.4406779661016949
+  },
+  "independent_test": {
+    "frames": 1091,
+    "upcoming_hazards": 378,
+    "requested_deferrals": 420,
+    "deferred_hazards": 85,
+    "expected_deferred_hazards_uniform": 145.51787351054077,
+    "coverage": 0.384967919340055
+  },
+  "fit_run": "cal-2031",
+  "test_run": "cal-2032",
+  "calibration_trace_sha256": {
+    "cal-2031": {
+      "features.jsonl": "73f36ba66818379dd795078224ebdee5010950d88671e3a59c642d6882e9b3fa",
+      "gpu.csv": "315a3257fac908f48876572c4fa92ef8eeae3408738aea9461fc99099df335f4"
+    },
+    "cal-2032": {
+      "features.jsonl": "80c00e52a13d333c73fa8794720bbce80f346c2028cf560981bcfee781695a9b",
+      "gpu.csv": "a57d9895fb65469701712d50182e363c1399883089b336958adb22deb0f366d0"
+    }
+  },
+  "base_sha256": "ec271af7aac85ebaa275aaea1da3ec345c866568e8dbf8ae08abf4696c6dbcab",
+  "wsp_sha256": "d93aefef2a8ce7c0eac6dde020170faf32330870baa78456a95e3c8370ab020e"
+}

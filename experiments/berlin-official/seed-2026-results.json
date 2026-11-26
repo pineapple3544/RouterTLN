@@ -1,0 +1,330 @@
+{
+  "trials": {
+    "v15-1": {
+      "stop": "ten_laps",
+      "elapsed_s": 172.014,
+      "consecutive": 10,
+      "best_s": 16.29,
+      "collisions": {
+        "obstacle": 0,
+        "wall": 0,
+        "total": 0
+      },
+      "teleports": 0,
+      "layouts": 11,
+      "counts": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "first_passages": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "completed_lap_times": [
+        22.536,
+        16.58,
+        16.71,
+        16.46,
+        16.52,
+        16.46,
+        17.02,
+        16.94,
+        16.29,
+        16.44
+      ],
+      "compute_over25": 0,
+      "max_compute_ms": 8.091112,
+      "fault": null,
+      "final_control_reason": "race",
+      "final_progress_m": 487.945862
+    },
+    "v15-3": {
+      "stop": "stopped",
+      "elapsed_s": 92.917,
+      "consecutive": 4,
+      "best_s": 17.37,
+      "collisions": {
+        "obstacle": 0,
+        "wall": 0,
+        "total": 0
+      },
+      "teleports": 0,
+      "layouts": 5,
+      "counts": [
+        3,
+        3,
+        3,
+        3,
+        3
+      ],
+      "first_passages": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "completed_lap_times": [
+        25.716,
+        17.391,
+        18.189,
+        17.37
+      ],
+      "compute_over25": 0,
+      "max_compute_ms": 9.900697,
+      "fault": "no_corridor",
+      "final_control_reason": "no_corridor",
+      "final_progress_m": 216.029709
+    },
+    "v15-5": {
+      "stop": "stopped",
+      "elapsed_s": 66.263,
+      "consecutive": 2,
+      "best_s": 18.09,
+      "collisions": {
+        "obstacle": 0,
+        "wall": 0,
+        "total": 0
+      },
+      "teleports": 0,
+      "layouts": 3,
+      "counts": [
+        5,
+        5,
+        4
+      ],
+      "first_passages": [
+        0,
+        1,
+        2
+      ],
+      "completed_lap_times": [
+        25.828,
+        18.09
+      ],
+      "compute_over25": 0,
+      "max_compute_ms": 7.802093,
+      "fault": "localization_lost",
+      "final_control_reason": "localization_lost",
+      "final_progress_m": 140.153381
+    },
+    "v3-1": {
+      "stop": "duration",
+      "elapsed_s": 180.007,
+      "consecutive": 9,
+      "best_s": 17.129,
+      "collisions": {
+        "obstacle": 0,
+        "wall": 0,
+        "total": 0
+      },
+      "teleports": 0,
+      "layouts": 10,
+      "counts": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "first_passages": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "completed_lap_times": [
+        17.129,
+        18.221,
+        17.97,
+        18.56,
+        17.95,
+        18.89,
+        18.72,
+        18.65,
+        18.091
+      ],
+      "compute_over25": 0,
+      "max_compute_ms": 5.389877,
+      "fault": null,
+      "final_control_reason": "scenario_race_tln",
+      "final_progress_m": 482.147217,
+      "controller_epochs": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "scorer_laps_seen": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "epoch_minus_lap_received_ms": {
+        "1": 10.0,
+        "2": 18.5,
+        "3": 29.2,
+        "4": 19.7,
+        "5": -0.1,
+        "6": 8.9,
+        "7": 9.9,
+        "8": 28.8,
+        "9": -1.6
+      },
+      "epoch_minus_layout_received_ms": {
+        "1": 6.4,
+        "2": 14.8,
+        "3": 25.4,
+        "4": 15.8,
+        "5": -4.2,
+        "6": 3.7,
+        "7": 5.6,
+        "8": 25.1,
+        "9": -5.3
+      }
+    },
+    "v3-3": {
+      "stop": "stopped",
+      "elapsed_s": 33.975,
+      "consecutive": 1,
+      "best_s": 17.94,
+      "collisions": {
+        "obstacle": 0,
+        "wall": 0,
+        "total": 0
+      },
+      "teleports": 0,
+      "layouts": 2,
+      "counts": [
+        3,
+        3
+      ],
+      "first_passages": [
+        0,
+        1
+      ],
+      "completed_lap_times": [
+        17.94
+      ],
+      "compute_over25": 0,
+      "max_compute_ms": 2.457037,
+      "fault": null,
+      "final_control_reason": "scenario_wait",
+      "final_progress_m": 72.975838,
+      "controller_epochs": [
+        1
+      ],
+      "scorer_laps_seen": [
+        1
+      ],
+      "epoch_minus_lap_received_ms": {
+        "1": 8.8
+      },
+      "epoch_minus_layout_received_ms": {
+        "1": 5.7
+      }
+    },
+    "v3-5": {
+      "stop": "stopped",
+      "elapsed_s": 35.046,
+      "consecutive": 1,
+      "best_s": 18.489,
+      "collisions": {
+        "obstacle": 0,
+        "wall": 0,
+        "total": 0
+      },
+      "teleports": 0,
+      "layouts": 2,
+      "counts": [
+        5,
+        5
+      ],
+      "first_passages": [
+        0,
+        1
+      ],
+      "completed_lap_times": [
+        18.489
+      ],
+      "compute_over25": 0,
+      "max_compute_ms": 3.182985,
+      "fault": null,
+      "final_control_reason": "scenario_wait",
+      "final_progress_m": 72.87587,
+      "controller_epochs": [
+        1
+      ],
+      "scorer_laps_seen": [
+        1
+      ],
+      "epoch_minus_lap_received_ms": {
+        "1": 9.7
+      },
+      "epoch_minus_layout_received_ms": {
+        "1": 5.7
+      }
+    }
+  },
+  "paired_layout_equality": {
+    "1": [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "3": [
+      true,
+      true
+    ],
+    "5": [
+      true,
+      true
+    ]
+  }
+}

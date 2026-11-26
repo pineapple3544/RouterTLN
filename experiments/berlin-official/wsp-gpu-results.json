@@ -1,0 +1,773 @@
+{
+  "seed_2026": {
+    "1": {
+      "trials": {
+        "original": {
+          "stop": "duration",
+          "elapsed_s": 180.008,
+          "consecutive": 11,
+          "best_s": 15.58,
+          "collisions": {
+            "obstacle": 0,
+            "wall": 0,
+            "total": 0
+          },
+          "teleports": 0,
+          "compute_over25": 0,
+          "max_compute_ms": 2.97739,
+          "fault": null,
+          "longest_measured_low_speed_s": 0.0,
+          "counts": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "completed_lap_times": [
+            16.011,
+            15.969,
+            15.93,
+            15.58,
+            15.84,
+            15.619,
+            15.66,
+            16.06,
+            15.689,
+            15.581,
+            15.61
+          ],
+          "mean_clean_lap_s": 15.777181818181818,
+          "scored_candidates": 30459375,
+          "optional_candidates": 27335625,
+          "kernel_s": 53.247311163,
+          "gpu_solves": 5479,
+          "gpu_requests": 1667,
+          "active_kernel_ms_per_s": 295.8056808018007,
+          "scored_candidates_per_s": 169211.47682163474
+        },
+        "off": {
+          "stop": "stopped",
+          "elapsed_s": 57.306,
+          "consecutive": 3,
+          "best_s": 15.481,
+          "collisions": {
+            "obstacle": 0,
+            "wall": 0,
+            "total": 0
+          },
+          "teleports": 0,
+          "compute_over25": 0,
+          "max_compute_ms": 2.819303,
+          "fault": "sensor_timeout",
+          "longest_measured_low_speed_s": 6.039430506999452,
+          "counts": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "completed_lap_times": [
+            15.73,
+            15.481,
+            15.599
+          ],
+          "mean_clean_lap_s": 15.603333333333333,
+          "scored_candidates": 8304375,
+          "optional_candidates": 7434375,
+          "kernel_s": 14.855942768999999,
+          "gpu_solves": 1506,
+          "gpu_requests": 465,
+          "active_kernel_ms_per_s": 259.23787822279115,
+          "scored_candidates_per_s": 144912.28112824127
+        },
+        "wsp": {
+          "stop": "duration",
+          "elapsed_s": 180.007,
+          "consecutive": 11,
+          "best_s": 15.51,
+          "collisions": {
+            "obstacle": 0,
+            "wall": 0,
+            "total": 0
+          },
+          "teleports": 0,
+          "compute_over25": 0,
+          "max_compute_ms": 2.579529,
+          "fault": null,
+          "longest_measured_low_speed_s": 0.0,
+          "counts": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "completed_lap_times": [
+            15.909,
+            15.861,
+            15.9,
+            15.51,
+            15.88,
+            15.65,
+            15.601,
+            16.319,
+            15.59,
+            15.64,
+            15.77
+          ],
+          "mean_clean_lap_s": 15.784545454545455,
+          "scored_candidates": 27571875,
+          "optional_candidates": 24448125,
+          "kernel_s": 49.457884252999996,
+          "gpu_solves": 5054,
+          "gpu_requests": 1667,
+          "active_kernel_ms_per_s": 274.75463963941985,
+          "scored_candidates_per_s": 153170.7369659392
+        }
+      },
+      "identical_layout_sequences": {
+        "original": true,
+        "off": false
+      },
+      "reductions_pct": {
+        "original": {
+          "active_kernel_ms_per_s": 7.116510103971163,
+          "scored_candidates_per_s": 9.479699697086176
+        },
+        "off": {
+          "active_kernel_ms_per_s": -5.985530171363873,
+          "scored_candidates_per_s": -5.698934399072453
+        }
+      }
+    },
+    "3": {
+      "trials": {
+        "original": {
+          "stop": "duration",
+          "elapsed_s": 180.004,
+          "consecutive": 11,
+          "best_s": 15.62,
+          "collisions": {
+            "obstacle": 0,
+            "wall": 0,
+            "total": 0
+          },
+          "teleports": 0,
+          "compute_over25": 0,
+          "max_compute_ms": 2.484823,
+          "fault": null,
+          "longest_measured_low_speed_s": 0.0,
+          "counts": [
+            3,
+            3,
+            3,
+            3,
+            3,
+            3,
+            3,
+            3,
+            3,
+            3,
+            3,
+            3
+          ],
+          "completed_lap_times": [
+            16.12,
+            16.19,
+            16.375,
+            16.374,
+            16.82,
+            15.63,
+            15.62,
+            16.21,
+            15.8,
+            15.701,
+            15.74
+          ],
+          "mean_clean_lap_s": 16.052727272727275,
+          "scored_candidates": 31237500,
+          "optional_candidates": 28093125,
+          "kernel_s": 54.187631511,
+          "gpu_solves": 5613,
+          "gpu_requests": 1667,
+          "active_kernel_ms_per_s": 301.03588804118783,
+          "scored_candidates_per_s": 173537.91428912498
+        },
+        "off": {
+          "stop": "duration",
+          "elapsed_s": 180.01,
+          "consecutive": 11,
+          "best_s": 15.56,
+          "collisions": {
+            "obstacle": 0,
+            "wall": 0,
+            "total": 0
+          },
+          "teleports": 0,
+          "compute_over25": 0,
+          "max_compute_ms": 2.859944,
+          "fault": null,
+          "longest_measured_low_speed_s": 0.0,
+          "counts": [
+            3,
+            3,
+            3,
+            3,
+            3,
+            3,
+            3,
+            3,
+            3,
+            3,
+            3,
+            3
+          ],
+          "completed_lap_times": [
+            16.061,
+            16.178,
+            16.51,
+            16.351,
+            16.619,
+            15.69,
+            15.56,
+            16.13,
+            15.7,
+            15.7,
+            15.701
+          ],
+          "mean_clean_lap_s": 16.01818181818182,
+          "scored_candidates": 30755625,
+          "optional_candidates": 27616875,
+          "kernel_s": 53.564110037999995,
+          "gpu_solves": 5533,
+          "gpu_requests": 1666,
+          "active_kernel_ms_per_s": 297.5619750441906,
+          "scored_candidates_per_s": 170855.15865429275
+        },
+        "wsp": {
+          "stop": "duration",
+          "elapsed_s": 180.009,
+          "consecutive": 11,
+          "best_s": 15.6,
+          "collisions": {
+            "obstacle": 0,
+            "wall": 0,
+            "total": 0
+          },
+          "teleports": 0,
+          "compute_over25": 0,
+          "max_compute_ms": 3.432983,
+          "fault": null,
+          "longest_measured_low_speed_s": 0.0,
+          "counts": [
+            3,
+            3,
+            3,
+            3,
+            3,
+            3,
+            3,
+            3,
+            3,
+            3,
+            3,
+            3
+          ],
+          "completed_lap_times": [
+            16.04,
+            16.149,
+            16.401,
+            16.629,
+            16.68,
+            15.7,
+            15.931,
+            16.291,
+            15.719,
+            15.66,
+            15.6
+          ],
+          "mean_clean_lap_s": 16.072727272727274,
+          "scored_candidates": 29328750,
+          "optional_candidates": 26188125,
+          "kernel_s": 50.215387273,
+          "gpu_solves": 5297,
+          "gpu_requests": 1665,
+          "active_kernel_ms_per_s": 278.95967660729616,
+          "scored_candidates_per_s": 162928.9160076899
+        }
+      },
+      "identical_layout_sequences": {
+        "original": true,
+        "off": true
+      },
+      "reductions_pct": {
+        "original": {
+          "active_kernel_ms_per_s": 7.333415154432088,
+          "scored_candidates_per_s": 6.113360486608032
+        },
+        "off": {
+          "active_kernel_ms_per_s": 6.251571100148745,
+          "scored_candidates_per_s": 4.639159103554357
+        }
+      }
+    },
+    "5": {
+      "trials": {
+        "original": {
+          "stop": "duration",
+          "elapsed_s": 180.004,
+          "consecutive": 11,
+          "best_s": 15.699,
+          "collisions": {
+            "obstacle": 0,
+            "wall": 0,
+            "total": 0
+          },
+          "teleports": 0,
+          "compute_over25": 0,
+          "max_compute_ms": 2.303427,
+          "fault": null,
+          "longest_measured_low_speed_s": 0.0,
+          "counts": [
+            5,
+            5,
+            4,
+            5,
+            4,
+            5,
+            5,
+            5,
+            5,
+            5,
+            5,
+            5
+          ],
+          "completed_lap_times": [
+            15.83,
+            16.371,
+            16.26,
+            16.13,
+            16.41,
+            15.821,
+            15.699,
+            16.13,
+            15.73,
+            15.79,
+            15.87
+          ],
+          "mean_clean_lap_s": 16.00372727272727,
+          "scored_candidates": 24061875,
+          "optional_candidates": 20925000,
+          "kernel_s": 59.049933863999996,
+          "gpu_solves": 4632,
+          "gpu_requests": 1665,
+          "active_kernel_ms_per_s": 328.0473634218704,
+          "scored_candidates_per_s": 133673.89489235106
+        },
+        "off": {
+          "stop": "duration",
+          "elapsed_s": 180.002,
+          "consecutive": 11,
+          "best_s": 15.52,
+          "collisions": {
+            "obstacle": 0,
+            "wall": 0,
+            "total": 0
+          },
+          "teleports": 0,
+          "compute_over25": 0,
+          "max_compute_ms": 2.273844,
+          "fault": null,
+          "longest_measured_low_speed_s": 0.0,
+          "counts": [
+            5,
+            5,
+            4,
+            5,
+            4,
+            5,
+            5,
+            5,
+            5,
+            5,
+            5,
+            5
+          ],
+          "completed_lap_times": [
+            15.78,
+            16.081,
+            16.349,
+            16.14,
+            16.631,
+            15.79,
+            15.52,
+            15.93,
+            15.63,
+            15.55,
+            15.79
+          ],
+          "mean_clean_lap_s": 15.926454545454545,
+          "scored_candidates": 26355000,
+          "optional_candidates": 23216250,
+          "kernel_s": 57.299335643999996,
+          "gpu_solves": 4949,
+          "gpu_requests": 1666,
+          "active_kernel_ms_per_s": 318.32590744622104,
+          "scored_candidates_per_s": 146414.94873289418
+        },
+        "wsp": {
+          "stop": "duration",
+          "elapsed_s": 180.002,
+          "consecutive": 11,
+          "best_s": 15.591,
+          "collisions": {
+            "obstacle": 0,
+            "wall": 0,
+            "total": 0
+          },
+          "teleports": 0,
+          "compute_over25": 0,
+          "max_compute_ms": 1.925679,
+          "fault": null,
+          "longest_measured_low_speed_s": 0.0,
+          "counts": [
+            5,
+            5,
+            4,
+            5,
+            4,
+            5,
+            5,
+            5,
+            5,
+            5,
+            5,
+            5
+          ],
+          "completed_lap_times": [
+            15.969,
+            16.391,
+            16.52,
+            15.99,
+            17.0,
+            15.891,
+            15.67,
+            16.27,
+            15.689,
+            15.591,
+            15.87
+          ],
+          "mean_clean_lap_s": 16.077363636363636,
+          "scored_candidates": 31672500,
+          "optional_candidates": 28522500,
+          "kernel_s": 51.845930817,
+          "gpu_solves": 5632,
+          "gpu_requests": 1667,
+          "active_kernel_ms_per_s": 288.02996217983383,
+          "scored_candidates_per_s": 175956.5087053954
+        }
+      },
+      "identical_layout_sequences": {
+        "original": true,
+        "off": true
+      },
+      "reductions_pct": {
+        "original": {
+          "active_kernel_ms_per_s": 12.198665712357515,
+          "scored_candidates_per_s": -31.631167661490633
+        },
+        "off": {
+          "active_kernel_ms_per_s": 9.517272882197158,
+          "scored_candidates_per_s": -20.176600974258506
+        }
+      }
+    }
+  },
+  "confirmation_2026_1": {
+    "trials": {
+      "off": {
+        "stop": "duration",
+        "elapsed_s": 180.009,
+        "consecutive": 11,
+        "best_s": 15.47,
+        "collisions": {
+          "obstacle": 0,
+          "wall": 0,
+          "total": 0
+        },
+        "teleports": 0,
+        "compute_over25": 0,
+        "max_compute_ms": 2.043708,
+        "fault": null,
+        "longest_measured_low_speed_s": 0.0,
+        "counts": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "completed_lap_times": [
+          15.84,
+          15.84,
+          16.24,
+          15.47,
+          15.97,
+          15.55,
+          15.55,
+          16.079,
+          15.531,
+          15.63,
+          15.71
+        ],
+        "mean_clean_lap_s": 15.764545454545456,
+        "scored_candidates": 30922500,
+        "optional_candidates": 27800625,
+        "kernel_s": 53.079442851,
+        "gpu_solves": 5532,
+        "gpu_requests": 1666,
+        "active_kernel_ms_per_s": 294.87100091817734,
+        "scored_candidates_per_s": 171783.0488818056
+      },
+      "original": {
+        "stop": "duration",
+        "elapsed_s": 180.005,
+        "consecutive": 11,
+        "best_s": 15.56,
+        "collisions": {
+          "obstacle": 0,
+          "wall": 0,
+          "total": 0
+        },
+        "teleports": 0,
+        "compute_over25": 0,
+        "max_compute_ms": 2.587615,
+        "fault": null,
+        "longest_measured_low_speed_s": 0.0,
+        "counts": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "completed_lap_times": [
+          15.819,
+          15.73,
+          15.949,
+          15.59,
+          15.71,
+          15.56,
+          15.911,
+          15.889,
+          15.761,
+          15.989,
+          15.741
+        ],
+        "mean_clean_lap_s": 15.786272727272728,
+        "scored_candidates": 31955625,
+        "optional_candidates": 28831875,
+        "kernel_s": 52.88856573499999,
+        "gpu_solves": 5683,
+        "gpu_requests": 1667,
+        "active_kernel_ms_per_s": 293.8166059093061,
+        "scored_candidates_per_s": 177525.9575813598
+      },
+      "wsp": {
+        "stop": "duration",
+        "elapsed_s": 180.007,
+        "consecutive": 11,
+        "best_s": 15.51,
+        "collisions": {
+          "obstacle": 0,
+          "wall": 0,
+          "total": 0
+        },
+        "teleports": 0,
+        "compute_over25": 0,
+        "max_compute_ms": 2.579529,
+        "fault": null,
+        "longest_measured_low_speed_s": 0.0,
+        "counts": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "completed_lap_times": [
+          15.909,
+          15.861,
+          15.9,
+          15.51,
+          15.88,
+          15.65,
+          15.601,
+          16.319,
+          15.59,
+          15.64,
+          15.77
+        ],
+        "mean_clean_lap_s": 15.784545454545455,
+        "scored_candidates": 27571875,
+        "optional_candidates": 24448125,
+        "kernel_s": 49.457884252999996,
+        "gpu_solves": 5054,
+        "gpu_requests": 1667,
+        "active_kernel_ms_per_s": 274.75463963941985,
+        "scored_candidates_per_s": 153170.7369659392
+      }
+    },
+    "identical_layout_sequences": {
+      "off": true,
+      "original": true,
+      "wsp": true
+    },
+    "reductions_pct": {
+      "off": {
+        "active_kernel_ms_per_s": 6.822088715444597,
+        "scored_candidates_per_s": 10.834777958023379
+      },
+      "original": {
+        "active_kernel_ms_per_s": 6.487708960796512,
+        "scored_candidates_per_s": 13.719244750029668
+      }
+    }
+  },
+  "confirmation_2033_5": {
+    "trials": {
+      "original": {
+        "stop": "stopped",
+        "elapsed_s": 100.555,
+        "consecutive": 5,
+        "best_s": 15.64,
+        "collisions": {
+          "obstacle": 0,
+          "wall": 0,
+          "total": 0
+        },
+        "teleports": 0,
+        "compute_over25": 0,
+        "max_compute_ms": 2.022897,
+        "fault": "localization_lost",
+        "longest_measured_low_speed_s": 6.049758529999963,
+        "counts": [
+          5,
+          5,
+          5,
+          5,
+          5,
+          4
+        ],
+        "completed_lap_times": [
+          16.911,
+          16.009,
+          15.64,
+          16.45,
+          15.789
+        ],
+        "mean_clean_lap_s": 16.1598,
+        "scored_candidates": 18639375,
+        "optional_candidates": 16895625,
+        "kernel_s": 31.445242979,
+        "gpu_solves": 3310,
+        "gpu_requests": 931,
+        "active_kernel_ms_per_s": 312.71580086630604,
+        "scored_candidates_per_s": 185364.35176109325
+      },
+      "wsp": {
+        "stop": "stopped",
+        "elapsed_s": 166.158,
+        "consecutive": 9,
+        "best_s": 15.74,
+        "collisions": {
+          "obstacle": 0,
+          "wall": 0,
+          "total": 0
+        },
+        "teleports": 0,
+        "compute_over25": 0,
+        "max_compute_ms": 3.100307,
+        "fault": "localization_lost",
+        "longest_measured_low_speed_s": 6.050551455000459,
+        "counts": [
+          5,
+          5,
+          5,
+          5,
+          5,
+          4,
+          5,
+          5,
+          4,
+          5
+        ],
+        "completed_lap_times": [
+          16.569,
+          16.06,
+          15.74,
+          16.12,
+          15.87,
+          15.77,
+          16.21,
+          15.779,
+          16.15
+        ],
+        "mean_clean_lap_s": 16.029777777777777,
+        "scored_candidates": 27586875,
+        "optional_candidates": 24705000,
+        "kernel_s": 47.755456943999995,
+        "gpu_solves": 4970,
+        "gpu_requests": 1538,
+        "active_kernel_ms_per_s": 287.41068310818576,
+        "scored_candidates_per_s": 166028.4100698214
+      }
+    },
+    "identical_layout_sequences": {
+      "original": false,
+      "wsp": true
+    },
+    "reductions_pct": {
+      "original": {
+        "active_kernel_ms_per_s": 8.092049614384166,
+        "scored_candidates_per_s": 10.431316219956344
+      }
+    }
+  }
+}

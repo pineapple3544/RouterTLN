@@ -3,7 +3,11 @@ data/
 .venv*/
 __pycache__/
 *.pyc
-models/
+models/*
+!models/v3/
+models/v3/*
+!models/v3/berlin.rcn
+!models/v3/berlin-wsp.rcn
 runs/
 
 /results/

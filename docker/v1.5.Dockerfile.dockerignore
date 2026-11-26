@@ -4,6 +4,9 @@
 !src/**
 !tools/replay_corridor.cpp
 !tests/scan_localizer_test.cpp
+!tests/scenario_geometry.cpp
+!tests/scenario_visibility.cpp
+!tests/lap_epoch.cpp
 !tests/fixtures/corridor/**
 !maps/berlin/**
 !docker/simulator/**

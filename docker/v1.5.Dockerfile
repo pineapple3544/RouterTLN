@@ -18,7 +18,7 @@ COPY CMakeLists.txt ./
 COPY include include
 COPY src src
 COPY tools/replay_corridor.cpp tools/
-COPY tests/scan_localizer_test.cpp tests/
+COPY tests/scan_localizer_test.cpp tests/scenario_geometry.cpp tests/scenario_visibility.cpp tests/lap_epoch.cpp tests/
 COPY tests/fixtures/corridor tests/fixtures/corridor
 COPY maps/berlin maps/berlin
 RUN source /opt/ros/humble/setup.bash && cmake -S . -B /build -G Ninja \

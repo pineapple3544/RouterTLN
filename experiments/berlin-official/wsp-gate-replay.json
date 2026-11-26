@@ -1,0 +1,11 @@
+{
+  "run": "cal-2032",
+  "eligible_deferrals": 352,
+  "deferrals_with_cuda_work": 182,
+  "scored_candidates": 32278125,
+  "omitted_candidates": 2525625,
+  "measured_kernel_ms": 56751.18175899987,
+  "omitted_kernel_ms": 3968.2261700000017,
+  "omitted_candidates_pct": 7.824571594539646,
+  "omitted_kernel_pct": 6.9923234142533115
+}

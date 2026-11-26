@@ -46,6 +46,25 @@ class SectionRouter {
     const Control committed=have_pose_?last_command_:Control{car.steer,car.v};
     DynamicState dyn=physics_step(delayed_state(car),committed,Vehicle{});
     const int ticks=std::max(1,int(std::ceil(dt/.01f-1e-5f)));
+    // Check a short held-command preview before the immediate braking reserve
+    // is exhausted. Steering alternatives must pass both original envelopes.
+    auto preview_safe=[&](Control u){
+      return !command_refusal(memory,car,committed,u,dyn,dt,ticks,nullptr) &&
+             !command_refusal(memory,car,committed,u,dyn,.18f,18,nullptr,.025f);
+    };
+    if(plan_valid && command.speed>0 && !preview_safe(command)){
+      bool found=false;
+      for(float delta:{0.f,.08f,-.08f,.16f,-.16f,.28f,-.28f}){
+        for(float scale:{1.f,.75f,.5f}){
+          Control trial{clamp(command.steer+delta,-.4f,.4f),command.speed*scale};
+          if(preview_safe(trial)){
+            command=trial;reason="scenario_guard_preview";found=true;break;
+          }
+        }
+        if(found)break;
+      }
+      if(!found)command.speed=0;
+    }
     const char* refusal=command_refusal(memory,car,committed,command,dyn,dt,ticks,nullptr);
     if(refusal){
       bool found=false;

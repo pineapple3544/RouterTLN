@@ -11,7 +11,9 @@ Track::Track(const std::string& path){
   std::ifstream f(path);if(!f)throw std::runtime_error("cannot open waypoints: "+path);
   nlohmann::json j;f>>j;
   for(auto& w:j.at("global_traj_wpnts_iqp").at("wpnts"))
-    points.push_back({w.at("x_m"),w.at("y_m"),w.at("psi_rad"),w.at("vx_mps"),w.at("s_m")});
+    points.push_back({w.at("x_m"),w.at("y_m"),w.at("psi_rad"),w.at("vx_mps"),w.at("s_m"),w.at("s_m")});
+  const auto& start=j.at("global_traj_wpnts_iqp").at("wpnts").front();
+  start_left=start.value("d_left",0.);start_right=start.value("d_right",0.);
   if(points.size()<20)throw std::runtime_error("too few waypoints");
 }
 int Track::closest(const State& s)const{
@@ -51,7 +53,7 @@ Memory::Memory(const std::string& path){
   width_=img.width;height_=img.height;png_image_free(&img);
   if(resolution_<=0||width_<=0||height_<=0)throw std::runtime_error("invalid map geometry");
   base_.resize(width_*height_);odds_.assign(base_.size(),0);feature_odds_.assign(base_.size(),0);seen_.assign(base_.size(),-1);
-  current_hit_mask_.assign(base_.size(),0);
+  current_hit_mask_.assign(base_.size(),0);update_flags_.assign(base_.size(),0);
   bool negate=y["negate"].as<int>()!=0;float free=y["free_thresh"].as<float>();
   for(int row=0;row<height_;++row)for(int col=0;col<width_;++col){
     float gray=bytes[(height_-1-row)*width_+col]/255.f;
@@ -100,15 +102,16 @@ void Memory::replace_current_hits(std::vector<int> hits){
   for(int k:current_hits_)current_hit_mask_[k]=1;
 }
 void Memory::update(const Scan& scan){
-  std::vector<int> hits,feature_hits,free_cells;
+  std::vector<int> hits,feature_hits;
+  auto& free_cells=free_scratch_;free_cells.clear();
   float sx=scan.pose.x+.27f*cosf(scan.pose.yaw),sy=scan.pose.y+.27f*sinf(scan.pose.yaw);
   for(int b=0;b<beams;++b){
     if(scan.valid[b]<.5f)continue;
     float r=clamp(scan.ranges[b],0,scan.range_max),a=scan.pose.yaw+(scan.explicit_angles?scan.angles[b]:scan.angle_min+(scan.angle_max-scan.angle_min)*b/(beams-1));
     float c=cosf(a),q=sinf(a);bool hit=r<scan.range_max-.02f;
-    for(float d=0;d<r-resolution_;d+=resolution_*.7f){int k=index(sx+c*d,sy+q*d);if(k>=0)free_cells.push_back(k);}
+    for(float d=0;d<r-resolution_;d+=resolution_*.7f){int k=index(sx+c*d,sy+q*d);if(k>=0 && !(update_flags_[k]&1)){free_cells.push_back(k);update_flags_[k]|=1;}}
     if(hit){int k=index(sx+c*r,sy+q*r);if(k>=0){
-      feature_hits.push_back(k);
+      if(!(update_flags_[k]&2)){feature_hits.push_back(k);update_flags_[k]|=2;}
       // The simulator's range sigma is 1 cm. Associate returns within 3 sigma
       // of the first mapped wall; do not grow a second wall into the free cell.
       // No free-space evidence is added at the ambiguous endpoint: previously
@@ -122,11 +125,14 @@ void Memory::update(const Scan& scan){
     }}
   }
   auto unique=[](std::vector<int>& a){std::sort(a.begin(),a.end());a.erase(std::unique(a.begin(),a.end()),a.end());};
-  unique(hits);replace_current_hits(std::move(hits));unique(feature_hits);unique(free_cells);
-  for(int k:free_cells)if(!current_hit_mask_[k])odds_[k]=fmaxf(-3.f,odds_[k]-.7f);
+  unique(hits);replace_current_hits(std::move(hits));
+  for(int k:free_cells){
+    if(!current_hit_mask_[k])odds_[k]=fmaxf(-3.f,odds_[k]-.7f);
+    if(!(update_flags_[k]&2)){feature_odds_[k]=fmaxf(-3.f,feature_odds_[k]-.7f);seen_[k]=scan.stamp;}
+    update_flags_[k]=0;
+  }
   for(int k:current_hits_)odds_[k]=fminf(4.f,odds_[k]+1.f);
-  for(int k:free_cells)if(!std::binary_search(feature_hits.begin(),feature_hits.end(),k)){feature_odds_[k]=fmaxf(-3.f,feature_odds_[k]-.7f);seen_[k]=scan.stamp;}
-  for(int k:feature_hits){feature_odds_[k]=fminf(4.f,feature_odds_[k]+1.f);seen_[k]=scan.stamp;}
+  for(int k:feature_hits){update_flags_[k]=0;feature_odds_[k]=fminf(4.f,feature_odds_[k]+1.f);seen_[k]=scan.stamp;}
 }
 Grid Memory::local(const State& s,float resolution)const{
   Grid g;g.resolution=resolution;g.x0=-grid_n*resolution*.25f;g.y0=-grid_n*resolution*.5f;float c=cosf(s.yaw),q=sinf(s.yaw);

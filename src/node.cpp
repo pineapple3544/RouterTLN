@@ -3,6 +3,7 @@
 #include "el/section_router.hpp"
 #include "el/policy.hpp"
 #include "el/scenarios.hpp"
+#include "el/lap_epoch.hpp"
 #include "el/scenario_driver.hpp"
 #include <rclcpp/rclcpp.hpp>
 #include <sensor_msgs/msg/laser_scan.hpp>
@@ -26,6 +27,8 @@ class Controller:public rclcpp::Node {
   Controller():Node("el_native_controller"){
     auto root=declare_parameter<std::string>("map_dir",el::default_map_dir);
     track_=std::make_unique<Track>(root+"/global_waypoints.json");memory_=std::make_unique<Memory>(el::map_stem(root)+".yaml");
+    const auto& start=track_->points.front();
+    finish_={start.x,start.y,start.yaw,track_->start_left,track_->start_right,track_->points.back().s};
     orient_track(*track_,false);
     localizer_=std::make_unique<ScanLocalizer>(*memory_);
     router_settings_=map_router_settings(root);
@@ -83,23 +86,27 @@ class Controller:public rclcpp::Node {
     router_settings_.sim_race_only=declare_parameter<bool>("sim_race_only",false);
     router_settings_.race_brake_preview_s=declare_parameter<double>("race_brake_preview_s",.18);
     if(router_settings_.shared_speed_band)router_settings_.sim_avoid_max=vmax_;
-    router_settings_.validate_sim_band(vmax_,local_sim_clock_);
+    router_settings_.validate_sim_band(vmax_,local_sim_clock_ || declare_parameter<bool>("official_simulator",false));
     if(scenario_mode_){
       if(router_settings_.lap_planning||router_settings_.sim_section_speed_profile||router_settings_.whole_lap_path||
          router_settings_.avoid_policy_first||!shared_path.empty())throw std::runtime_error("scenario mode does not use legacy TLN/lap options");
+      if(finish_.left<=0 || finish_.right<=0 || finish_.length<=0)throw std::runtime_error("scenario finish line requires map bounds and length");
       scenario::Settings cfg;
       cfg.request_period=declare_parameter<double>("scenario_period_s",.10);
       cfg.optional_budget_ms=declare_parameter<double>("scenario_optional_budget_ms",55.);
       cfg.plan_age=declare_parameter<double>("scenario_max_age_s",.55);
-      cfg.lateral_accel=declare_parameter<double>("scenario_lateral_accel",3.);
+      cfg.lateral_accel=declare_parameter<double>("scenario_lateral_accel",5.5);
       cfg.accel=declare_parameter<double>("scenario_accel",2.5);
       cfg.brake=declare_parameter<double>("scenario_brake",3.);
-      cfg.nominal_size=declare_parameter<double>("scenario_nominal_size_m",.15);
+      cfg.nominal_size=declare_parameter<double>("scenario_nominal_size_m",cfg.nominal_size);
       cfg.position_step=declare_parameter<double>("scenario_position_step_m",.20);
       cfg.assume_passable=declare_parameter<bool>("scenario_assume_passable",false);
       cfg.visibility_enabled=declare_parameter<bool>("scenario_visibility",true);
       cfg.visibility_cost_weight=declare_parameter<double>("scenario_visibility_cost_weight",.12);
-      cfg.residual_checkpoint=declare_parameter<std::string>("residual_checkpoint","");
+      cfg.residual_checkpoint=declare_parameter<std::string>("residual_checkpoint","/workspace/models/v3/berlin.rcn");
+      cfg.no_path_snapshot=declare_parameter<std::string>("scenario_no_path_snapshot","");
+      cfg.gpu_profile=declare_parameter<std::string>("scenario_gpu_profile","");
+      cfg.gate_capture=declare_parameter<std::string>("scenario_gate_capture","");
       cfg.record_path=declare_parameter<std::string>("scenario_record","");
       scenario_run_=declare_parameter<std::string>("scenario_run_id","local");
       scenario_=std::make_unique<scenario::Driver>(*track_,*memory_,cfg);
@@ -125,7 +132,7 @@ class Controller:public rclcpp::Node {
       if(scan_log_.is_open())scan_log_<<scan_received_<<','<<rclcpp::Time(m->header.stamp).seconds()<<'\n';});
     reset_=create_service<std_srvs::srv::Trigger>("/el/reset_memory",[this](const std::shared_ptr<std_srvs::srv::Trigger::Request>,std::shared_ptr<std_srvs::srv::Trigger::Response> response){
       response->success=(!localizer_->locked() || (!scans_.empty() && fabs(scans_.back().pose.v)<.1));
-      if(response->success){if(scenario_){scenario_->invalidate();++scenario_epoch_;scenario_clear_since_=-1;}memory_->reset();router_.reset();localizer_->reset();scans_.clear();pending_scans_.clear();last_scan_=-1;last_progress_=-1;progress_=0;last_={};reported_fault_=false;finished_=false;}
+      if(response->success){if(scenario_){scenario_->invalidate();++scenario_epoch_;scenario_clear_since_=-1;}held_scan_=-1;finish_.reset();memory_->reset();router_.reset();localizer_->reset();scans_.clear();pending_scans_.clear();last_scan_=-1;last_progress_=-1;progress_=0;last_={};reported_fault_=false;finished_=false;}
       response->message=response->success?"memory reset":"stop vehicle before memory reset";
     });
     last_publish_=steady();watchdog_=std::thread([this]{while(alive_){std::this_thread::sleep_for(std::chrono::milliseconds(20));if(rclcpp::ok()&&steady()-last_publish_.load()>.18){try{publish({0,0});}catch(...){}}}});
@@ -161,7 +168,7 @@ class Controller:public rclcpp::Node {
     if(source_now()-stamp>.15 || (local_sim_clock_ && stamp>source_now())){
       refuse("scan_timeout");return;
     }
-    if(stamp<=last_scan_)return;
+    if(stamp<=last_scan_ || stamp==held_scan_)return;
     auto begin=steady();ControlTiming timing;
     Scan current;current.stamp=stamp;current.angle_min=scan_->angle_min;current.angle_max=scan_->angle_max;
     if(scan_->ranges.size()<beams){refuse("missing_beams");return;}
@@ -173,9 +180,22 @@ class Controller:public rclcpp::Node {
     const bool initializing=!localizer_->locked();
     const auto estimate=localizer_->update(current,*track_,last_);
     if(!estimate){
-      if(!initializing)refuse("localization_lost");else publish({0,0});
+      if(!initializing){
+        const std::string reason=localizer_->rejection();
+        if(scenario_ && reason=="constrained_residual" && held_scan_<0 &&
+           source_now()-last_scan_<=.15){
+          // A single ambiguous longitudinal fit cannot authorize motion.
+          // Brake now. Only an independently accepted subsequent scan may resume.
+          held_scan_=stamp;last_={last_.steer,0};publish(last_);
+          RCLCPP_WARN(get_logger(),"holding for fresh scan after constrained wall fit");
+          return;
+        }
+        if(!reported_fault_)RCLCPP_ERROR(get_logger(),"scan localizer rejected frame: %s dt=%.4f",reason.c_str(),stamp-last_scan_);
+        refuse("localization_lost");
+      }else publish({0,0});
       return;
     }
+    held_scan_=-1;
     const State state=*estimate;current.pose=state;
     // Acquire global localization at rest. Only fresh tracking cycles may drive.
     if(initializing){last_scan_=stamp;publish({0,0});return;}
@@ -183,7 +203,7 @@ class Controller:public rclcpp::Node {
     // A geometric lap epoch from scan-localized progress, never a GT/spawner topic.
     int n=track_->closest(state);float position=track_->points[n].s;
     float length=track_->points.back().s+hypotf(track_->points.back().x-track_->points.front().x,track_->points.back().y-track_->points.front().y);
-    if(scenario_&&last_progress_>=0&&position-last_progress_<-length/2){
+    if(scenario_&&finish_.update(state.x,state.y,track_->points[n].map_s)){
       memory_->reset();scans_.clear();scenario_->invalidate();++scenario_epoch_;scenario_clear_since_=-1;
     }
     memory_->update(current);scans_.push_back(current);while(scans_.size()>history)scans_.pop_front();last_scan_=stamp;
@@ -256,6 +276,8 @@ class Controller:public rclcpp::Node {
   double scenario_clear_since_=-1;
   std::unique_ptr<scenario::Driver> scenario_;std::string scenario_run_;uint64_t scenario_epoch_=1;
   std::ofstream scenario_metrics_;
+  double held_scan_=-1;
+  LapEpoch finish_;
   SectionRouter router_;RouterSettings router_settings_;double vmax_=0,deadline_=0,last_scan_=-1,scan_received_=0;Control last_;
   std::unique_ptr<ScanLocalizer> localizer_;std::deque<Scan> scans_;std::deque<sensor_msgs::msg::LaserScan::ConstSharedPtr> pending_scans_;
   int stop_laps_=0;bool finished_=false,reported_fault_=false;uint64_t step_=0;float progress_=0,last_progress_=-1;

@@ -33,8 +33,8 @@ int main(){
   std::fill(cells.begin(),cells.end(),Unknown);
   Frame f{};f.station=0;f.car.v=3;f.cap=3.5f;
   VisibilityAtlas a;a.length=20;
-  VisibilityEntry early;early.obstacle={4,0,.15f};early.station=4;early.lead={4,4,4};early.gap=1;
-  VisibilityEntry late=early;late.obstacle={4,1,.15f};late.lead={.6f,.6f,.6f};
+  VisibilityEntry early;early.obstacle={4,0,default_obstacle_size};early.station=4;early.lead={4,4,4};early.gap=1;
+  VisibilityEntry late=early;late.obstacle={4,1,default_obstacle_size};late.lead={.6f,.6f,.6f};
   a.entries={early,late};auto ranks=a.rank(f,map);
   require(ranks.size()==2&&ranks[0].hypothesis.boxes[0].y==1,"late sight prioritized");
   require(ranks[0].slack<ranks[1].slack,"response slack");

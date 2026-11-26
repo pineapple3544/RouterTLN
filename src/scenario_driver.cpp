@@ -1,5 +1,7 @@
 #include "el/scenario_driver.hpp"
 #include "el/scenario_visibility.hpp"
+#include "el/scenario_guide.hpp"
+#include "el/scenario_motion_search.hpp"
 #include "el/avoid_corridor.hpp"
 #include <algorithm>
 #include <atomic>
@@ -29,8 +31,8 @@ std::vector<Width> analyze(const Track& t,const Memory& m){
     }out.push_back(w);
   }return out;
 }
-Frame frame_for(const Track& t,const std::vector<Width>& widths,const State& car,float cap,const Settings& cfg){
-  Frame f;f.car=car;f.cap=cap;f.lateral_accel=cfg.lateral_accel;f.accel=cfg.accel;f.brake=cfg.brake;
+Frame frame_for(const Track& t,const std::vector<Width>& widths,const State& car,float cap,const Settings& cfg,float spacing=station_step){
+  Frame f;f.spacing=spacing;f.car=car;f.cap=cap;f.lateral_accel=cfg.lateral_accel;f.accel=cfg.accel;f.brake=cfg.brake;
   int n=int(t.points.size()),near=t.closest(car),idx=near;float fraction=0,best=INFINITY;
   for(int di=-2;di<=2;++di){
     int j=(near+n+di)%n;auto a=t.points[j],b=t.points[(j+1)%n];
@@ -48,7 +50,7 @@ Frame frame_for(const Track& t,const std::vector<Width>& widths,const State& car
     float yaw=wrap(a.yaw+q*wrap(b.yaw-a.yaw));
     float wl=widths[idx].lo*(1-q)+q*widths[j].lo,wh=widths[idx].hi*(1-q)+q*widths[j].hi;
     f.ref[i]={a.x+q*(b.x-a.x),a.y+q*(b.y-a.y),yaw,wl+.19f,wh-.19f,wl,wh};
-    remaining+=station_step;
+    remaining+=spacing;
   }
   const auto& r=f.ref[0];f.offset=-sinf(r.yaw)*(car.x-r.x)+cosf(r.yaw)*(car.y-r.y);
   f.slope=clamp(tanf(clamp(wrap(car.yaw-r.yaw),-.8f,.8f)),-1.f,1.f);
@@ -112,7 +114,8 @@ std::vector<Hypothesis> generate(const Frame& f,MapView map,const Settings& cfg)
   };
   add(cfg.nominal_size,6,false);
   // Primary size and imminent positions first; other sizes spend only optional budget.
-  add(.20f,6,false);add(.30f,6,false);add(.10f,6,true);
+  for(float size:{.20f,.30f,.10f})
+    if(fabsf(size-cfg.nominal_size)>.001f)add(size,6,size==.10f);
   const size_t singles=out.size();
   for(size_t a=1;a<singles&&out.size()<144;++a){
     if(fabsf(out[a].boxes[0].size-cfg.nominal_size)>.001f)continue;
@@ -137,7 +140,8 @@ bool path_valid(const Path& p,int n,const Memory& m,const State& car){
   if(footprint(m,car,.04f)>.5f)return false;
   for(int i=n;i<points;++i){
     State s{p.p[i].x,p.p[i].y,p.p[i].yaw};
-    if(footprint(m,s,.065f)>.5f||gym_front_blocked(m,s,.02f))return false;
+    const float margin=p.recovery_sweep?.04f+.025f*fminf(1.f,(p.p[i].s-p.p[0].s)/.70f):.065f;
+    if(footprint(m,s,margin)>.5f||gym_front_blocked(m,s,.02f))return false;
   }return true;
 }
 bool recently_free(const Memory& m,float x,float y,double stamp){
@@ -174,6 +178,30 @@ std::vector<std::array<float,2>> hits(const Memory& m,const Scan& scan){
     float x=car.x+.27f*cosf(car.yaw)+scan.ranges[b]*cosf(a),y=car.y+.27f*sinf(car.yaw)+scan.ranges[b]*sinf(a);
     if(m.obstacle_at(x,y)>.5f)out.push_back({x,y});
   }return out;
+}
+// A square is first observed on its front face. Complete only the unknown
+// cells directly behind adjacent non-wall returns, for the planning snapshot.
+void complete_returns(Request& req,const std::vector<std::array<float,2>>& hits,
+                      const State& car,float side){
+  const auto& m=req.map;
+  const float sx=car.x+.27f*cosf(car.yaw),sy=car.y+.27f*sinf(car.yaw);
+  for(size_t i=1;i<hits.size();++i){
+    auto a=hits[i-1],b=hits[i];
+    if(hypotf(a[0]-b[0],a[1]-b[1])>.14f)continue;
+    for(float q:{0.f,.5f,1.f}){
+      float x=a[0]+q*(b[0]-a[0]),y=a[1]+q*(b[1]-a[1]);
+      const float dist=hypotf(x-sx,y-sy);
+      if(dist<.15f)continue;
+      float dx=(x-sx)/dist,dy=(y-sy)/dist;
+      for(float t=.5f*m.resolution;t<side;t+=.5f*m.resolution){
+        int col=int(floorf((x+t*dx-m.x0)/m.resolution)),row=int(floorf((y+t*dy-m.y0)/m.resolution));
+        if(col<0||row<0||col>=m.width||row>=m.height)break;
+        auto& cell=req.cells[row*m.width+col];
+        if(cell==Free)break;
+        if(cell==Unknown)cell=Occupied;
+      }
+    }
+  }
 }
 Features features(const Scan& scan,const Memory& m,const Path& p,int n,Control base,
                   const std::vector<std::array<float,2>>& observed){
@@ -215,25 +243,36 @@ Features features(const Scan& scan,const Memory& m,const Path& p,int n,Control b
 }
 Residual::Residual(const std::string& path){
   if(path.empty())return;
-  std::ifstream f(path);std::string magic,extra;if(!(f>>magic)||magic!="RCN1")throw std::runtime_error("RCN1 checkpoint required");
+  std::ifstream f(path);std::string magic,extra;if(!(f>>magic)||(magic!="RCN1"&&magic!="RCN2"))throw std::runtime_error("RCN1 or RCN2 checkpoint required");
   load_values(f,w1_);load_values(f,b1_);load_values(f,w2_);load_values(f,b2_);load_values(f,w3_);load_values(f,b3_);
+  if(magic=="RCN2"){load_values(f,gate_);load_values(f,gate_bias_);has_gate_=true;}
   if(f>>extra)throw std::runtime_error("unexpected RCN checkpoint data");
   enabled_=true;
 }
-Control Residual::infer(const Features& x)const{
+Control Residual::infer(const Features& x,bool* defer)const{
+  if(defer)*defer=false;
   if(!enabled_)return {};
   auto a=layer<48,feature_count>(x,w1_,b1_,true);auto b=layer<32,48>(a,w2_,b2_,true);
+  if(defer&&has_gate_){
+    float score=gate_bias_[0];
+    for(size_t i=0;i<b.size();++i)score+=gate_[i]*b[i];
+    *defer=score<0;
+  }
   auto out=layer<2,32>(b,w3_,b3_,false);return {.08f*out[0],.5f*out[1]};
 }
 struct Driver::Impl {
+  bool saved_no_path=false;
+  const Track& track;
   Settings cfg;std::vector<Width> widths;Residual net;VisibilityAtlas atlas;
   std::mutex mutex;std::condition_variable cv;std::unique_ptr<Request> pending;
   std::shared_ptr<const Result> published;std::atomic<bool> stopping{false},failed{false};
   std::atomic<uint64_t> epoch{1};std::thread worker;
   uint64_t generation=0,used_revision=0;
   double last_request=-1;Path active{};uint64_t active_generation=0;double active_stamp=0;
+  bool defer_speculation=false;
+  double feature_time=-1;
   Features last_features{};int last_near=-1;std::ofstream log;int log_tick=0;
-  Impl(const Track& t,const Memory& m,Settings c):cfg(std::move(c)),widths(analyze(t,m)),net(cfg.residual_checkpoint){
+  Impl(const Track& t,const Memory& m,Settings c):track(t),cfg(std::move(c)),widths(analyze(t,m)),net(cfg.residual_checkpoint){
     if(!(cfg.request_period>=.05f&&cfg.request_period<=.5f&&cfg.optional_budget_ms>=0&&cfg.optional_budget_ms<=250&&
       cfg.plan_age>=cfg.request_period&&cfg.plan_age<=2&&cfg.lateral_accel>0&&cfg.accel>0&&cfg.brake>0&&
       cfg.nominal_size>=.08f&&cfg.nominal_size<=.4f&&cfg.position_step>=.08f&&cfg.position_step<=.5f&&cfg.visibility_cost_weight>=0&&cfg.visibility_cost_weight<=2.f))
@@ -245,11 +284,25 @@ struct Driver::Impl {
   ~Impl(){stopping=true;cv.notify_all();if(worker.joinable())worker.join();}
   void run(){
     try{
-      Optimizer opt;std::vector<Path> cache;uint64_t cache_epoch=0,revision=0;
+      Optimizer opt;bool previous_measured=false;
+      std::vector<Path> cache;uint64_t cache_epoch=0,revision=0;
+      std::ofstream profile,capture;
+      if(!cfg.gpu_profile.empty()){
+        profile.open(cfg.gpu_profile);
+        if(!profile)throw std::runtime_error("cannot open GPU profile");
+        profile<<"monotonic_s,generation,optional,candidates,kernel_ms\n"<<std::fixed;
+      }
+      if(!cfg.gate_capture.empty()){
+        capture.open(cfg.gate_capture);
+        if(!capture)throw std::runtime_error("cannot open gate capture");
+      }
       while(!stopping){
         std::unique_ptr<Request> req;
         {std::unique_lock<std::mutex> lock(mutex);cv.wait(lock,[&]{return stopping||pending!=nullptr;});if(stopping)return;req=std::move(pending);}
         auto begin=seconds();auto view=req->view();opt.upload(view);
+        if(req->measured_obstacle)build_observed_guide(req->frame,view);
+        const bool new_obstacle=req->measured_obstacle&&(!previous_measured||cache_epoch!=req->epoch);
+        previous_measured=req->measured_obstacle;
         if(cache_epoch!=req->epoch){cache.clear();cache_epoch=req->epoch;}
         cache.erase(std::remove_if(cache.begin(),cache.end(),[&](const Path& p){return begin-p.created>cfg.plan_age;}),cache.end());
         Result result;result.generation=req->generation;result.epoch=req->epoch;result.timestamp=req->timestamp;
@@ -288,8 +341,63 @@ struct Driver::Impl {
           if(epoch.load()==req->epoch)std::atomic_store(&published,std::move(ready));
         };
         // Real-observation path remains the first CUDA solve.
-        save(opt.solve(req->frame,{Hypothesis{}}));
-        if(req->optional_budget_ms<=0)continue;
+        if(capture.is_open())capture<<nlohmann::json{{"t",req->timestamp},{"epoch",req->epoch},
+          {"valid",req->gate_features_valid},{"obstacle",req->measured_obstacle},{"x",req->gate_features}}.dump()<<'\n';
+        auto solve=[&](const Frame& frame,const std::vector<Hypothesis>& hypotheses,bool optional=false){
+          float kernel_ms=0;
+          const double started=seconds();
+          auto paths=opt.solve(frame,hypotheses,profile.is_open()?&kernel_ms:nullptr);
+          if(profile.is_open())profile<<started<<','<<req->generation<<','<<optional<<','
+            <<hypotheses.size()*candidates<<','<<kernel_ms<<'\n';
+          return paths;
+        };
+        auto actual=solve(req->frame,{Hypothesis{}});
+        const bool primary_valid=actual.front().candidate>=0;
+        if(actual.front().candidate<0){
+          // In wide sections the nearest nonzero sample can be a metre away.
+          // Keep the full horizon and resample around the racing line within a
+          // vehicle length, using the identical map and dynamics checks.
+          auto refined=req->frame;
+          refined.lattice_radius=.58f;
+          actual=solve(refined,{Hypothesis{}});
+          if(actual.front().candidate<0 && refined.car.v<1.f){
+            // At low speed, check the first vehicle length in quarter steps,
+            // then regain the ordinary clearance before the horizon opens up.
+            refined.recovery_sweep=true;
+            actual=solve(refined,{Hypothesis{}});
+          }
+        }
+        if(actual.front().candidate<0)actual.front()=search_motion(req->frame,view);
+        if(actual.front().candidate<0){
+          // Try a shorter fully checked path before declaring that no motion
+          // is possible. The same speed profile must brake to zero at its end.
+          auto shorter=frame_for(track,widths,req->frame.car,req->frame.cap,cfg,station_step*.5f);
+          if(req->frame.have_guide){
+            shorter.have_guide=true;
+            for(int i=0;i<points;++i){
+              int j=i/2;
+              shorter.guide[i]=(i%2==0)?req->frame.guide[j]:.5f*(req->frame.guide[j]+req->frame.guide[j+1]);
+            }
+          }
+          actual=solve(shorter,{Hypothesis{}});
+          if(actual.front().candidate<0 && req->frame.car.v<.1f && !saved_no_path && !cfg.no_path_snapshot.empty()){
+            // Optional worker-side capture of the exact stationary failure for offline replay.
+            auto serialize_frame=[](const Frame& f){
+              auto rows=nlohmann::json::array();
+              for(const Row& r:f.ref)rows.push_back({r.x,r.y,r.yaw,r.lo,r.hi,r.wall_lo,r.wall_hi});
+              return nlohmann::json{{"car",{f.car.x,f.car.y,f.car.yaw,f.car.v,f.car.steer,f.car.yaw_rate}},
+                {"offset",f.offset},{"slope",f.slope},{"spacing",f.spacing},{"cap",f.cap},
+                {"lateral_accel",f.lateral_accel},{"accel",f.accel},{"brake",f.brake},{"rows",rows}};
+            };
+            std::ofstream file(cfg.no_path_snapshot);
+            file<<nlohmann::json{{"width",view.width},{"height",view.height},{"resolution",view.resolution},
+              {"origin",{view.x0,view.y0}},{"cells",req->cells},{"full",serialize_frame(req->frame)},
+              {"short",serialize_frame(shorter)}}.dump();
+            saved_no_path=file.good();
+          }
+        }
+        save(actual);
+        if(req->optional_budget_ms<=0||(req->defer_speculation&&primary_valid&&!new_obstacle))continue;
         std::vector<Hypothesis> hypotheses(1);
         if(cfg.visibility_enabled&&!atlas.entries.empty()){
           // Refine only a bounded shortlist, on the worker, after the primary solve.
@@ -337,7 +445,7 @@ struct Driver::Impl {
           {std::lock_guard<std::mutex> lock(mutex);if(pending)break;}
           size_t count=std::min<size_t>(batch_size,hypotheses.size()-i);
           std::vector<Hypothesis> batch(hypotheses.begin()+i,hypotheses.begin()+i+count);
-          auto solved=opt.solve(req->frame,batch);
+          auto solved=solve(req->frame,batch,true);
           if(cfg.visibility_enabled&&!atlas.entries.empty())result.visibility_completed+=int(count);
           save(solved);i+=count;
         }
@@ -351,25 +459,34 @@ void Driver::invalidate(){
   auto& a=*impl_;a.epoch.fetch_add(1);
   {std::lock_guard<std::mutex> lock(a.mutex);a.pending.reset();}
   std::atomic_store(&a.published,std::shared_ptr<const Result>{});
-  a.active=Path{};a.active_stamp=0;a.last_request=-1;a.used_revision=0;a.last_near=-1;
+  a.active=Path{};a.active_stamp=0;a.last_request=-1;a.used_revision=0;a.last_near=-1;a.feature_time=-1;
 }
 Action Driver::step(const Track& t,const Memory& m,const Scan& scan,float cap){
   auto& a=*impl_;const auto& car=scan.pose;Action out;out.command=out.base={car.steer,0};a.last_near=-1;
   if(a.failed){out.reason="scenario_gpu_error";return out;}
   double now=seconds();auto observed=hits(m,scan);
+  const auto frame=frame_for(t,a.widths,car,cap,a.cfg);
   if(a.last_request<0||now-a.last_request>=a.cfg.request_period){
-    auto req=std::make_unique<Request>();req->frame=frame_for(t,a.widths,car,cap,a.cfg);
+    auto req=std::make_unique<Request>();req->frame=frame;
     req->generation=++a.generation;req->epoch=a.epoch;req->timestamp=now;req->optional_budget_ms=a.cfg.optional_budget_ms;
+    req->gate_features_valid=a.feature_time>=0&&now-a.feature_time<=.10;
+    req->defer_speculation=req->gate_features_valid&&a.last_features[56]==0&&a.defer_speculation&&req->generation%4!=0;
+    if(!a.cfg.gate_capture.empty())req->gate_features=a.last_features;
     req->frame.sensor.angle_min=scan.explicit_angles?scan.angles.front():scan.angle_min;
     req->frame.sensor.angle_max=scan.explicit_angles?scan.angles.back():scan.angle_max;
     req->frame.sensor.range=scan.range_max;
     m.scenario_snapshot(req->cells,req->map.width,req->map.height,req->map.resolution,req->map.x0,req->map.y0,car,scan.stamp);
+    complete_returns(*req,observed,car,a.cfg.nominal_size);
+    for(int i=2;i<points && !req->measured_obstacle;i+=3){
+      const auto& row=frame.ref[i];
+      for(auto h:observed)if(hypotf(h[0]-row.x,h[1]-row.y)<.85f){req->measured_obstacle=true;break;}
+    }
     {std::lock_guard<std::mutex> lock(a.mutex);a.pending=std::move(req);}
     a.cv.notify_one();a.last_request=now;
   }
+  a.feature_time=-1;
   // RaceTLN is only eligible on its original racing line, not on a bypass.
   // Scan/local memory and the full vehicle envelope are checked along that line.
-  const auto frame=frame_for(t,a.widths,car,cap,a.cfg);
   bool race_clear=fabsf(frame.offset)<.14f&&fabsf(wrap(car.yaw-frame.ref[0].yaw))<.18f;
   const float horizon=std::min(5.5f,1.5f+.25f*car.v+car.v*car.v/(2*a.cfg.brake));
   float race_visible=0,curve_cap=cap;bool visibility_open=true;
@@ -391,6 +508,14 @@ Action Driver::step(const Track& t,const Memory& m,const Scan& scan,float cap){
     }
   }
   out.race_speed_cap=fminf(curve_cap,braking_cap(race_visible,a.cfg.brake));
+  // Allow the planner to set up the approach while the box is still outside
+  // the immediate braking footprint of the racing line.
+  for(int i=2;race_clear&&i<points&&i*station_step<=2.2f+.65f*car.v;i+=2){
+    const auto& r=frame.ref[i];
+    for(auto hit:observed){
+      if(hypotf(hit[0]-r.x,hit[1]-r.y)<.43f){race_clear=false;break;}
+    }
+  }
   out.race_clear=race_clear&&out.race_speed_cap>.05f;
 
   auto ready=std::atomic_load(&a.published);
@@ -436,8 +561,11 @@ Action Driver::step(const Track& t,const Memory& m,const Scan& scan,float cap){
   while(aim+1<points&&p.p[aim].s-q.s<look)++aim;
   const auto& target=p.p[aim];
   float ey=-sinf(q.yaw)*(car.x-q.x)+cosf(q.yaw)*(car.y-q.y),heading=wrap(car.yaw-q.yaw);
-  // Curvature preview plus stabilizing feedback. Gains are experimental, not tuned.
-  float steer=atanf(.3302f*target.kappa)-(.85f/(1+.20f*car.v))*ey-.70f*heading;
+  // Follow the position of the lookahead point. The plan is re-anchored at
+  // each request, so near-point tracking errors alone miss a departing curve.
+  const float dx=target.x-car.x,dy=target.y-car.y;
+  const float lateral=-sinf(car.yaw)*dx+cosf(car.yaw)*dy;
+  float steer=atan2f(2*.3302f*lateral,fmaxf(.02f,dx*dx+dy*dy));
   float visibility=visible_distance(p,near,m,scan.stamp);
   float profile=std::min(p.p[near].speed,p.p[std::min(points-1,near+2)].speed);
   float safe=std::min({cap,profile,braking_cap(visibility,a.cfg.brake),
@@ -445,12 +573,13 @@ Action Driver::step(const Track& t,const Memory& m,const Scan& scan,float cap){
   safe=fminf(safe,fmaxf(.3f,cap-3.f*fabsf(ey)-.8f*fabsf(heading)));
   out.base={clamp(steer,-.4f,.4f),fmaxf(0.f,safe)};
   a.last_features=features(scan,m,p,near,out.base,observed);a.last_near=near;
-  out.correction=a.net.infer(a.last_features);
+  a.feature_time=now;
+  out.correction=a.net.infer(a.last_features,&a.defer_speculation);
   out.command={clamp(out.base.steer+out.correction.steer,-.4f,.4f),
     clamp(out.base.speed+out.correction.speed,0.f,safe)};
   out.command.speed=fminf(out.command.speed,sqrtf(a.cfg.lateral_accel*.3302f/fmaxf(.01f,fabsf(tanf(out.command.steer)))));
   out.valid_plan=true;out.chosen=p.candidate;out.visible_m=visibility;out.age_ms=float((now-a.active_stamp)*1000);
-  out.generation=a.active_generation;out.reason="scenario_track";return out;
+  out.generation=a.active_generation;out.reason=p.recovery_sweep?"scenario_swept_track":p.short_horizon?"scenario_short_track":(p.refined_lattice?"scenario_refined_track":"scenario_track");return out;
 }
 void Driver::record(const Memory& memory,const Scan& scan,const Action& action,const std::string& run){
   auto& a=*impl_;if(!a.log.is_open()||!action.valid_plan||a.last_near<0||a.log_tick++%8)return;

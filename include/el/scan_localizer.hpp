@@ -18,6 +18,8 @@ class ScanLocalizer {
   double stamp_=-1;
   bool locked_=false;
   bool used_motion_prior_=false;
+  const char* rejection_="none";
+  std::optional<State> reject(const char* reason){rejection_=reason;return {};}
 
   float distance(float x,float y,float* gx=nullptr,float* gy=nullptr) const {
     const float fx=(x-x0_)/res_-.5f,fy=(y-y0_)/res_-.5f;
@@ -129,6 +131,7 @@ class ScanLocalizer {
   }
   bool locked()const{return locked_;}
   void reset(){locked_=false;used_motion_prior_=false;stamp_=-1;pose_={};}
+  const char* rejection()const{return rejection_;}
   std::optional<State> update(const Scan& scan,const Track& track,Control previous){
     std::vector<Point> points;points.reserve(beams);
     for(int i=0;i<beams;++i){
@@ -137,25 +140,25 @@ class ScanLocalizer {
       const float a=scan.explicit_angles?scan.angles[i]:scan.angle_min+i*(scan.angle_max-scan.angle_min)/(beams-1);
       points.push_back({.27f+r*cosf(a),r*sinf(a)});
     }
-    if(points.size()<30 || !std::isfinite(scan.stamp))return {};
+    if(points.size()<30 || !std::isfinite(scan.stamp))return reject("coverage");
     if(!locked_){
-      if(!initialize(track,points,pose_))return {};
+      if(!initialize(track,points,pose_))return reject("initial_pose");
       locked_=true;stamp_=scan.stamp;return pose_;
     }
     const float dt=scan.stamp-stamp_;
-    if(!(dt>0 && dt<=.15f))return {};
+    if(!(dt>0 && dt<=.15f))return reject("scan_interval");
     const State prior=predict_command_tick(pose_,previous,dt);
     State next=prior;
-    if(!refine(next,points,.18f,5))return {};
+    if(!refine(next,points,.18f,5))return reject("map_fit");
     const float fit_loss=loss(next,points,1,.12f);
-    if(!(fit_loss<=.065f))return {};
+    if(!(fit_loss<=.065f))return reject("residual");
     auto forward_speed=[&]{
       const float mid=pose_.yaw+.5f*wrap(next.yaw-pose_.yaw);
       return ((next.x-pose_.x)*cosf(mid)+(next.y-pose_.y)*sinf(mid))/dt;
     };
     float v=forward_speed();
     float rate=wrap(next.yaw-pose_.yaw)/dt;
-    if(fabsf(rate)>14.f)return {};
+    if(fabsf(rate)>14.f)return reject("yaw_rate");
     const bool inconsistent=fabsf(v-next.v)>3.f;
     if(inconsistent){
       // Scan matching can slide along a corridor even with a low residual.
@@ -163,18 +166,18 @@ class ScanLocalizer {
       // Constrain only longitudinal travel and require the lateral/yaw fit
       // to pass the same residual check before accepting one such scan.
       const bool longitudinal_jump=v<std::max(0.f,pose_.v-9.51f*dt) || v>std::max(prior.v,previous.speed);
-      if(used_motion_prior_ || !longitudinal_jump || prior.v<=0 || previous.speed<=0)return {};
-      if(hypotf(next.x-prior.x,next.y-prior.y)>.18f)return {};
+      if(used_motion_prior_ || !longitudinal_jump || prior.v<=0 || previous.speed<=0)return reject("ambiguous_motion");
+      if(hypotf(next.x-prior.x,next.y-prior.y)>.18f)return reject("position_jump");
       const float mid=pose_.yaw+.5f*wrap(prior.yaw-pose_.yaw);
       const Point lateral{-sinf(mid),cosf(mid)};
       next=prior;
-      if(!refine(next,points,.18f,5,&lateral))return {};
+      if(!refine(next,points,.18f,5,&lateral))return reject("constrained_map_fit");
       const float constrained_loss=loss(next,points,1,.12f);
       if(!(constrained_loss<=std::min(.065f,fit_loss+.25f*res_)) ||
-         hypotf(next.x-prior.x,next.y-prior.y)>res_)return {};
+         hypotf(next.x-prior.x,next.y-prior.y)>res_)return reject("constrained_residual");
       v=forward_speed();
       rate=wrap(next.yaw-pose_.yaw)/dt;
-      if(fabsf(v-next.v)>3.f || fabsf(rate)>14.f)return {};
+      if(fabsf(v-next.v)>3.f || fabsf(rate)>14.f)return reject("constrained_motion");
     }
     used_motion_prior_=inconsistent;
     next.v=std::max(0.f,.82f*next.v+.18f*v);

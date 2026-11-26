@@ -67,7 +67,7 @@ struct Observation {
   std::array<float,context_size> context{};
 };
 struct Scan {std::array<float,beams> ranges{},valid{},angles{};bool explicit_angles=false;State pose;double stamp=0;float angle_min=-2.35f,angle_max=2.35f,range_max=10;};
-struct Waypoint {float x,y,yaw,speed,s;};
+struct Waypoint {float x,y,yaw,speed,s; float map_s=0;};
 class Track {
  public:
   explicit Track(const std::string& path);
@@ -75,6 +75,7 @@ class Track {
   Problem problem(const State&,const Grid&,float)const;
   Control pursuit(const State&,float)const;
   std::vector<Waypoint> points;
+  double start_left=0,start_right=0;
 };
 class Memory {
   friend struct OfflineSnapshot;
@@ -107,7 +108,8 @@ class Memory {
   std::vector<float> base_,odds_,feature_odds_;
   std::vector<double> seen_;
   std::vector<int> current_hits_;
-  std::vector<uint8_t> current_hit_mask_;
+  std::vector<uint8_t> current_hit_mask_,update_flags_;
+  std::vector<int> free_scratch_;
   void replace_current_hits(std::vector<int> hits);
   size_t associated_wall_returns_=0;
   int index(float x,float y)const{
