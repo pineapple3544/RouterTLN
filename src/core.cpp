@@ -155,6 +155,31 @@ void Memory::copy_occupancy(std::vector<uint8_t>& cells,int& width,int& height,f
   width=width_;height=height_;resolution=resolution_;x0=x0_;y0=y0_;cells.resize(base_.size());
   for(size_t i=0;i<cells.size();++i)cells[i]=occupancy(i)>.5f;
 }
+bool Memory::static_blocked(float x,float y)const{
+  int k=index(x,y);return k<0||base_[k]>.5f;
+}
+uint8_t Memory::scenario_cell(float x,float y,double stamp)const{
+  int k=index(x,y);
+  if(k<0||base_[k]>.5f||odds_[k]>.5f||current_hit_mask_[k])return 2;
+  // Free rays must have been seen in this lap and recently enough to use.
+  if(seen_[k]>=0&&stamp>=seen_[k]&&stamp-seen_[k]<=3.0&&odds_[k]<-.3f)return 1;
+  return 0;
+}
+void Memory::scenario_snapshot(std::vector<uint8_t>& cells,int& w,int& h,float& res,float& x0,float& y0,const State& car,double stamp)const{
+  // Fixed-size neighbourhood in map coordinates; bounded copying on the control thread.
+  int cx=(int)floorf((car.x-x0_)/resolution_),cy=(int)floorf((car.y-y0_)/resolution_);
+  int radius=int(ceilf(8.5f/resolution_));
+  int xlo=std::max(0,cx-radius),ylo=std::max(0,cy-radius);
+  int xhi=std::min(width_,cx+radius+1),yhi=std::min(height_,cy+radius+1);
+  if(xhi<=xlo||yhi<=ylo)throw std::runtime_error("scenario pose outside map");
+  w=xhi-xlo;h=yhi-ylo;res=resolution_;x0=x0_+xlo*res;y0=y0_+ylo*res;
+  cells.resize(size_t(w)*h);
+  for(int y=0;y<h;++y)for(int x=0;x<w;++x){
+    int k=(y+ylo)*width_+x+xlo;
+    cells[y*w+x]=(base_[k]>.5f||odds_[k]>.5f||current_hit_mask_[k])?2:
+      (seen_[k]>=0&&stamp>=seen_[k]&&stamp-seen_[k]<=3.0&&odds_[k]<-.3f?1:0);
+  }
+}
 bool Memory::base_free_disc(float x,float y,float radius)const{
   for(float a=-radius;a<=radius+resolution_*.2f;a+=resolution_*.5f)for(float b=-radius;b<=radius+resolution_*.2f;b+=resolution_*.5f){
     if(a*a+b*b>radius*radius)continue;int k=index(x+a,y+b);if(k<0||base_[k]>.5f)return false;}return true;

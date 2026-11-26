@@ -93,6 +93,10 @@ class Memory {
   float obstacle_at(float x,float y)const;
   size_t associated_wall_returns()const{return associated_wall_returns_;}
   bool base_free_disc(float x,float y,float radius)const;
+  // Scenario planner: distinguish observed free, occupied and unknown (0/1/2).
+  uint8_t scenario_cell(float x,float y,double stamp)const;
+  bool static_blocked(float x,float y)const;
+  void scenario_snapshot(std::vector<uint8_t>&,int&,int&,float&,float&,float&,const State&,double)const;
   bool wall_hides_disc(float sx,float sy,float x,float y,float radius)const;
   void copy_occupancy(std::vector<uint8_t>&,int& width,int& height,float& resolution,float& x0,float& y0)const;
  private:
