@@ -27,6 +27,13 @@ class Controller:public rclcpp::Node {
     track_=std::make_unique<Track>(root+"/global_waypoints.json");memory_=std::make_unique<Memory>(el::map_stem(root)+".yaml");
     orient_track(*track_,false);
     localizer_=std::make_unique<ScanLocalizer>(*memory_);
+    // Both default off (= the evaluated behaviour). See docs/localization-lost-analysis.md.
+    localizer_->set_measured_speed_prior(declare_parameter<bool>("localizer_measured_speed_prior",false));
+    grace_scans_=declare_parameter<int>("localization_grace_scans",0);
+    if(grace_scans_<0 || grace_scans_>2)throw std::runtime_error("localization_grace_scans must be 0, 1 or 2");
+    // 1 = tolerate one isolated late control cycle; default 0 (= the evaluated behaviour).
+    deadline_grace_=declare_parameter<int>("deadline_grace_cycles",0);
+    if(deadline_grace_<0 || deadline_grace_>1)throw std::runtime_error("deadline_grace_cycles must be 0 or 1");
     router_settings_=map_router_settings(root);
     if(declare_parameter<std::string>("mode","moe")!="moe")throw std::runtime_error("online controller requires mode=moe");
     local_sim_clock_=declare_parameter<bool>("local_steady_sim_clock",false);
@@ -58,6 +65,11 @@ class Controller:public rclcpp::Node {
     router_settings_.straight_boost=declare_parameter<bool>("straight_boost",false);
     router_settings_.sim_race_only=declare_parameter<bool>("sim_race_only",false);
     router_settings_.race_brake_preview_s=declare_parameter<double>("race_brake_preview_s",.18);
+    router_settings_.fallback_budget_ms=declare_parameter<double>("fallback_budget_ms",0.);
+    router_settings_.stop_hold_steering=declare_parameter<bool>("stop_hold_steering",false);
+    router_settings_.race_fallback=declare_parameter<bool>("race_fallback",false);
+    if(!(router_settings_.fallback_budget_ms>=0 && router_settings_.fallback_budget_ms<deadline_))
+      throw std::runtime_error("fallback_budget_ms must be in [0, deadline_ms)");
     router_settings_.validate_sim_band(vmax_,local_sim_clock_);
     auto metrics=declare_parameter<std::string>("metrics","/workspace/runs/control.csv");
     std::filesystem::create_directories(std::filesystem::path(metrics).parent_path());metrics_.open(metrics);
@@ -77,7 +89,7 @@ class Controller:public rclcpp::Node {
       if(scan_log_.is_open())scan_log_<<scan_received_<<','<<rclcpp::Time(m->header.stamp).seconds()<<'\n';});
     reset_=create_service<std_srvs::srv::Trigger>("/el/reset_memory",[this](const std::shared_ptr<std_srvs::srv::Trigger::Request>,std::shared_ptr<std_srvs::srv::Trigger::Response> response){
       response->success=(!localizer_->locked() || (!scans_.empty() && fabs(scans_.back().pose.v)<.1));
-      if(response->success){memory_->reset();router_.reset();localizer_->reset();scans_.clear();pending_scans_.clear();last_scan_=-1;last_progress_=-1;progress_=0;last_={};reported_fault_=false;finished_=false;}
+      if(response->success){memory_->reset();router_.reset();localizer_->reset();rejected_in_row_=0;late_in_row_=0;scans_.clear();pending_scans_.clear();last_scan_=-1;last_progress_=-1;progress_=0;last_={};reported_fault_=false;finished_=false;}
       response->message=response->success?"memory reset":"stop vehicle before memory reset";
     });
     last_publish_=steady();watchdog_=std::thread([this]{while(alive_){std::this_thread::sleep_for(std::chrono::milliseconds(20));if(rclcpp::ok()&&steady()-last_publish_.load()>.18){try{publish({0,0});}catch(...){}}}});
@@ -97,7 +109,9 @@ class Controller:public rclcpp::Node {
       RCLCPP_ERROR(get_logger(),"fault_stamp=%.9f control_fault=%s",source_now(),reason);
       reported_fault_=true;
     }
-    last_={0,0};publish(last_);
+    // With stop_hold_steering the fault stop holds the last published steering, like the
+    // router's own stops; otherwise the original behaviour (steering 0).
+    last_={router_settings_.stop_hold_steering ? last_.steer : 0.f, 0};publish(last_);
   }
   void tick(){try{
     if(finished_){publish({0,0});return;}
@@ -123,16 +137,25 @@ class Controller:public rclcpp::Node {
       current.range_max=18;current.ranges[b]=valid?clamp(r,0,18):18;current.valid[b]=valid;good+=valid;}
     if(good<beams*.8){refuse("invalid_ranges");return;}
     const bool initializing=!localizer_->locked();
-    const auto estimate=localizer_->update(current,*track_,last_);
+    auto estimate=localizer_->update(current,*track_,last_);
+    bool coasting=false;
     if(!estimate){
-      if(!initializing)refuse("localization_lost");else publish({0,0});
-      return;
-    }
+      if(initializing){publish({0,0});return;}
+      RCLCPP_WARN(get_logger(),"localizer rejected scan stamp=%.9f: %s",stamp,localizer_->last_rejection().c_str());
+      // Bridge at most grace_scans_ consecutive rejected scans with the motion prior. The
+      // router and its command guard still run on the coasted pose; the scan is not written
+      // into the obstacle memory, since its pose is not measured.
+      if(rejected_in_row_<grace_scans_)estimate=localizer_->coast(current,last_);
+      if(!estimate){refuse("localization_lost");return;}
+      ++rejected_in_row_;coasting=true;
+      RCLCPP_WARN(get_logger(),"coasting on motion prior (%d/%d)",rejected_in_row_,grace_scans_);
+    }else rejected_in_row_=0;
     const State state=*estimate;current.pose=state;
     // Acquire global localization at rest. Only fresh tracking cycles may drive.
     if(initializing){last_scan_=stamp;publish({0,0});return;}
     timing.mark(ControlTiming::scan);
-    memory_->update(current);scans_.push_back(current);while(scans_.size()>history)scans_.pop_front();last_scan_=stamp;
+    if(!coasting)memory_->update(current);
+    scans_.push_back(current);while(scans_.size()>history)scans_.pop_front();last_scan_=stamp;
     timing.mark(ControlTiming::memory);
     CorridorTrace trace;
     auto result=router_.step(*track_,*memory_,state,scans_,*race_,*avoid_,vmax_,.025f,stamp,router_settings_,&timing,corridor_log_.is_open()?&trace:nullptr);
@@ -141,13 +164,20 @@ class Controller:public rclcpp::Node {
     float ms=(steady()-begin)*1000;
     const double source_time=source_now();
     const char* refusal=nullptr;
-    if(ms>deadline_) refusal="deadline";
+    const bool late=ms>deadline_;
+    // A tolerated late cycle still publishes the command that passed the full guard, and
+    // still has to pass the scan-age and clock checks below. Consecutive misses latch.
+    if(late && late_in_row_>=deadline_grace_) refusal="deadline";
     else if(source_time-stamp>.15) refusal="scan_timeout";
     else if(local_sim_clock_ && stamp>source_time) refusal="sensor_clock_mismatch";
+    if(late){
+      if(refusal)RCLCPP_ERROR(get_logger(),"deadline miss compute_ms=%.2f stamp=%.9f: %s",ms,stamp,refusal);
+      else{++late_in_row_;RCLCPP_WARN(get_logger(),"deadline miss compute_ms=%.2f stamp=%.9f tolerated (%d/%d)",ms,stamp,late_in_row_,deadline_grace_);}
+    }else late_in_row_=0;
     if(refusal){
       router_.stop(refusal);
       if(selected!=Mode::Emergency)result.reason=refusal;
-      candidate={state.steer,0};selected=Mode::Emergency;valid=false;
+      candidate=router_.stop_command(state,router_settings_);selected=Mode::Emergency;valid=false;
     }
     int n=track_->closest(state);float position=track_->points[n].s;
     float length=track_->points.back().s+hypotf(track_->points.back().x-track_->points.front().x,track_->points.back().y-track_->points.front().y);
@@ -178,7 +208,7 @@ class Controller:public rclcpp::Node {
   bool local_sim_clock_=false;
   SectionRouter router_;RouterSettings router_settings_;double vmax_=0,deadline_=0,last_scan_=-1,scan_received_=0;Control last_;
   std::unique_ptr<ScanLocalizer> localizer_;std::deque<Scan> scans_;std::deque<sensor_msgs::msg::LaserScan::ConstSharedPtr> pending_scans_;
-  int stop_laps_=0;bool finished_=false,reported_fault_=false;uint64_t step_=0;float progress_=0,last_progress_=-1;
+  int stop_laps_=0,grace_scans_=0,rejected_in_row_=0,deadline_grace_=0,late_in_row_=0;bool finished_=false,reported_fault_=false;uint64_t step_=0;float progress_=0,last_progress_=-1;
   std::ofstream metrics_,corridor_log_,scan_log_;std::atomic<bool> alive_{true};std::atomic<double> last_publish_{0};std::thread watchdog_;
   rclcpp::Publisher<ackermann_msgs::msg::AckermannDriveStamped>::SharedPtr drive_;rclcpp::Publisher<std_msgs::msg::String>::SharedPtr debug_;
   rclcpp::Subscription<sensor_msgs::msg::LaserScan>::SharedPtr scan_sub_;

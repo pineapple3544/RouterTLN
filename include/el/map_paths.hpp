@@ -22,6 +22,14 @@ struct RouterSettings {
   bool race_exit_speed=false;
   bool race_lap_speed=false;
   float race_brake_preview_s=.18f;
+  // Compute budget for the Avoid fallback command search, ms since the router step began
+  // (0 = unlimited). When exhausted, a guard-checked brake command replaces the latched stop.
+  float fallback_budget_ms=0;
+  // Stop with the last published steering held (what the command guard's braking rollout
+  // assumes) instead of the steering estimated from yaw rate / speed. Default off.
+  bool stop_hold_steering=false;
+  // Run the fallback command search in Race mode too before latching a stop. Default off.
+  bool race_fallback=false;
   void validate_sim_band(float cap, bool simulator) const {
     if(race_lap_speed && (race_sight_speed || race_exit_speed))
       throw std::runtime_error("choose either the scout speed plan or the earlier Race envelope");

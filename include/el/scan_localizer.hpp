@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <limits>
 #include <optional>
+#include <string>
 #include <eigen3/Eigen/Cholesky>
 
 namespace el {
@@ -18,6 +19,17 @@ class ScanLocalizer {
   double stamp_=-1;
   bool locked_=false;
   bool used_motion_prior_=false;
+  // Option: build the motion prior from the estimated speed rather than the commanded
+  // speed. The commanded acceleration overshoots while the car speeds up, and on a
+  // near-straight section the scan cannot remove the along-track error that results.
+  bool measured_speed_prior_=false;
+  // Why the most recent update() returned no estimate (diagnostics only).
+  std::string rejection_="none";
+  std::optional<State> reject(std::string why){rejection_=std::move(why);return {};}
+  State motion_prior(Control previous,float dt)const{
+    if(measured_speed_prior_)previous.speed=pose_.v;
+    return predict_command_tick(pose_,previous,dt);
+  }
 
   float distance(float x,float y,float* gx=nullptr,float* gy=nullptr) const {
     const float fx=(x-x0_)/res_-.5f,fy=(y-y0_)/res_-.5f;
@@ -128,6 +140,17 @@ class ScanLocalizer {
     for(size_t i=0;i<map.size();++i)field_[i]=(map[i]?(.5f-free[i]):(field_[i]-.5f))*res_;
   }
   bool locked()const{return locked_;}
+  void set_measured_speed_prior(bool on){measured_speed_prior_=on;}
+  const std::string& last_rejection()const{return rejection_;}
+  // Advance the tracked pose by the motion prior alone, for a scan that update() rejected.
+  // The caller decides how many consecutive scans may be bridged this way.
+  std::optional<State> coast(const Scan& scan,Control previous){
+    if(!locked_ || !std::isfinite(scan.stamp))return {};
+    const float dt=scan.stamp-stamp_;
+    if(!(dt>0 && dt<=.15f))return {};
+    pose_=motion_prior(previous,dt);stamp_=scan.stamp;used_motion_prior_=false;
+    return pose_;
+  }
   void reset(){locked_=false;used_motion_prior_=false;stamp_=-1;pose_={};}
   std::optional<State> update(const Scan& scan,const Track& track,Control previous){
     std::vector<Point> points;points.reserve(beams);
@@ -137,42 +160,43 @@ class ScanLocalizer {
       const float a=scan.explicit_angles?scan.angles[i]:scan.angle_min+i*(scan.angle_max-scan.angle_min)/(beams-1);
       points.push_back({.27f+r*cosf(a),r*sinf(a)});
     }
-    if(points.size()<30 || !std::isfinite(scan.stamp))return {};
+    if(points.size()<30 || !std::isfinite(scan.stamp))return reject("few_points="+std::to_string(points.size()));
     if(!locked_){
-      if(!initialize(track,points,pose_))return {};
+      if(!initialize(track,points,pose_))return reject("initializing");
       locked_=true;stamp_=scan.stamp;return pose_;
     }
     const float dt=scan.stamp-stamp_;
-    if(!(dt>0 && dt<=.15f))return {};
-    const State prior=predict_command_tick(pose_,previous,dt);
+    if(!(dt>0 && dt<=.15f))return reject("scan_interval="+std::to_string(dt));
+    const State prior=motion_prior(previous,dt);
     State next=prior;
-    if(!refine(next,points,.18f,5))return {};
+    if(!refine(next,points,.18f,5))return reject("refine_failed");
     const float fit_loss=loss(next,points,1,.12f);
-    if(!(fit_loss<=.065f))return {};
+    if(!(fit_loss<=.065f))return reject("fit_loss="+std::to_string(fit_loss));
     auto forward_speed=[&]{
       const float mid=pose_.yaw+.5f*wrap(next.yaw-pose_.yaw);
       return ((next.x-pose_.x)*cosf(mid)+(next.y-pose_.y)*sinf(mid))/dt;
     };
     float v=forward_speed();
     float rate=wrap(next.yaw-pose_.yaw)/dt;
-    if(fabsf(rate)>14.f)return {};
+    if(fabsf(rate)>14.f)return reject("yaw_rate="+std::to_string(rate));
     const bool inconsistent=fabsf(v-next.v)>3.f;
     if(inconsistent){
       // A scan can slide along a corridor wall with little change in residual.
       // If this implies a reverse jump while driving forward, fit lateral
       // position and heading once with the predicted forward motion fixed.
-      if(used_motion_prior_ || v>=0 || prior.v<=0 || previous.speed<=0)return {};
-      if(hypotf(next.x-prior.x,next.y-prior.y)>.18f)return {};
+      const std::string jump="speed_jump v="+std::to_string(v)+" prior_v="+std::to_string(next.v);
+      if(used_motion_prior_ || v>=0 || prior.v<=0 || previous.speed<=0)return reject(jump+" (no fallback)");
+      if(hypotf(next.x-prior.x,next.y-prior.y)>.18f)return reject(jump+" (fallback: shift > 0.18 m)");
       const float mid=pose_.yaw+.5f*wrap(prior.yaw-pose_.yaw);
       const Point lateral{-sinf(mid),cosf(mid)};
       next=prior;
-      if(!refine(next,points,.18f,5,&lateral))return {};
+      if(!refine(next,points,.18f,5,&lateral))return reject(jump+" (fallback: refine failed)");
       const float constrained_loss=loss(next,points,1,.12f);
       if(!(constrained_loss<=std::min(.065f,fit_loss+.25f*res_)) ||
-         hypotf(next.x-prior.x,next.y-prior.y)>res_)return {};
+         hypotf(next.x-prior.x,next.y-prior.y)>res_)return reject(jump+" (fallback: fit)");
       v=forward_speed();
       rate=wrap(next.yaw-pose_.yaw)/dt;
-      if(fabsf(v-next.v)>3.f || fabsf(rate)>14.f)return {};
+      if(fabsf(v-next.v)>3.f || fabsf(rate)>14.f)return reject(jump+" (fallback: still inconsistent)");
     }
     used_motion_prior_=inconsistent;
     next.v=std::max(0.f,.82f*next.v+.18f*v);

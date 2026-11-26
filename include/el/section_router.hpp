@@ -6,6 +6,7 @@
 #include "el/policy.hpp"
 #include "el/avoid_corridor.hpp"
 #include <algorithm>
+#include <chrono>
 #include <limits>
 
 namespace el {
@@ -35,9 +36,11 @@ class SectionRouter {
                        const std::deque<Scan>& scans, RacePolicy& race, Policy& avoid,
                        float cap, float dt, double now, const RouterSettings& settings={}, ControlTiming* timing=nullptr, CorridorTrace* trace=nullptr) {
     SpeedLimits limits;
+    const auto step_start=std::chrono::steady_clock::now();
+    auto elapsed_ms=[&]{return std::chrono::duration<float,std::milli>(std::chrono::steady_clock::now()-step_start).count();};
     auto stop_with = [&](const char* reason) {
       stop(reason);
-      return SectionDecision{Mode::Emergency, {car.steer, 0}, reason, avoiding_,limits};
+      return SectionDecision{Mode::Emergency, stop_command(car,settings), reason, avoiding_,limits};
     };
     if (stop_reason_) return stop_with(stop_reason_);
     // The original stress mode changes only the flying-lap Avoid band.
@@ -177,20 +180,33 @@ class SectionRouter {
     }
     if(trace)trace->candidate_steer=cmd.steer;
     const char* refusal=command_refusal(memory,car,committed,cmd,dyn,dt,ticks,trace);
-    if(refusal && avoiding_ && avoid.uses_corridor() && settings.lap_planning && cmd.speed>0){
+    const bool avoid_fallback=avoiding_ && avoid.uses_corridor() && settings.lap_planning;
+    const bool race_fallback=settings.race_fallback && !avoiding_;
+    if(refusal && (avoid_fallback || race_fallback) && cmd.speed>0){
       // Try a rolling slowdown only if the requested action failed the stop
       // envelope. Use the same guards for every replacement, including the
       // steering already queued. The planned-lap speed floor still applies.
-      const float floor=lap_plan_.ready() && !adaptive_avoid?settings.sim_avoid_min:0.f;
+      const float floor=avoid_fallback && lap_plan_.ready() && !adaptive_avoid?settings.sim_avoid_min:0.f;
       const float slower=std::min(cmd.speed,std::max({.6f,floor,.65f*std::min(cmd.speed,car.v)}));
+      bool out_of_time=false;
       for(float speed:{cmd.speed,slower}){
         for(float steer:{cmd.steer,car.steer,0.f,-.2f,.2f,-.4f,.4f}){
+          // Optional compute budget (0 = unlimited, the evaluated behaviour).
+          if(settings.fallback_budget_ms>0 && elapsed_ms()>settings.fallback_budget_ms){out_of_time=true;break;}
           Control candidate{steer,speed};
           if(!command_refusal(memory,car,committed,candidate,dyn,dt,ticks,nullptr)){
             cmd=candidate;refusal=nullptr;decision.reason="safe_alternative";break;
           }
         }
-        if(!refusal || slower==cmd.speed)break;
+        if(!refusal || out_of_time || slower==cmd.speed)break;
+      }
+      if(refusal && out_of_time){
+        // Out of time: one guard-checked brake command instead of a latched stop. The next
+        // cycle plans again from the new state. If braking also fails, the stop latches.
+        const Control brake{committed.steer,0};
+        if(!command_refusal(memory,car,committed,brake,dyn,dt,ticks,nullptr)){
+          cmd=brake;refusal=nullptr;decision.reason="budget_brake";
+        }
       }
     }
     if(refusal)return stop_with(refusal);
@@ -202,6 +218,12 @@ class SectionRouter {
     return decision;
   }
   bool merge_blocked()const{return merge_blocked_;}
+  // The command a stop publishes. The estimated steering grows as v -> 0 (yaw rate / v), so a
+  // stop that feeds it back can steer away from the arc the guard checked; optionally hold
+  // the last published steering instead.
+  Control stop_command(const State& car,const RouterSettings& settings)const{
+    return {settings.stop_hold_steering && have_pose_ ? last_command_.steer : car.steer, 0};
+  }
   // Shared sensor-only routing and policy features for online inference and
   // offline expert labels at learner-visited states. Does not publish commands.
   SectionDecision route_observation(const Track& track,const Memory& memory,const State& car,
