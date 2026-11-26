@@ -34,6 +34,37 @@ class SectionRouter {
   int side() const {return side_;}
   void reset() { *this = SectionRouter{}; }
   void stop(const char* reason) { if(!stop_reason_)stop_reason_=reason; }
+  // Independent safety wrapper for the experimental planner. No TLN or lap plan
+  // is evaluated here; keep the same measured actuator and braking envelopes.
+  SectionDecision guard_external(const Memory& memory,const State& car,Control command,
+                                 float cap,float dt,bool plan_valid,const char* reason){
+    auto emergency=[&](const char* why){stop(why);return SectionDecision{Mode::Emergency,{car.steer,0},why,true};};
+    if(stop_reason_)return emergency(stop_reason_);
+    if(!std::isfinite(command.steer)||!std::isfinite(command.speed))return emergency("invalid_action");
+    command.steer=clamp(command.steer,-.4f,.4f);command.speed=clamp(command.speed,0.f,cap);
+    if(!plan_valid)command.speed=0;
+    const Control committed=have_pose_?last_command_:Control{car.steer,car.v};
+    DynamicState dyn=physics_step(delayed_state(car),committed,Vehicle{});
+    const int ticks=std::max(1,int(std::ceil(dt/.01f-1e-5f)));
+    const char* refusal=command_refusal(memory,car,committed,command,dyn,dt,ticks,nullptr);
+    if(refusal){
+      bool found=false;
+      // Bounded alternatives only; never use a faster command than the planner.
+      for(float speed:{.6f*std::min(command.speed,car.v),0.f}){
+        for(float steer:{command.steer,car.steer,last_command_.steer}){
+          Control trial{clamp(steer,-.4f,.4f),speed};
+          if(!command_refusal(memory,car,committed,trial,dyn,dt,ticks,nullptr)){
+            command=trial;reason="scenario_guard_brake";found=true;break;
+          }
+        }
+        if(found)break;
+      }
+      if(!found)return emergency(refusal);
+    }
+    last_pose_=car;last_command_=command;have_pose_=true;
+    SectionDecision d{Mode::Avoid,command,reason,!plan_valid};
+    d.speed_limits.before_guard=command.speed;return d;
+  }
 
   template<class RacePolicy>
   SectionDecision step(const Track& track, const Memory& memory, const State& car,

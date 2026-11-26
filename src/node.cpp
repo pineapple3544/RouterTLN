@@ -3,6 +3,7 @@
 #include "el/section_router.hpp"
 #include "el/policy.hpp"
 #include "el/scenarios.hpp"
+#include "el/scenario_driver.hpp"
 #include <rclcpp/rclcpp.hpp>
 #include <sensor_msgs/msg/laser_scan.hpp>
 #include "el/scan_localizer.hpp"
@@ -28,7 +29,9 @@ class Controller:public rclcpp::Node {
     orient_track(*track_,false);
     localizer_=std::make_unique<ScanLocalizer>(*memory_);
     router_settings_=map_router_settings(root);
-    if(declare_parameter<std::string>("mode","moe")!="moe")throw std::runtime_error("online controller requires mode=moe");
+    const auto mode=declare_parameter<std::string>("mode","moe");
+    scenario_mode_=mode=="scenario";
+    if(mode!="moe"&&!scenario_mode_)throw std::runtime_error("mode must be moe or scenario");
     local_sim_clock_=declare_parameter<bool>("local_steady_sim_clock",false);
     if (local_sim_clock_ && !get_parameter("use_sim_time").as_bool())
       throw std::runtime_error("local_steady_sim_clock requires use_sim_time");
@@ -37,6 +40,7 @@ class Controller:public rclcpp::Node {
     const auto device=device_name=="cpu" ? InferenceDevice::cpu : InferenceDevice::cuda;
     RCLCPP_INFO(get_logger(),"TLN inference device: %s",device_name.c_str());
     const auto shared_path=declare_parameter<std::string>("unified_checkpoint","");
+    if(!scenario_mode_){
     if(shared_path.empty()){
       race_=std::make_shared<Policy>(declare_parameter<std::string>("race_checkpoint",router_settings_.race_checkpoint),device);
       avoid_=std::make_shared<Policy>(declare_parameter<std::string>("avoid_checkpoint","/workspace/models/avoid-corridor-v2.pt"),device);
@@ -46,7 +50,8 @@ class Controller:public rclcpp::Node {
       if(!race_->is_unified())throw std::runtime_error("unified_checkpoint requires schema 5");
       avoid_=race_;
     }
-    vmax_=declare_parameter<double>("max_speed",3); deadline_=declare_parameter<double>("deadline_ms",25);
+    }
+    vmax_=declare_parameter<double>("max_speed",scenario_mode_?3.5:3.); deadline_=declare_parameter<double>("deadline_ms",25);
     router_settings_.lap_planning=declare_parameter<bool>("lap_planning",false);
     if(!(vmax_>0 && vmax_<=10 && deadline_>0 && deadline_<=150))throw std::runtime_error("invalid speed or deadline");
     router_settings_.sim_avoid_min=declare_parameter<double>("sim_avoid_min",0.);
@@ -67,12 +72,31 @@ class Controller:public rclcpp::Node {
     router_settings_.race_verified_pace=declare_parameter<bool>("race_verified_pace",false);
     if(router_settings_.avoid_policy_first && !router_settings_.avoid_corridor_steer_seed)
       throw std::runtime_error("Avoid policy-first requires the corridor steering fallback");
-    if(router_settings_.avoid_corridor_steer_seed && !(router_settings_.lap_planning && avoid_->uses_corridor()))
+    if(router_settings_.avoid_corridor_steer_seed && !(router_settings_.lap_planning && avoid_ && avoid_->uses_corridor()))
       throw std::runtime_error("corridor steering seed requires lap planning and a corridor-conditioned Avoid policy");
     router_settings_.sim_race_only=declare_parameter<bool>("sim_race_only",false);
     router_settings_.race_brake_preview_s=declare_parameter<double>("race_brake_preview_s",.18);
     if(router_settings_.shared_speed_band)router_settings_.sim_avoid_max=vmax_;
     router_settings_.validate_sim_band(vmax_,local_sim_clock_);
+    if(scenario_mode_){
+      if(router_settings_.lap_planning||router_settings_.sim_section_speed_profile||router_settings_.whole_lap_path||
+         router_settings_.avoid_policy_first||!shared_path.empty())throw std::runtime_error("scenario mode does not use legacy TLN/lap options");
+      scenario::Settings cfg;
+      cfg.request_period=declare_parameter<double>("scenario_period_s",.10);
+      cfg.optional_budget_ms=declare_parameter<double>("scenario_optional_budget_ms",55.);
+      cfg.plan_age=declare_parameter<double>("scenario_max_age_s",.55);
+      cfg.lateral_accel=declare_parameter<double>("scenario_lateral_accel",3.);
+      cfg.accel=declare_parameter<double>("scenario_accel",2.5);
+      cfg.brake=declare_parameter<double>("scenario_brake",3.);
+      cfg.nominal_size=declare_parameter<double>("scenario_nominal_size_m",.15);
+      cfg.position_step=declare_parameter<double>("scenario_position_step_m",.20);
+      cfg.assume_passable=declare_parameter<bool>("scenario_assume_passable",false);
+      cfg.residual_checkpoint=declare_parameter<std::string>("residual_checkpoint","");
+      cfg.record_path=declare_parameter<std::string>("scenario_record","");
+      scenario_run_=declare_parameter<std::string>("scenario_run_id","local");
+      scenario_=std::make_unique<scenario::Driver>(*track_,*memory_,cfg);
+      RCLCPP_INFO(get_logger(),"scenario planner: asynchronous CUDA, CPU deterministic tracker, RCN %s",cfg.residual_checkpoint.empty()?"disabled":"enabled");
+    }
     auto metrics=declare_parameter<std::string>("metrics","/workspace/runs/control.csv");
     std::filesystem::create_directories(std::filesystem::path(metrics).parent_path());metrics_.open(metrics);
     if(declare_parameter<bool>("trace_corridor",false)){
@@ -84,6 +108,8 @@ class Controller:public rclcpp::Node {
     metrics_<<"step,stamp,x,y,speed,mode,hazard,valid,compute_ms,steer,target_speed,collision,remembered_cells,progress_m,reason,side,plan_ready,planned_entries,plan_brake_steps";
     ControlTiming::header(metrics_);
     metrics_<<",scan_source_age_ms,pose_source_age_ms,policy_speed,lap_cap,corridor_cap,before_guard_speed,preview_brake,curve_cap,sight_cap,steering_cap,race_plan_cap,avoid_policy_steer,avoid_policy_verified,whole_lap_path_ready,cluster_evaluated,cluster_changed,exit_evaluated,exit_smoothed\n";
+    if(scenario_mode_){scenario_metrics_.open(metrics+".scenario.csv");if(!scenario_metrics_)throw std::runtime_error("cannot create scenario metrics");
+      scenario_metrics_<<"step,stamp,epoch,generation,paths,candidate,plan_valid,plan_ms,age_ms,visible_m,base_steer,base_speed,residual_steer,residual_speed,desired_steer,desired_speed,final_steer,final_speed,reason\n";}
     stop_laps_=declare_parameter<int>("stop_after_laps",0);
     drive_=create_publisher<ackermann_msgs::msg::AckermannDriveStamped>("/drive",1);
     debug_=create_publisher<std_msgs::msg::String>("/el/status",1);
@@ -91,12 +117,12 @@ class Controller:public rclcpp::Node {
       if(scan_log_.is_open())scan_log_<<scan_received_<<','<<rclcpp::Time(m->header.stamp).seconds()<<'\n';});
     reset_=create_service<std_srvs::srv::Trigger>("/el/reset_memory",[this](const std::shared_ptr<std_srvs::srv::Trigger::Request>,std::shared_ptr<std_srvs::srv::Trigger::Response> response){
       response->success=(!localizer_->locked() || (!scans_.empty() && fabs(scans_.back().pose.v)<.1));
-      if(response->success){memory_->reset();router_.reset();localizer_->reset();scans_.clear();pending_scans_.clear();last_scan_=-1;last_progress_=-1;progress_=0;last_={};reported_fault_=false;finished_=false;}
+      if(response->success){if(scenario_){scenario_->invalidate();++scenario_epoch_;}memory_->reset();router_.reset();localizer_->reset();scans_.clear();pending_scans_.clear();last_scan_=-1;last_progress_=-1;progress_=0;last_={};reported_fault_=false;finished_=false;}
       response->message=response->success?"memory reset":"stop vehicle before memory reset";
     });
     last_publish_=steady();watchdog_=std::thread([this]{while(alive_){std::this_thread::sleep_for(std::chrono::milliseconds(20));if(rclcpp::ok()&&steady()-last_publish_.load()>.18){try{publish({0,0});}catch(...){}}}});
     timer_=create_wall_timer(std::chrono::milliseconds(25),[this]{tick();});
-    RCLCPP_INFO(get_logger(),"section router: Race/Avoid TLN and latched STOP");
+    if(!scenario_mode_)RCLCPP_INFO(get_logger(),"section router: Race/Avoid TLN and latched STOP");
   }
   ~Controller(){alive_=false;if(watchdog_.joinable())watchdog_.join();if(rclcpp::ok())publish({0,0});metrics_.flush();}
   void stop(){finished_=true;publish({0,0});}
@@ -146,10 +172,22 @@ class Controller:public rclcpp::Node {
     // Acquire global localization at rest. Only fresh tracking cycles may drive.
     if(initializing){last_scan_=stamp;publish({0,0});return;}
     timing.mark(ControlTiming::scan);
+    // A geometric lap epoch from scan-localized progress, never a GT/spawner topic.
+    int n=track_->closest(state);float position=track_->points[n].s;
+    float length=track_->points.back().s+hypotf(track_->points.back().x-track_->points.front().x,track_->points.back().y-track_->points.front().y);
+    if(scenario_&&last_progress_>=0&&position-last_progress_<-length/2){
+      memory_->reset();scans_.clear();scenario_->invalidate();++scenario_epoch_;
+    }
     memory_->update(current);scans_.push_back(current);while(scans_.size()>history)scans_.pop_front();last_scan_=stamp;
     timing.mark(ControlTiming::memory);
     CorridorTrace trace;
-    auto result=router_.step(*track_,*memory_,state,scans_,*race_,*avoid_,vmax_,.025f,stamp,router_settings_,&timing,corridor_log_.is_open()?&trace:nullptr);
+    scenario::Action action;
+    SectionDecision result{};
+    if(scenario_){
+      action=scenario_->step(*track_,*memory_,current,vmax_);
+      timing.mark(ControlTiming::corridor);
+      result=router_.guard_external(*memory_,state,action.command,vmax_,.025f,action.valid_plan,action.reason);
+    }else result=router_.step(*track_,*memory_,state,scans_,*race_,*avoid_,vmax_,.025f,stamp,router_settings_,&timing,corridor_log_.is_open()?&trace:nullptr);
     timing.mark(ControlTiming::safety);
     auto selected=result.mode;auto candidate=result.command;bool hazard=result.blocked,valid=selected!=Mode::Emergency;
     float ms=(steady()-begin)*1000;
@@ -163,11 +201,14 @@ class Controller:public rclcpp::Node {
       if(selected!=Mode::Emergency)result.reason=refusal;
       candidate={state.steer,0};selected=Mode::Emergency;valid=false;
     }
-    int n=track_->closest(state);float position=track_->points[n].s;
-    float length=track_->points.back().s+hypotf(track_->points.back().x-track_->points.front().x,track_->points.back().y-track_->points.front().y);
     if(last_progress_>=0){float delta=position-last_progress_;if(delta< -length/2)delta+=length;if(delta>length/2)delta-=length;if(fabs(delta)<2)progress_+=delta;}last_progress_=position;
     if(stop_laps_>0&&progress_>=length*stop_laps_){finished_=true;candidate={state.steer,0};valid=false;}
     last_=candidate;publish(candidate);
+    if(scenario_){
+      scenario_metrics_<<step_<<','<<std::fixed<<stamp<<','<<scenario_epoch_<<','<<action.generation<<','<<action.hypotheses<<','<<action.chosen<<','<<action.valid_plan<<','<<action.planner_ms<<','<<action.age_ms<<','<<action.visible_m<<','<<action.base.steer<<','<<action.base.speed<<','<<action.correction.steer<<','<<action.correction.speed<<','<<action.command.steer<<','<<action.command.speed<<','<<candidate.steer<<','<<candidate.speed<<','<<result.reason<<'\n';
+      if(step_%40==0)scenario_metrics_.flush();
+      if(valid)scenario_->record(*memory_,current,action,scenario_run_);
+    }
     if(trace.waypoint>=0){
       corridor_log_<<nlohmann::json{{"step",step_},{"stamp",stamp},{"progress",progress_},
         {"pose",{state.x,state.y,state.yaw}},{"speed",state.v},{"waypoint",trace.waypoint},
@@ -189,7 +230,9 @@ class Controller:public rclcpp::Node {
   }catch(const std::exception& e){refuse("control_exception");RCLCPP_ERROR_THROTTLE(get_logger(),*get_clock(),2000,"control rejected: %s",e.what());}}
   std::unique_ptr<Track> track_;std::unique_ptr<Memory> memory_;std::shared_ptr<Policy> race_,avoid_;
   rclcpp::Clock sim_clock_{RCL_STEADY_TIME};
-  bool local_sim_clock_=false;
+  bool local_sim_clock_=false,scenario_mode_=false;
+  std::unique_ptr<scenario::Driver> scenario_;std::string scenario_run_;uint64_t scenario_epoch_=1;
+  std::ofstream scenario_metrics_;
   SectionRouter router_;RouterSettings router_settings_;double vmax_=0,deadline_=0,last_scan_=-1,scan_received_=0;Control last_;
   std::unique_ptr<ScanLocalizer> localizer_;std::deque<Scan> scans_;std::deque<sensor_msgs::msg::LaserScan::ConstSharedPtr> pending_scans_;
   int stop_laps_=0;bool finished_=false,reported_fault_=false;uint64_t step_=0;float progress_=0,last_progress_=-1;

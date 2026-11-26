@@ -305,7 +305,7 @@ Action Driver::step(const Track& t,const Memory& m,const Scan& scan,float cap){
   out.generation=a.active_generation;out.reason="scenario_track";return out;
 }
 void Driver::record(const Memory& memory,const Scan& scan,const Action& action,const std::string& run){
-  auto& a=*impl_;if(!a.log||!action.valid_plan||a.last_near<0||a.log_tick++%8)return;
+  auto& a=*impl_;if(!a.log.is_open()||!action.valid_plan||a.last_near<0||a.log_tick++%8)return;
   const auto& car=scan.pose;const auto& p=a.active;const int n=a.last_near;
   Grid grid=memory.local(car,.08f);nlohmann::json ref=nlohmann::json::array();
   float c=cosf(car.yaw),s=sinf(car.yaw);
