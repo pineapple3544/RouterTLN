@@ -158,6 +158,10 @@ void Memory::copy_occupancy(std::vector<uint8_t>& cells,int& width,int& height,f
 bool Memory::static_blocked(float x,float y)const{
   int k=index(x,y);return k<0||base_[k]>.5f;
 }
+void Memory::copy_static_map(std::vector<uint8_t>& cells,int& w,int& h,float& res,float& x0,float& y0)const{
+  w=width_;h=height_;res=resolution_;x0=x0_;y0=y0_;
+  cells.resize(base_.size());for(size_t i=0;i<cells.size();++i)cells[i]=base_[i]>.5f?2:1;
+}
 uint8_t Memory::scenario_cell(float x,float y,double stamp)const{
   int k=index(x,y);
   if(k<0||base_[k]>.5f||odds_[k]>.5f||current_hit_mask_[k])return 2;
