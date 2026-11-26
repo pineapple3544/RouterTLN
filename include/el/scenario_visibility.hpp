@@ -81,7 +81,8 @@ struct VisibilityAtlas {
         bool duplicate=false;for(size_t a=0;a<z;++a)if(fabsf(sizes[a]-size)<.001f)duplicate=true;
         if(duplicate)continue;
         const float lo=r.wall_lo+rad,hi=r.wall_hi-rad;if(lo>hi)continue;
-        const int n=std::min(9,std::max(1,int(ceilf((hi-lo)/lateral_step))+1));
+        int n=std::min(9,std::max(1,int(ceilf((hi-lo)/lateral_step))+1));
+        if(hi-lo<.5f&&hi-lo>.05f)n=std::max(n,5);
         for(int i=0;i<n;++i){
           float d=n==1?.5f*(lo+hi):lo+(hi-lo)*i/(n-1);
           float gap=fmaxf(d-rad-r.wall_lo,r.wall_hi-d-rad);

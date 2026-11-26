@@ -1,4 +1,5 @@
 #include "el/scenario_driver.hpp"
+#include "el/scenario_visibility.hpp"
 #include "el/avoid_corridor.hpp"
 #include <algorithm>
 #include <atomic>
@@ -39,6 +40,8 @@ Frame frame_for(const Track& t,const std::vector<Width>& widths,const State& car
   }
   auto segment=[&](int j){auto a=t.points[j],b=t.points[(j+1)%n];return fmaxf(.001f,hypotf(b.x-a.x,b.y-a.y));};
   float remaining=fraction*segment(idx);
+  const float length=t.points.back().s+segment(n-1);
+  f.station=cyclic_station(t.points[idx].s+remaining,length);
   for(int i=0;i<points;++i){
     while(remaining>segment(idx)){remaining-=segment(idx);idx=(idx+1)%n;}
     int j=(idx+1)%n;auto a=t.points[idx],b=t.points[j];float q=remaining/segment(idx);
@@ -50,6 +53,39 @@ Frame frame_for(const Track& t,const std::vector<Width>& widths,const State& car
   const auto& r=f.ref[0];f.offset=-sinf(r.yaw)*(car.x-r.x)+cosf(r.yaw)*(car.y-r.y);
   f.slope=clamp(tanf(clamp(wrap(car.yaw-r.yaw),-.8f,.8f)),-1.f,1.f);
   return f;
+}
+VisibilityAtlas atlas_for(const Track& t,const Memory& m,const std::vector<Width>& widths,const Settings& cfg){
+  VisibilityAtlas a;if(!cfg.visibility_enabled||cfg.optional_budget_ms<=0)return a;
+  std::vector<uint8_t> cells;MapView map;
+  m.copy_static_map(cells,map.width,map.height,map.resolution,map.x0,map.y0);map.data=cells.data();
+  std::vector<VisibilityRow> rows;rows.reserve(t.points.size());
+  for(size_t i=0;i<t.points.size();++i){
+    const auto& p=t.points[i];const auto w=widths[i];
+    rows.push_back({{p.x,p.y,p.yaw,w.lo+.19f,w.hi-.19f,w.lo,w.hi},p.s});
+  }
+  const float length=t.points.back().s+hypotf(t.points.back().x-t.points.front().x,t.points.back().y-t.points.front().y);
+  a.build(rows,length,map,cfg.nominal_size,cfg.position_step,SensorGeometry{},cfg.assume_passable);
+  return a;
+}
+void append_pairs(std::vector<VisibilityRank>& jobs){
+  const size_t singles=jobs.size();int pairs=0;
+  for(size_t i=0;i<std::min<size_t>(singles,18)&&pairs<12;++i){
+    if(!jobs[i].nominal)continue;
+    for(size_t j=i+1;j<singles&&pairs<12;++j){
+      if(!jobs[j].nominal)continue;
+      const float gap=fabsf(jobs[i].ahead-jobs[j].ahead);
+      if(gap<.65f||gap>2.5f)continue;
+      auto a=jobs[i].hypothesis.boxes[0],b=jobs[j].hypothesis.boxes[0];
+      if(hypotf(a.x-b.x,a.y-b.y)<.65f)continue;
+      auto r=jobs[i];r.hypothesis.count=2;r.hypothesis.boxes[1]=b;
+      if(jobs[j].ahead<r.ahead){r.hypothesis.boxes[0]=b;r.hypothesis.boxes[1]=a;}
+      r.ahead=fminf(jobs[i].ahead,jobs[j].ahead);
+      r.lead=fminf(jobs[i].lead,jobs[j].lead);
+      r.slack=fminf(jobs[i].slack,jobs[j].slack);r.eta=fminf(jobs[i].eta,jobs[j].eta);
+      r.priority=fminf(jobs[i].priority,jobs[j].priority)+.40f;
+      jobs.push_back(r);++pairs;break;
+    }
+  }
 }
 std::vector<Hypothesis> generate(const Frame& f,MapView map,const Settings& cfg){
   std::vector<Hypothesis> out(1); // Actual observations always receive the first batch.
@@ -190,7 +226,7 @@ Control Residual::infer(const Features& x)const{
   auto out=layer<2,32>(b,w3_,b3_,false);return {.08f*out[0],.5f*out[1]};
 }
 struct Driver::Impl {
-  Settings cfg;std::vector<Width> widths;Residual net;
+  Settings cfg;std::vector<Width> widths;Residual net;VisibilityAtlas atlas;
   std::mutex mutex;std::condition_variable cv;std::unique_ptr<Request> pending;
   std::shared_ptr<const Result> published;std::atomic<bool> stopping{false},failed{false};
   std::atomic<uint64_t> epoch{1};std::thread worker;
@@ -200,9 +236,10 @@ struct Driver::Impl {
   Impl(const Track& t,const Memory& m,Settings c):cfg(std::move(c)),widths(analyze(t,m)),net(cfg.residual_checkpoint){
     if(!(cfg.request_period>=.05f&&cfg.request_period<=.5f&&cfg.optional_budget_ms>=0&&cfg.optional_budget_ms<=250&&
       cfg.plan_age>=cfg.request_period&&cfg.plan_age<=2&&cfg.lateral_accel>0&&cfg.accel>0&&cfg.brake>0&&
-      cfg.nominal_size>=.08f&&cfg.nominal_size<=.4f&&cfg.position_step>=.08f&&cfg.position_step<=.5f))
+      cfg.nominal_size>=.08f&&cfg.nominal_size<=.4f&&cfg.position_step>=.08f&&cfg.position_step<=.5f&&cfg.visibility_cost_weight>=0&&cfg.visibility_cost_weight<=2.f))
       throw std::invalid_argument("invalid scenario settings");
     if(!cfg.record_path.empty()){log.open(cfg.record_path);if(!log)throw std::runtime_error("cannot open scenario training log");}
+    atlas=atlas_for(t,m,widths,cfg); // startup only; never scan or GT dependent
     worker=std::thread([this]{run();});
   }
   ~Impl(){stopping=true;cv.notify_all();if(worker.joinable())worker.join();}
@@ -216,6 +253,16 @@ struct Driver::Impl {
         if(cache_epoch!=req->epoch){cache.clear();cache_epoch=req->epoch;}
         cache.erase(std::remove_if(cache.begin(),cache.end(),[&](const Path& p){return begin-p.created>cfg.plan_age;}),cache.end());
         Result result;result.generation=req->generation;result.epoch=req->epoch;result.timestamp=req->timestamp;
+        std::vector<VisibilityRank> jobs;
+        if(cfg.visibility_enabled&&req->optional_budget_ms>0&&!atlas.entries.empty()){
+          jobs=atlas.rank(req->frame,view);
+          // Only a soft cost, and at most two spatially distinct watch targets.
+          set_visibility_watches(req->frame,jobs,cfg.visibility_cost_weight);
+          result.visibility_candidates=int(jobs.size());
+          if(!jobs.empty()){
+            result.first_visible_lead=jobs.front().lead;result.response_slack=jobs.front().slack;result.reveal_eta=jobs.front().eta;
+          }
+        }
         Path nominal{};
         auto save=[&](const std::vector<Path>& paths){
           for(auto p:paths)if(p.candidate>=0&&std::isfinite(p.cost)){
@@ -240,20 +287,59 @@ struct Driver::Impl {
           auto ready=std::make_shared<const Result>(result);
           if(epoch.load()==req->epoch)std::atomic_store(&published,std::move(ready));
         };
+        // Real-observation path remains the first CUDA solve.
         save(opt.solve(req->frame,{Hypothesis{}}));
-        auto hypotheses=generate(req->frame,view,cfg);
-        // Keep the leading nominal-size batch; rotate remaining jobs to avoid
-        // permanently starving optional size variants in overlapping windows.
-        if(hypotheses.size()>5){
-          auto first=hypotheses.begin()+5;
-          std::rotate(first,first+(req->generation*batch_size)%(hypotheses.end()-first),hypotheses.end());
+        if(req->optional_budget_ms<=0)continue;
+        std::vector<Hypothesis> hypotheses(1);
+        if(cfg.visibility_enabled&&!atlas.entries.empty()){
+          // Refine only a bounded shortlist, on the worker, after the primary solve.
+          for(size_t i=0;i<std::min<size_t>(24,jobs.size());++i){
+            if((seconds()-begin)*1000>=req->optional_budget_ms)break;
+            if(epoch.load()!=req->epoch||stopping)break;
+            {std::lock_guard<std::mutex> lock(mutex);if(pending)break;}
+            refine_visibility(req->frame,view,jobs[i]);
+          }
+          std::stable_sort(jobs.begin(),jobs.end(),[](const auto& a,const auto& b){return a.priority<b.priority;});
+          append_pairs(jobs);
+          std::stable_sort(jobs.begin(),jobs.end(),[](const auto& a,const auto& b){return a.priority<b.priority;});
+          result.visibility_candidates=int(jobs.size());
+          if(!jobs.empty()){
+            result.first_visible_lead=jobs.front().lead;result.response_slack=jobs.front().slack;result.reveal_eta=jobs.front().eta;
+          }
+          // Don't repeatedly spend all of the optional budget on a recent,
+          // still geometrically connectable hypothesis. Current-map validation
+          // remains mandatory at selection, regardless of this scheduling hint.
+          auto recent=[&](const Hypothesis& h){
+            for(const auto& p:cache){
+              if(begin-p.created>.18||p.hypothesis.count!=h.count||nearest_path(p,req->frame.car)<0)continue;
+              bool same=true;
+              for(int j=0;j<h.count;++j){
+                const auto a=p.hypothesis.boxes[j],b=h.boxes[j];
+                if(hypotf(a.x-b.x,a.y-b.y)>.10f||fabsf(a.size-b.size)>.01f){same=false;break;}
+              }
+              if(same)return true;
+            }return false;
+          };
+          for(const auto& j:jobs)if(!recent(j.hypothesis))hypotheses.push_back(j.hypothesis);
+          // Additional-size scenarios compete by urgency; no round-robin
+          // rotation that could postpone a more urgent blind-corner target.
+          set_visibility_watches(req->frame,jobs,cfg.visibility_cost_weight);
+          save({}); // Publish refined diagnostics even when the budget is exhausted.
+        }else{
+          hypotheses=generate(req->frame,view,cfg);
+          if(hypotheses.size()>5){
+            auto first=hypotheses.begin()+5;
+            std::rotate(first,first+(req->generation*batch_size)%(hypotheses.end()-first),hypotheses.end());
+          }
         }
         for(size_t i=1;i<hypotheses.size()&&!stopping&&epoch.load()==req->epoch;){
           if((seconds()-begin)*1000>=req->optional_budget_ms)break;
           {std::lock_guard<std::mutex> lock(mutex);if(pending)break;}
           size_t count=std::min<size_t>(batch_size,hypotheses.size()-i);
           std::vector<Hypothesis> batch(hypotheses.begin()+i,hypotheses.begin()+i+count);
-          save(opt.solve(req->frame,batch));i+=count;
+          auto solved=opt.solve(req->frame,batch);
+          if(cfg.visibility_enabled&&!atlas.entries.empty())result.visibility_completed+=int(count);
+          save(solved);i+=count;
         }
       }
     }catch(const std::exception&){failed=true;}
@@ -274,6 +360,9 @@ Action Driver::step(const Track& t,const Memory& m,const Scan& scan,float cap){
   if(a.last_request<0||now-a.last_request>=a.cfg.request_period){
     auto req=std::make_unique<Request>();req->frame=frame_for(t,a.widths,car,cap,a.cfg);
     req->generation=++a.generation;req->epoch=a.epoch;req->timestamp=now;req->optional_budget_ms=a.cfg.optional_budget_ms;
+    req->frame.sensor.angle_min=scan.explicit_angles?scan.angles.front():scan.angle_min;
+    req->frame.sensor.angle_max=scan.explicit_angles?scan.angles.back():scan.angle_max;
+    req->frame.sensor.range=scan.range_max;
     m.scenario_snapshot(req->cells,req->map.width,req->map.height,req->map.resolution,req->map.x0,req->map.y0,car,scan.stamp);
     {std::lock_guard<std::mutex> lock(a.mutex);a.pending=std::move(req);}
     a.cv.notify_one();a.last_request=now;
@@ -309,6 +398,8 @@ Action Driver::step(const Track& t,const Memory& m,const Scan& scan,float cap){
   bool active_ok=now-a.active_stamp<=a.cfg.plan_age&&path_valid(a.active,near,m,car);
   if(ready&&ready->epoch==a.epoch&&now-ready->timestamp<=a.cfg.plan_age){
     out.planner_ms=ready->compute_ms;out.hypotheses=int(ready->paths.size());
+    out.visibility_candidates=ready->visibility_candidates;out.visibility_completed=ready->visibility_completed;
+    out.first_visible_lead=ready->first_visible_lead;out.response_slack=ready->response_slack;out.reveal_eta=ready->reveal_eta;
     bool fresh=ready->revision!=a.used_revision;
     if(fresh||!active_ok){
       // Rank by observed evidence, not simulator positions; try a bounded number.

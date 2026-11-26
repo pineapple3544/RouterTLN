@@ -21,7 +21,8 @@ struct Settings {
   float request_period=.10f,optional_budget_ms=55.f,plan_age=.55f;
   float lateral_accel=3.f,accel=2.5f,brake=3.f;
   float nominal_size=.15f,position_step=.20f;
-  bool assume_passable=false;
+  bool assume_passable=false,visibility_enabled=true;
+  float visibility_cost_weight=.12f;
   std::string residual_checkpoint,record_path;
 };
 struct Action {
@@ -30,6 +31,8 @@ struct Action {
   float race_speed_cap=0;
   float planner_ms=0,age_ms=-1,visible_m=0;
   uint64_t generation=0;
+  int visibility_candidates=0,visibility_completed=0;
+  float first_visible_lead=-1,response_slack=-1,reveal_eta=-1;
   const char* reason="scenario_wait";
 };
 class Driver {

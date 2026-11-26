@@ -97,6 +97,8 @@ class Controller:public rclcpp::Node {
       cfg.nominal_size=declare_parameter<double>("scenario_nominal_size_m",.15);
       cfg.position_step=declare_parameter<double>("scenario_position_step_m",.20);
       cfg.assume_passable=declare_parameter<bool>("scenario_assume_passable",false);
+      cfg.visibility_enabled=declare_parameter<bool>("scenario_visibility",true);
+      cfg.visibility_cost_weight=declare_parameter<double>("scenario_visibility_cost_weight",.12);
       cfg.residual_checkpoint=declare_parameter<std::string>("residual_checkpoint","");
       cfg.record_path=declare_parameter<std::string>("scenario_record","");
       scenario_run_=declare_parameter<std::string>("scenario_run_id","local");
@@ -115,7 +117,7 @@ class Controller:public rclcpp::Node {
     ControlTiming::header(metrics_);
     metrics_<<",scan_source_age_ms,pose_source_age_ms,policy_speed,lap_cap,corridor_cap,before_guard_speed,preview_brake,curve_cap,sight_cap,steering_cap,race_plan_cap,avoid_policy_steer,avoid_policy_verified,whole_lap_path_ready,cluster_evaluated,cluster_changed,exit_evaluated,exit_smoothed\n";
     if(scenario_mode_){scenario_metrics_.open(metrics+".scenario.csv");if(!scenario_metrics_)throw std::runtime_error("cannot create scenario metrics");
-      scenario_metrics_<<"step,stamp,epoch,generation,paths,candidate,plan_valid,plan_ms,age_ms,visible_m,base_steer,base_speed,residual_steer,residual_speed,desired_steer,desired_speed,final_steer,final_speed,reason\n";}
+      scenario_metrics_<<"step,stamp,epoch,generation,paths,candidate,plan_valid,plan_ms,age_ms,visible_m,base_steer,base_speed,residual_steer,residual_speed,desired_steer,desired_speed,final_steer,final_speed,reason,visibility_candidates,visibility_completed,first_visible_lead_m,response_slack_s,reveal_eta_s\n";}
     stop_laps_=declare_parameter<int>("stop_after_laps",0);
     drive_=create_publisher<ackermann_msgs::msg::AckermannDriveStamped>("/drive",1);
     debug_=create_publisher<std_msgs::msg::String>("/el/status",1);
@@ -225,7 +227,7 @@ class Controller:public rclcpp::Node {
     if(stop_laps_>0&&progress_>=length*stop_laps_){finished_=true;candidate={state.steer,0};valid=false;}
     last_=candidate;publish(candidate);
     if(scenario_){
-      scenario_metrics_<<step_<<','<<std::fixed<<stamp<<','<<scenario_epoch_<<','<<action.generation<<','<<action.hypotheses<<','<<action.chosen<<','<<action.valid_plan<<','<<action.planner_ms<<','<<action.age_ms<<','<<action.visible_m<<','<<action.base.steer<<','<<action.base.speed<<','<<action.correction.steer<<','<<action.correction.speed<<','<<action.command.steer<<','<<action.command.speed<<','<<candidate.steer<<','<<candidate.speed<<','<<result.reason<<'\n';
+      scenario_metrics_<<step_<<','<<std::fixed<<stamp<<','<<scenario_epoch_<<','<<action.generation<<','<<action.hypotheses<<','<<action.chosen<<','<<action.valid_plan<<','<<action.planner_ms<<','<<action.age_ms<<','<<action.visible_m<<','<<action.base.steer<<','<<action.base.speed<<','<<action.correction.steer<<','<<action.correction.speed<<','<<action.command.steer<<','<<action.command.speed<<','<<candidate.steer<<','<<candidate.speed<<','<<result.reason<<','<<action.visibility_candidates<<','<<action.visibility_completed<<','<<action.first_visible_lead<<','<<action.response_slack<<','<<action.reveal_eta<<'\n';
       if(step_%40==0)scenario_metrics_.flush();
       if(valid&&selected==Mode::Avoid)scenario_->record(*memory_,current,action,scenario_run_);
     }
