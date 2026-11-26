@@ -210,7 +210,7 @@ python3 tools/train_scenario_residual.py /workspace/runs/labels-*.jsonl \
 ctest --test-dir /build --output-on-failure -R 'scenario_geometry|scenario_visibility|scenario_cuda_parity'
 ~~~
 
-새 회귀 테스트는 합성 지도에서 경로 생성/충돌 검사/속도 계획과 CPU/GPU 평가 일치도를 검사한다. 아직 이 브랜치의 CUDA/ROS 테스트 실행 결과가 없으며, 첫 주행 전 위 테스트와 전체 빌드를 수행해야 한다. 성능 목표는 개발 PC 최대 15 ms, 시험 PC 25 ms 미만이며 아직 실측으로 확인되지 않았다.
+새 회귀 테스트는 합성 지도에서 경로 생성/충돌 검사/속도 계획과 CPU/GPU 평가 일치도를 검사한다. 가시성 회귀 테스트는 동일한 헤더와 테스트 소스를 복사하여 최소 core 타입 정의를 사용한 독립 g++ C++17 빌드로 통과했다(합성 L자 코너의 관측 거리: 벽 없음 5.75 m / 벽 있음 3.25 m). 실제 Berlin 지도/ROS/CUDA 전체 빌드 및 CPU/GPU 평가 일치도 테스트는 아직 수행하지 않았다. 첫 주행 전 위 테스트와 전체 빌드를 수행해야 한다. 성능 목표는 개발 PC 최대 15 ms, 시험 PC 25 ms 미만이며 아직 실측으로 확인되지 않았다.
 
 ## 파일
 
