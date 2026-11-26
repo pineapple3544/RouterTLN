@@ -1,0 +1,332 @@
+# install_final_demo.sh test in a fresh misys:forza_full container
+# 2026-11-26T00:12:12+09:00  image sha256:422a83be78f2ca95264f342d7f4f6f363d050a8ff644c0bece04d3b0c316d7f7
+# source: ROUTERTLN_SRC=/src (read-only copy of the working tree; branch not pushed yet)
+$ sudo ROUTERTLN_SRC=/src bash install_final_demo.sh
+[install] 2026-11-26T00:12:12+09:00 RouterTLN install, log /home/misys/routertln-install.log
+
+[install] == apt packages
+installing: unzip ninja-build nlohmann-json3-dev rsync
+Get:1 https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64  InRelease [1,578 B]
+Get:2 https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64  Packages [3,288 kB]
+Get:3 http://packages.ros.org/ros2/ubuntu jammy InRelease [4,682 B]
+Get:4 http://security.ubuntu.com/ubuntu jammy-security InRelease [129 kB]
+Hit:5 http://archive.ubuntu.com/ubuntu jammy InRelease
+Get:6 http://packages.ros.org/ros2/ubuntu jammy/main amd64 Packages [1,879 kB]
+Get:7 http://archive.ubuntu.com/ubuntu jammy-updates InRelease [128 kB]
+Get:8 http://security.ubuntu.com/ubuntu jammy-security/multiverse amd64 Packages [96.7 kB]
+Get:9 http://archive.ubuntu.com/ubuntu jammy-backports InRelease [127 kB]
+Get:10 http://archive.ubuntu.com/ubuntu jammy-updates/universe amd64 Packages [1,631 kB]
+Get:11 http://security.ubuntu.com/ubuntu jammy-security/main amd64 Packages [4,560 kB]
+Get:12 http://archive.ubuntu.com/ubuntu jammy-updates/multiverse amd64 Packages [104 kB]
+Get:13 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 Packages [4,898 kB]
+Get:14 http://archive.ubuntu.com/ubuntu jammy-updates/restricted amd64 Packages [8,446 kB]
+Get:15 http://security.ubuntu.com/ubuntu jammy-security/universe amd64 Packages [1,329 kB]
+Get:16 http://security.ubuntu.com/ubuntu jammy-security/restricted amd64 Packages [8,139 kB]
+Get:17 https://ppa.launchpadcontent.net/deadsnakes/ppa/ubuntu jammy InRelease [18.1 kB]
+Ign:18 https://ppa.launchpadcontent.net/deadsnakes/ppa/ubuntu jammy/main amd64 Packages
+Get:18 https://ppa.launchpadcontent.net/deadsnakes/ppa/ubuntu jammy/main amd64 Packages [49.7 kB]
+Fetched 34.8 MB in 21s (1,651 kB/s)
+Reading package lists...
+Reading package lists...
+Building dependency tree...
+Reading state information...
+The following additional packages will be installed:
+  libpopt0
+Suggested packages:
+  openssh-server python3-braceexpand zip
+The following NEW packages will be installed:
+  libpopt0 ninja-build nlohmann-json3-dev rsync unzip
+0 upgraded, 5 newly installed, 0 to remove and 406 not upgraded.
+Need to get 926 kB of archives.
+After this operation, 2,945 kB of additional disk space will be used.
+Get:1 http://archive.ubuntu.com/ubuntu jammy/main amd64 libpopt0 amd64 1.18-3build1 [28.2 kB]
+Get:2 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 rsync amd64 3.2.7-0ubuntu0.22.04.7 [445 kB]
+Get:3 http://archive.ubuntu.com/ubuntu jammy/universe amd64 ninja-build amd64 1.10.1-1 [111 kB]
+Get:4 http://archive.ubuntu.com/ubuntu jammy/universe amd64 nlohmann-json3-dev all 3.10.5-2 [167 kB]
+Get:5 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 unzip amd64 6.0-26ubuntu3.2 [175 kB]
+debconf: delaying package configuration, since apt-utils is not installed
+Fetched 926 kB in 0s (1,953 kB/s)
+Selecting previously unselected package libpopt0:amd64.
+
+(Reading database ... 
+(Reading database ... 5%
+(Reading database ... 10%
+(Reading database ... 15%
+(Reading database ... 20%
+(Reading database ... 25%
+(Reading database ... 30%
+(Reading database ... 35%
+(Reading database ... 40%
+(Reading database ... 45%
+(Reading database ... 50%
+(Reading database ... 55%
+(Reading database ... 60%
+(Reading database ... 65%
+(Reading database ... 70%
+(Reading database ... 75%
+(Reading database ... 80%
+(Reading database ... 85%
+(Reading database ... 90%
+(Reading database ... 95%
+(Reading database ... 100%
+(Reading database ... 138838 files and directories currently installed.)
+
+Preparing to unpack .../libpopt0_1.18-3build1_amd64.deb ...
+
+Unpacking libpopt0:amd64 (1.18-3build1) ...
+
+Selecting previously unselected package rsync.
+
+Preparing to unpack .../rsync_3.2.7-0ubuntu0.22.04.7_amd64.deb ...
+
+Unpacking rsync (3.2.7-0ubuntu0.22.04.7) ...
+
+Selecting previously unselected package ninja-build.
+
+Preparing to unpack .../ninja-build_1.10.1-1_amd64.deb ...
+
+Unpacking ninja-build (1.10.1-1) ...
+
+Selecting previously unselected package nlohmann-json3-dev.
+
+Preparing to unpack .../nlohmann-json3-dev_3.10.5-2_all.deb ...
+
+Unpacking nlohmann-json3-dev (3.10.5-2) ...
+
+Selecting previously unselected package unzip.
+
+Preparing to unpack .../unzip_6.0-26ubuntu3.2_amd64.deb ...
+
+Unpacking unzip (6.0-26ubuntu3.2) ...
+
+Setting up unzip (6.0-26ubuntu3.2) ...
+
+Setting up ninja-build (1.10.1-1) ...
+
+Setting up nlohmann-json3-dev (3.10.5-2) ...
+
+Setting up libpopt0:amd64 (1.18-3build1) ...
+
+Setting up rsync (3.2.7-0ubuntu0.22.04.7) ...
+
+invoke-rc.d: could not determine current runlevel
+
+invoke-rc.d: policy-rc.d denied execution of start.
+
+Processing triggers for mailcap (3.70+nmu1ubuntu1.22.04.1) ...
+
+Processing triggers for libc-bin (2.35-0ubuntu3.6) ...
+
+
+[install] == LibTorch 2.9.1 CPU
+#=#=#                                                                         
+##O#-#                                                                        
+##O=#  #                                                                      
+
+                                                                           0.0%
+9d0cf62db9b72de5b27071a945d6de4f340bffd996c3dd770eeb3f8237d05e75  /tmp/tmp.7GMXIK59WY/libtorch.zip
+installed: 2.9.1+cpu
+
+[install] == RouterTLN source
+copying /src -> /home/misys/RouterTLN
+commit: 23fa88608d98198f4bc22172c279503e58efd153
+
+[install] == /workspace and /build links
+/workspace -> /home/misys/RouterTLN
+/build -> /home/misys/RouterTLN/build-cpu
+
+[install] == CPU-only build
+-- The CXX compiler identification is GNU 11.4.0
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/g++-11 - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Found ZLIB: /usr/lib/x86_64-linux-gnu/libz.so (found version "1.2.11") 
+-- Found PNG: /usr/lib/x86_64-linux-gnu/libpng.so (found version "1.6.37") 
+-- Found nlohmann_json: /usr/lib/cmake/nlohmann_json/nlohmann_jsonConfig.cmake (found version "3.10.5") 
+-- Found Torch: /opt/libtorch-cpu/lib/libtorch.so  
+-- Found ament_cmake: 1.3.14 (/opt/ros/humble/share/ament_cmake/cmake)
+-- Found Python3: /usr/bin/python3 (found version "3.10.12") found components: Interpreter 
+-- Found rclcpp: 16.0.21 (/opt/ros/humble/share/rclcpp/cmake)
+-- Found rosidl_generator_c: 3.1.9 (/opt/ros/humble/share/rosidl_generator_c/cmake)
+-- Found rosidl_adapter: 3.1.9 (/opt/ros/humble/share/rosidl_adapter/cmake)
+-- Found rosidl_generator_cpp: 3.1.9 (/opt/ros/humble/share/rosidl_generator_cpp/cmake)
+-- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+-- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+-- Found rmw_implementation_cmake: 6.1.4 (/opt/ros/humble/share/rmw_implementation_cmake/cmake)
+-- Found rmw_fastrtps_cpp: 6.2.10 (/opt/ros/humble/share/rmw_fastrtps_cpp/cmake)
+-- Found OpenSSL: /usr/lib/x86_64-linux-gnu/libcrypto.so (found version "3.0.2")  
+-- Found FastRTPS: /opt/ros/humble/include  
+-- Using RMW implementation 'rmw_fastrtps_cpp' as default
+-- Looking for C++ include pthread.h
+-- Looking for C++ include pthread.h - found
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Success
+-- Found Threads: TRUE  
+-- Found sensor_msgs: 4.9.2 (/opt/ros/humble/share/sensor_msgs/cmake)
+-- Found nav_msgs: 4.9.2 (/opt/ros/humble/share/nav_msgs/cmake)
+-- Found std_srvs: 4.9.2 (/opt/ros/humble/share/std_srvs/cmake)
+-- Found ackermann_msgs: 2.0.2 (/opt/ros/humble/share/ackermann_msgs/cmake)
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/misys/RouterTLN/build-cpu
+[1/17] Building CXX object CMakeFiles/el_core.dir/src/dataset.cpp.o
+[2/17] Building CXX object CMakeFiles/el_core.dir/src/core.cpp.o
+/home/misys/RouterTLN/src/core.cpp: In member function ‘bool el::Memory::base_free_disc(float, float, float) const’:
+/home/misys/RouterTLN/src/core.cpp:168:5: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  168 |     if(a*a+b*b>radius*radius)continue;int k=index(x+a,y+b);if(k<0||base_[k]>.5f)return false;}return true;
+      |     ^~
+/home/misys/RouterTLN/src/core.cpp:168:39: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  168 |     if(a*a+b*b>radius*radius)continue;int k=index(x+a,y+b);if(k<0||base_[k]>.5f)return false;}return true;
+      |                                       ^~~
+[3/17] Linking CXX static library libel_core.a
+[4/17] Building CXX object CMakeFiles/el_inspect.dir/src/inspect.cpp.o
+[5/17] Building CXX object CMakeFiles/el_scenario.dir/src/scenario.cpp.o
+[6/17] Building CXX object CMakeFiles/el_scan_localizer_test.dir/tests/scan_localizer_test.cpp.o
+[7/17] Building CXX object CMakeFiles/el_policy.dir/src/policy.cpp.o
+[8/17] Linking CXX static library libel_policy.a
+[9/17] Linking CXX executable el_scenario
+[10/17] Linking CXX executable el_inspect
+[11/17] Linking CXX executable el_scan_localizer_test
+[12/17] Building CXX object CMakeFiles/el_replay_corridor.dir/tools/replay_corridor.cpp.o
+[13/17] Linking CXX executable el_replay_corridor
+[14/17] Building CXX object CMakeFiles/el_controller.dir/src/node.cpp.o
+[15/17] Linking CXX executable el_controller
+[16/17] Building CXX object CMakeFiles/el_checkpoint_tests.dir/tests/checkpoint_tests.cpp.o
+[17/17] Linking CXX executable el_checkpoint_tests
+Internal ctest changing into directory: /home/misys/RouterTLN/build-cpu
+Test project /home/misys/RouterTLN/build-cpu
+      Start  1: best_checkpoint_regression
+ 1/10 Test  #1: best_checkpoint_regression .......   Passed    0.35 sec
+      Start  2: scan_localizer_sensor_only
+ 2/10 Test  #2: scan_localizer_sensor_only .......   Passed    0.14 sec
+      Start  3: corridor_entry_original
+ 3/10 Test  #3: corridor_entry_original ..........   Passed    0.09 sec
+      Start  4: corridor_entry_distributed
+ 4/10 Test  #4: corridor_entry_distributed .......   Passed    0.09 sec
+      Start  5: corridor_entry_seed39103
+ 5/10 Test  #5: corridor_entry_seed39103 .........   Passed    0.09 sec
+      Start  6: corridor_entry_seed39104
+ 6/10 Test  #6: corridor_entry_seed39104 .........   Passed    0.10 sec
+      Start  7: corridor_entry_random-4135410
+ 7/10 Test  #7: corridor_entry_random-4135410 ....   Passed    0.10 sec
+      Start  8: corridor_entry_random-6695374
+ 8/10 Test  #8: corridor_entry_random-6695374 ....   Passed    0.10 sec
+      Start  9: corridor_entry_random-9157059
+ 9/10 Test  #9: corridor_entry_random-9157059 ....   Passed    0.10 sec
+      Start 10: corridor_entry_random-9285660
+10/10 Test #10: corridor_entry_random-9285660 ....   Passed    0.10 sec
+
+100% tests passed, 0 tests failed out of 10
+
+Total Test time (real) =   1.26 sec
+
+[install] == simulator warm-up (compiles the Gym numba cache, about 30 s)
+cache created (19 kernels)
+
+[install] == demo launcher
+/home/misys/run_demo.sh
+/home/misys/README.md
+
+[install] OK. Start the demo as misys:
+    ~/run_demo.sh 1      # 1 obstacle per lap (also: 3, 5)
+exit=0
+
+# ---- second run (idempotency) ----
+$ sudo ROUTERTLN_SRC=/src bash install_final_demo.sh
+[install] 2026-11-26T00:14:12+09:00 RouterTLN install, log /home/misys/routertln-install.log
+
+[install] == apt packages
+all present
+
+[install] == LibTorch 2.9.1 CPU
+present: 2.9.1+cpu
+
+[install] == RouterTLN source
+copying /src -> /home/misys/RouterTLN
+commit: 23fa88608d98198f4bc22172c279503e58efd153
+
+[install] == /workspace and /build links
+/workspace -> /home/misys/RouterTLN
+/build -> /home/misys/RouterTLN/build-cpu
+
+[install] == CPU-only build
+-- Found ament_cmake: 1.3.14 (/opt/ros/humble/share/ament_cmake/cmake)
+-- Found rclcpp: 16.0.21 (/opt/ros/humble/share/rclcpp/cmake)
+-- Found rosidl_generator_c: 3.1.9 (/opt/ros/humble/share/rosidl_generator_c/cmake)
+-- Found rosidl_adapter: 3.1.9 (/opt/ros/humble/share/rosidl_adapter/cmake)
+-- Found rosidl_generator_cpp: 3.1.9 (/opt/ros/humble/share/rosidl_generator_cpp/cmake)
+-- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+-- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+-- Found rmw_implementation_cmake: 6.1.4 (/opt/ros/humble/share/rmw_implementation_cmake/cmake)
+-- Found rmw_fastrtps_cpp: 6.2.10 (/opt/ros/humble/share/rmw_fastrtps_cpp/cmake)
+-- Using RMW implementation 'rmw_fastrtps_cpp' as default
+-- Found sensor_msgs: 4.9.2 (/opt/ros/humble/share/sensor_msgs/cmake)
+-- Found nav_msgs: 4.9.2 (/opt/ros/humble/share/nav_msgs/cmake)
+-- Found std_srvs: 4.9.2 (/opt/ros/humble/share/std_srvs/cmake)
+-- Found ackermann_msgs: 2.0.2 (/opt/ros/humble/share/ackermann_msgs/cmake)
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/misys/RouterTLN/build-cpu
+ninja: no work to do.
+Internal ctest changing into directory: /home/misys/RouterTLN/build-cpu
+Test project /home/misys/RouterTLN/build-cpu
+      Start  1: best_checkpoint_regression
+ 1/10 Test  #1: best_checkpoint_regression .......   Passed    0.28 sec
+      Start  2: scan_localizer_sensor_only
+ 2/10 Test  #2: scan_localizer_sensor_only .......   Passed    0.14 sec
+      Start  3: corridor_entry_original
+ 3/10 Test  #3: corridor_entry_original ..........   Passed    0.09 sec
+      Start  4: corridor_entry_distributed
+ 4/10 Test  #4: corridor_entry_distributed .......   Passed    0.09 sec
+      Start  5: corridor_entry_seed39103
+ 5/10 Test  #5: corridor_entry_seed39103 .........   Passed    0.09 sec
+      Start  6: corridor_entry_seed39104
+ 6/10 Test  #6: corridor_entry_seed39104 .........   Passed    0.10 sec
+      Start  7: corridor_entry_random-4135410
+ 7/10 Test  #7: corridor_entry_random-4135410 ....   Passed    0.10 sec
+      Start  8: corridor_entry_random-6695374
+ 8/10 Test  #8: corridor_entry_random-6695374 ....   Passed    0.10 sec
+      Start  9: corridor_entry_random-9157059
+ 9/10 Test  #9: corridor_entry_random-9157059 ....   Passed    0.10 sec
+      Start 10: corridor_entry_random-9285660
+10/10 Test #10: corridor_entry_random-9285660 ....   Passed    0.10 sec
+
+100% tests passed, 0 tests failed out of 10
+
+Total Test time (real) =   1.19 sec
+
+[install] == simulator warm-up (compiles the Gym numba cache, about 30 s)
+cache present (19 kernels)
+
+[install] == demo launcher
+/home/misys/run_demo.sh
+/home/misys/README.md
+
+[install] OK. Start the demo as misys:
+    ~/run_demo.sh 1      # 1 obstacle per lap (also: 3, 5)
+exit=0
+elapsed 2 s
+
+# ---- first demo after install (no display, so headless) ----
+$ ~/run_demo.sh 1
+RouterTLN demo: 1 obstacle(s) per lap, race_manager seed 2026, 10 laps
+results: /workspace/runs/demo-20261126-001425-obs1-seed2026
+
+---- race_manager scorer ----
+race_manager result: /workspace/runs/demo-20261126-001425-obs1-seed2026/race_result/race_result_20261126_001426.json
+physics judge: {"accepted":false,"target_laps":10,"physical_laps":4,"lap_s":[24.52806723552567,15.656875975460935,15.928928147874103,15.770801676739211],"max_progress_m":237.13438125446146,"lap_length_m":48.78392107065079,"collision_samples":64,"stopped_samples_before_finish":63,"controller_fault":null,"emergency"
+logs: /workspace/runs/demo-20261126-001425-obs1-seed2026
+exit=0
+
+# ---- outcome ----
+# Install: OK in 1 min 39 s on a fresh misys:forza_full (apt 4 packages, LibTorch 2.9.1+cpu, CPU build
+#   17/17, ctest 10/10, gym numba cache 19 kernels). Second run: idempotent, 2 s, exit 0.
+# Source: ROUTERTLN_SRC copy of the working tree (branch not pushed yet). The git-clone path is untested.
+# Demo `~/run_demo.sh 1`: started and drove without the first-run sensor_timeout (warm-up works).
+#   Laps 24.51 / 15.66 / 15.93 / 15.77 s, then a WALL contact in lap 5 at s≈42.0 m (x 6.07, y -4.35)
+#   after a Race-mode dynamic_braking_footprint stop. See docs/demo-wall-contact-analysis.md.
+# The scorer's printed summary was lost (race_manager scorer raised ExternalShutdownException on
+#   SIGINT; its JSON is complete). run_demo.sh now prints the summary from the JSON instead.
+# Not tested here: RViz/display path (no display in the test container).
