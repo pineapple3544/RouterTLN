@@ -278,6 +278,32 @@ Action Driver::step(const Track& t,const Memory& m,const Scan& scan,float cap){
     {std::lock_guard<std::mutex> lock(a.mutex);a.pending=std::move(req);}
     a.cv.notify_one();a.last_request=now;
   }
+  // RaceTLN is only eligible on its original racing line, not on a bypass.
+  // Scan/local memory and the full vehicle envelope are checked along that line.
+  const auto frame=frame_for(t,a.widths,car,cap,a.cfg);
+  bool race_clear=fabsf(frame.offset)<.14f&&fabsf(wrap(car.yaw-frame.ref[0].yaw))<.18f;
+  const float horizon=std::min(5.5f,1.5f+.25f*car.v+car.v*car.v/(2*a.cfg.brake));
+  float race_visible=0,curve_cap=cap;bool visibility_open=true;
+  for(int i=0;i<points&&i*station_step<=horizon+.5f;++i){
+    const auto& r=frame.ref[i];State s{r.x,r.y,r.yaw};
+    if(footprint(m,s,.11f)>.5f||gym_front_blocked(m,s,.06f)){race_clear=false;break;}
+    if(i<points-1){
+      const float k=wrap(frame.ref[i+1].yaw-r.yaw)/station_step;
+      const float local=sqrtf(a.cfg.lateral_accel/fmaxf(.01f,fabsf(k)));
+      curve_cap=fminf(curve_cap,sqrtf(local*local+2*a.cfg.brake*fmaxf(0.f,i*station_step-.20f*car.v)));
+    }
+    if(i>=2&&visibility_open){
+      for(float d:{-.10f,0.f,.10f}){
+        if(!recently_free(m,r.x+.29f*cosf(r.yaw)-d*sinf(r.yaw),r.y+.29f*sinf(r.yaw)+d*cosf(r.yaw),scan.stamp)){
+          visibility_open=false;break;
+        }
+      }
+      if(visibility_open)race_visible=i*station_step;
+    }
+  }
+  out.race_speed_cap=fminf(curve_cap,braking_cap(race_visible,a.cfg.brake));
+  out.race_clear=race_clear&&out.race_speed_cap>.05f;
+
   auto ready=std::atomic_load(&a.published);
   int near=nearest_path(a.active,car);
   bool active_ok=now-a.active_stamp<=a.cfg.plan_age&&path_valid(a.active,near,m,car);
@@ -332,31 +358,6 @@ Action Driver::step(const Track& t,const Memory& m,const Scan& scan,float cap){
   out.command={clamp(out.base.steer+out.correction.steer,-.4f,.4f),
     clamp(out.base.speed+out.correction.speed,0.f,safe)};
   out.command.speed=fminf(out.command.speed,sqrtf(a.cfg.lateral_accel*.3302f/fmaxf(.01f,fabsf(tanf(out.command.steer)))));
-  // RaceTLN is only eligible on its original racing line, not on a bypass.
-  // Scan/local memory and the full vehicle envelope are checked along that line.
-  const auto frame=frame_for(t,a.widths,car,cap,a.cfg);
-  bool race_clear=fabsf(frame.offset)<.14f&&fabsf(wrap(car.yaw-frame.ref[0].yaw))<.18f;
-  const float horizon=std::min(5.5f,1.5f+.25f*car.v+car.v*car.v/(2*a.cfg.brake));
-  float race_visible=0,curve_cap=cap;bool visibility_open=true;
-  for(int i=0;i<points&&i*station_step<=horizon+.5f;++i){
-    const auto& r=frame.ref[i];State s{r.x,r.y,r.yaw};
-    if(footprint(m,s,.11f)>.5f||gym_front_blocked(m,s,.06f)){race_clear=false;break;}
-    if(i<points-1){
-      const float k=wrap(frame.ref[i+1].yaw-r.yaw)/station_step;
-      const float local=sqrtf(a.cfg.lateral_accel/fmaxf(.01f,fabsf(k)));
-      curve_cap=fminf(curve_cap,sqrtf(local*local+2*a.cfg.brake*fmaxf(0.f,i*station_step-.20f*car.v)));
-    }
-    if(i>=2&&visibility_open){
-      for(float d:{-.10f,0.f,.10f}){
-        if(!recently_free(m,r.x+.29f*cosf(r.yaw)-d*sinf(r.yaw),r.y+.29f*sinf(r.yaw)+d*cosf(r.yaw),scan.stamp)){
-          visibility_open=false;break;
-        }
-      }
-      if(visibility_open)race_visible=i*station_step;
-    }
-  }
-  out.race_clear=race_clear;
-  out.race_speed_cap=fminf(curve_cap,braking_cap(race_visible,a.cfg.brake));
   out.valid_plan=true;out.chosen=p.candidate;out.visible_m=visibility;out.age_ms=float((now-a.active_stamp)*1000);
   out.generation=a.active_generation;out.reason="scenario_track";return out;
 }

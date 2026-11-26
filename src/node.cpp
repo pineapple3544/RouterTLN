@@ -101,7 +101,7 @@ class Controller:public rclcpp::Node {
       cfg.record_path=declare_parameter<std::string>("scenario_record","");
       scenario_run_=declare_parameter<std::string>("scenario_run_id","local");
       scenario_=std::make_unique<scenario::Driver>(*track_,*memory_,cfg);
-      RCLCPP_INFO(get_logger(),"scenario planner: asynchronous CUDA, CPU deterministic tracker, RCN %s",cfg.residual_checkpoint.empty()?"disabled":"enabled");
+      RCLCPP_INFO(get_logger(),"scenario planner: asynchronous CUDA, CPU RaceTLN %s, deterministic Avoid tracker, RCN %s",scenario_race_?"enabled":"disabled",cfg.residual_checkpoint.empty()?"disabled":"enabled");
     }
     auto metrics=declare_parameter<std::string>("metrics","/workspace/runs/control.csv");
     std::filesystem::create_directories(std::filesystem::path(metrics).parent_path());metrics_.open(metrics);
@@ -193,7 +193,7 @@ class Controller:public rclcpp::Node {
       action=scenario_->step(*track_,*memory_,current,vmax_);
       timing.mark(ControlTiming::corridor);
       Mode proposed=Mode::Avoid;
-      if(scenario_race_&&action.valid_plan&&action.race_clear){
+      if(scenario_race_&&action.race_clear){
         if(scenario_clear_since_<0)scenario_clear_since_=tick_time;
         if(tick_time-scenario_clear_since_>=.20){
           auto input=observe(scans_,state,*memory_,*track_,0,0);
@@ -206,7 +206,7 @@ class Controller:public rclcpp::Node {
           }
         }
       }else scenario_clear_since_=-1;
-      result=router_.guard_external(*memory_,state,action.command,vmax_,.025f,action.valid_plan,action.reason,proposed);
+      result=router_.guard_external(*memory_,state,action.command,vmax_,.025f,action.valid_plan||proposed==Mode::Race,action.reason,proposed);
     }else result=router_.step(*track_,*memory_,state,scans_,*race_,*avoid_,vmax_,.025f,stamp,router_settings_,&timing,corridor_log_.is_open()?&trace:nullptr);
     timing.mark(ControlTiming::safety);
     auto selected=result.mode;auto candidate=result.command;bool hazard=result.blocked,valid=selected!=Mode::Emergency;
