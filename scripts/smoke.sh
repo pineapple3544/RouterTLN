@@ -36,6 +36,10 @@ export EL_JUDGE_FILE="/workspace/runs/$tag-judge.csv"
 EL_LOCAL_STEADY_SIM=1 setsid "${sim_affinity[@]}" bash /workspace/scripts/run_sim.sh > "/workspace/runs/$tag-sim.log" 2>&1 & sim=$!
 scenario_args=(-p use_sim_time:=true -p publish_steady_clock:=true -p "start_index:=${EL_START_INDEX:-0}")
 if [ -n "${EL_OBSTACLE_OFFSETS:-}" ]; then scenario_args+=(-p "obstacle_offsets:=$EL_OBSTACLE_OFFSETS"); fi
+# EL_SCENARIO_OBSTACLES=0: another node (race_manager obstacle_spawner) owns /sim/obstacles.
+# el_scenario still provides the clock and the start pose, but its obstacle topic is moved
+# aside so there is only one obstacle publisher.
+if [[ ${EL_SCENARIO_OBSTACLES:-1} == 0 ]]; then scenario_args+=(-r /sim/obstacles:=/el_scenario/obstacles_unused); fi
 setsid /build/el_scenario --ros-args "${scenario_args[@]}" -p "map_dir:=$EL_MAP_DIR" -p obstacle_count:="$obstacles" -p obstacle_stride:="${EL_OBSTACLE_STRIDE:-200}" -p obstacle_index:="${EL_OBSTACLE_INDEX:-100}" -p seed:="$seed" > "/workspace/runs/$tag-scenario.log" 2>&1 & scenario=$!
 sleep 5
 kill -0 "$sim" "$scenario"
@@ -56,6 +60,12 @@ if [[ -n ${EL_SIM_SECTION_SPEED_PROFILE:-} ]]; then extra+=(-p "sim_section_spee
 if [[ -n ${EL_SIM_AVOID_MIN:-} ]]; then extra+=(-p "sim_avoid_min:=$EL_SIM_AVOID_MIN"); fi
 if [[ -n ${EL_SIM_AVOID_MAX:-} ]]; then extra+=(-p "sim_avoid_max:=$EL_SIM_AVOID_MAX"); fi
 if [[ -n ${EL_INFERENCE_DEVICE:-} ]]; then extra+=(-p "inference_device:=$EL_INFERENCE_DEVICE"); fi
+if [[ -n ${EL_LOCALIZER_MEASURED_SPEED_PRIOR:-} ]]; then extra+=(-p "localizer_measured_speed_prior:=$EL_LOCALIZER_MEASURED_SPEED_PRIOR"); fi
+if [[ -n ${EL_LOCALIZATION_GRACE_SCANS:-} ]]; then extra+=(-p "localization_grace_scans:=$EL_LOCALIZATION_GRACE_SCANS"); fi
+if [[ -n ${EL_DEADLINE_GRACE_CYCLES:-} ]]; then extra+=(-p "deadline_grace_cycles:=$EL_DEADLINE_GRACE_CYCLES"); fi
+if [[ -n ${EL_FALLBACK_BUDGET_MS:-} ]]; then extra+=(-p "fallback_budget_ms:=$EL_FALLBACK_BUDGET_MS"); fi
+if [[ -n ${EL_STOP_HOLD_STEERING:-} ]]; then extra+=(-p "stop_hold_steering:=$EL_STOP_HOLD_STEERING"); fi
+if [[ -n ${EL_RACE_FALLBACK:-} ]]; then extra+=(-p "race_fallback:=$EL_RACE_FALLBACK"); fi
 if [[ -n ${EL_AVOID_CHECKPOINT:-} ]]; then extra+=(-p "avoid_checkpoint:=$EL_AVOID_CHECKPOINT"); fi
 if [ -n "${EL_UNIFIED_CHECKPOINT:-}" ]; then extra+=(-p "unified_checkpoint:=$EL_UNIFIED_CHECKPOINT"); fi
 if [ -n "${EL_RACE_CHECKPOINT:-}" ]; then extra+=(-p "race_checkpoint:=$EL_RACE_CHECKPOINT"); fi

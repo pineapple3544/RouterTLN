@@ -1,7 +1,9 @@
 """Run the local Gym physics step and its sensor publication as one ordered sample."""
+import math
 import os
 from time import monotonic
 
+import numpy as np
 import rclpy
 from rclpy.clock import Clock, ClockType
 from rclpy.executors import ExternalShutdownException, SingleThreadedExecutor
@@ -13,10 +15,19 @@ class LocalBridge(GymBridge):
         super().__init__()
         noise_seed = os.environ.get('EL_SCAN_NOISE_SEED')
         if noise_seed is not None:
-            import numpy as np
             for agent in self.env.unwrapped.sim.agents:
                 agent.seed = int(noise_seed)
                 agent.scan_rng = np.random.default_rng(agent.seed)
+        # Robustness tests only: EL_SCAN_NOISE_SCALE=k raises the published range noise from the
+        # Gym's fixed 1 cm to k cm by adding independent Gaussian noise of 0.01*sqrt(k^2-1) m.
+        # Physics, collision checks and the judge are unaffected. Default 1 = shipped noise.
+        scale = float(os.environ.get('EL_SCAN_NOISE_SCALE', '1'))
+        if not (math.isfinite(scale) and scale >= 1):
+            raise ValueError('EL_SCAN_NOISE_SCALE must be >= 1')
+        self.extra_noise_std = 0.01 * math.sqrt(scale * scale - 1)
+        self.extra_noise_rng = np.random.default_rng(int(noise_seed) + 1 if noise_seed is not None else None)
+        if self.extra_noise_std > 0:
+            self.get_logger().info(f'scan noise scale {scale:g}: extra sigma {self.extra_noise_std:.4f} m')
         self.destroy_timer(self.drive_timer)
         self.destroy_timer(self.timer)
         self.acquisition_clock = Clock(clock_type=ClockType.STEADY_TIME)
@@ -40,6 +51,10 @@ class LocalBridge(GymBridge):
         self.drive_timer_callback()
         self.ts = acquired
         updated = monotonic()
+        if self.extra_noise_std > 0:
+            scan = np.asarray(self.ego_scan, dtype=float)
+            scan += self.extra_noise_rng.normal(0., self.extra_noise_std, size=scan.shape)
+            self.ego_scan = np.maximum(scan, 0.).tolist()
         self.timer_callback()
         if self.judge:
             stamp = acquired.sec + acquired.nanosec * 1e-9

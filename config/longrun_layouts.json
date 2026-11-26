@@ -1,0 +1,936 @@
+{
+  "map": "berlin",
+  "waypoints_file": "maps/berlin/global_waypoints.json",
+  "lap_length_m": 48.784,
+  "waypoints": 488,
+  "generator": "tools/longrun_layouts.py",
+  "checks": {
+    "passable_width_m": 0.51,
+    "min_start_gap_m": 3.0,
+    "min_existing_gap_m": 0.5,
+    "switch_s_m": 1.0,
+    "obstacle_size_m": 0.3
+  },
+  "note": "Test scenarios only (el_scenario). The controller never reads this file.",
+  "layouts": {
+    "A": {
+      "seed": 3101,
+      "character": "spread evenly around the lap",
+      "configs": {
+        "1": {
+          "start_index": 37,
+          "obstacle_index": 6,
+          "obstacle_stride": 98,
+          "obstacle_offsets": [
+            0.0341
+          ],
+          "obstacles": [
+            {
+              "index": 6,
+              "s_m": 0.6,
+              "offset_m": 0.0341,
+              "region": "straight",
+              "curvature": 0.052,
+              "raceline_vx_mps": 9.97,
+              "raceline_ax_mps2": -6.96,
+              "visibility_m": 8.0,
+              "left_gap_m": 0.43,
+              "right_gap_m": 2.76,
+              "free_sides": [
+                "right"
+              ]
+            }
+          ]
+        },
+        "3": {
+          "start_index": 37,
+          "obstacle_index": 6,
+          "obstacle_stride": 98,
+          "obstacle_offsets": [
+            0.0341,
+            -0.0562,
+            -0.0485
+          ],
+          "obstacles": [
+            {
+              "index": 6,
+              "s_m": 0.6,
+              "offset_m": 0.0341,
+              "region": "straight",
+              "curvature": 0.052,
+              "raceline_vx_mps": 9.97,
+              "raceline_ax_mps2": -6.96,
+              "visibility_m": 8.0,
+              "left_gap_m": 0.43,
+              "right_gap_m": 2.76,
+              "free_sides": [
+                "right"
+              ]
+            },
+            {
+              "index": 104,
+              "s_m": 10.396,
+              "offset_m": -0.0562,
+              "region": "corner",
+              "curvature": -0.296,
+              "raceline_vx_mps": 5.26,
+              "raceline_ax_mps2": 3.76,
+              "visibility_m": 2.9,
+              "left_gap_m": 1.19,
+              "right_gap_m": 1.1,
+              "free_sides": [
+                "left",
+                "right"
+              ]
+            },
+            {
+              "index": 202,
+              "s_m": 20.194,
+              "offset_m": -0.0485,
+              "region": "transition",
+              "curvature": -0.199,
+              "raceline_vx_mps": 6.54,
+              "raceline_ax_mps2": -3.03,
+              "visibility_m": 7.2,
+              "left_gap_m": 2.26,
+              "right_gap_m": 0.41,
+              "free_sides": [
+                "left"
+              ]
+            }
+          ]
+        },
+        "5": {
+          "start_index": 37,
+          "obstacle_index": 6,
+          "obstacle_stride": 98,
+          "obstacle_offsets": [
+            0.0341,
+            -0.0562,
+            -0.0485,
+            -0.1173,
+            -0.045
+          ],
+          "obstacles": [
+            {
+              "index": 6,
+              "s_m": 0.6,
+              "offset_m": 0.0341,
+              "region": "straight",
+              "curvature": 0.052,
+              "raceline_vx_mps": 9.97,
+              "raceline_ax_mps2": -6.96,
+              "visibility_m": 8.0,
+              "left_gap_m": 0.43,
+              "right_gap_m": 2.76,
+              "free_sides": [
+                "right"
+              ]
+            },
+            {
+              "index": 104,
+              "s_m": 10.396,
+              "offset_m": -0.0562,
+              "region": "corner",
+              "curvature": -0.296,
+              "raceline_vx_mps": 5.26,
+              "raceline_ax_mps2": 3.76,
+              "visibility_m": 2.9,
+              "left_gap_m": 1.19,
+              "right_gap_m": 1.1,
+              "free_sides": [
+                "left",
+                "right"
+              ]
+            },
+            {
+              "index": 202,
+              "s_m": 20.194,
+              "offset_m": -0.0485,
+              "region": "transition",
+              "curvature": -0.199,
+              "raceline_vx_mps": 6.54,
+              "raceline_ax_mps2": -3.03,
+              "visibility_m": 7.2,
+              "left_gap_m": 2.26,
+              "right_gap_m": 0.41,
+              "free_sides": [
+                "left"
+              ]
+            },
+            {
+              "index": 300,
+              "s_m": 29.99,
+              "offset_m": -0.1173,
+              "region": "corner",
+              "curvature": -0.312,
+              "raceline_vx_mps": 5.33,
+              "raceline_ax_mps2": 3.09,
+              "visibility_m": 3.5,
+              "left_gap_m": 1.16,
+              "right_gap_m": 1.84,
+              "free_sides": [
+                "left",
+                "right"
+              ]
+            },
+            {
+              "index": 398,
+              "s_m": 39.787,
+              "offset_m": -0.045,
+              "region": "transition",
+              "curvature": -0.141,
+              "raceline_vx_mps": 8.76,
+              "raceline_ax_mps2": 0.89,
+              "visibility_m": 8.0,
+              "left_gap_m": 2.45,
+              "right_gap_m": 0.79,
+              "free_sides": [
+                "left",
+                "right"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "B": {
+      "seed": 3102,
+      "character": "clustered in consecutive corners / a chicane",
+      "configs": {
+        "1": {
+          "start_index": 37,
+          "obstacle_index": 233,
+          "obstacle_stride": 15,
+          "obstacle_offsets": [
+            0.0775
+          ],
+          "obstacles": [
+            {
+              "index": 233,
+              "s_m": 23.293,
+              "offset_m": 0.0775,
+              "region": "corner",
+              "curvature": 0.645,
+              "raceline_vx_mps": 3.68,
+              "raceline_ax_mps2": -3.17,
+              "visibility_m": 5.6,
+              "left_gap_m": 0.78,
+              "right_gap_m": 1.71,
+              "free_sides": [
+                "left",
+                "right"
+              ]
+            }
+          ]
+        },
+        "3": {
+          "start_index": 37,
+          "obstacle_index": 233,
+          "obstacle_stride": 15,
+          "obstacle_offsets": [
+            0.0775,
+            0.063,
+            0.0075
+          ],
+          "obstacles": [
+            {
+              "index": 233,
+              "s_m": 23.293,
+              "offset_m": 0.0775,
+              "region": "corner",
+              "curvature": 0.645,
+              "raceline_vx_mps": 3.68,
+              "raceline_ax_mps2": -3.17,
+              "visibility_m": 5.6,
+              "left_gap_m": 0.78,
+              "right_gap_m": 1.71,
+              "free_sides": [
+                "left",
+                "right"
+              ]
+            },
+            {
+              "index": 248,
+              "s_m": 24.792,
+              "offset_m": 0.063,
+              "region": "corner",
+              "curvature": 0.426,
+              "raceline_vx_mps": 3.9,
+              "raceline_ax_mps2": 5.76,
+              "visibility_m": 2.1,
+              "left_gap_m": 0.53,
+              "right_gap_m": 0.92,
+              "free_sides": [
+                "left",
+                "right"
+              ]
+            },
+            {
+              "index": 263,
+              "s_m": 26.291,
+              "offset_m": 0.0075,
+              "region": "corner",
+              "curvature": -0.574,
+              "raceline_vx_mps": 3.8,
+              "raceline_ax_mps2": -3.46,
+              "visibility_m": 2.9,
+              "left_gap_m": 1.67,
+              "right_gap_m": 0.36,
+              "free_sides": [
+                "left"
+              ]
+            }
+          ]
+        },
+        "5": {
+          "start_index": 37,
+          "obstacle_index": 233,
+          "obstacle_stride": 15,
+          "obstacle_offsets": [
+            0.0775,
+            0.063,
+            0.0075,
+            -0.0651,
+            -0.0894
+          ],
+          "obstacles": [
+            {
+              "index": 233,
+              "s_m": 23.293,
+              "offset_m": 0.0775,
+              "region": "corner",
+              "curvature": 0.645,
+              "raceline_vx_mps": 3.68,
+              "raceline_ax_mps2": -3.17,
+              "visibility_m": 5.6,
+              "left_gap_m": 0.78,
+              "right_gap_m": 1.71,
+              "free_sides": [
+                "left",
+                "right"
+              ]
+            },
+            {
+              "index": 248,
+              "s_m": 24.792,
+              "offset_m": 0.063,
+              "region": "corner",
+              "curvature": 0.426,
+              "raceline_vx_mps": 3.9,
+              "raceline_ax_mps2": 5.76,
+              "visibility_m": 2.1,
+              "left_gap_m": 0.53,
+              "right_gap_m": 0.92,
+              "free_sides": [
+                "left",
+                "right"
+              ]
+            },
+            {
+              "index": 263,
+              "s_m": 26.291,
+              "offset_m": 0.0075,
+              "region": "corner",
+              "curvature": -0.574,
+              "raceline_vx_mps": 3.8,
+              "raceline_ax_mps2": -3.46,
+              "visibility_m": 2.9,
+              "left_gap_m": 1.67,
+              "right_gap_m": 0.36,
+              "free_sides": [
+                "left"
+              ]
+            },
+            {
+              "index": 278,
+              "s_m": 27.79,
+              "offset_m": -0.0651,
+              "region": "corner",
+              "curvature": -0.614,
+              "raceline_vx_mps": 3.93,
+              "raceline_ax_mps2": 2.57,
+              "visibility_m": 2.4,
+              "left_gap_m": 1.44,
+              "right_gap_m": 1.02,
+              "free_sides": [
+                "left",
+                "right"
+              ]
+            },
+            {
+              "index": 293,
+              "s_m": 29.29,
+              "offset_m": -0.0894,
+              "region": "corner",
+              "curvature": -0.371,
+              "raceline_vx_mps": 4.91,
+              "raceline_ax_mps2": 3.02,
+              "visibility_m": 2.9,
+              "left_gap_m": 1.25,
+              "right_gap_m": 1.68,
+              "free_sides": [
+                "left",
+                "right"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "C": {
+      "seed": 3103,
+      "character": "right after blind corners",
+      "configs": {
+        "1": {
+          "start_index": 37,
+          "obstacle_index": 247,
+          "obstacle_stride": 37,
+          "obstacle_offsets": [
+            -0.0605
+          ],
+          "obstacles": [
+            {
+              "index": 247,
+              "s_m": 24.691,
+              "offset_m": -0.0605,
+              "region": "corner",
+              "curvature": 0.504,
+              "raceline_vx_mps": 3.76,
+              "raceline_ax_mps2": 5.31,
+              "visibility_m": 2.2,
+              "left_gap_m": 0.6,
+              "right_gap_m": 0.93,
+              "free_sides": [
+                "left",
+                "right"
+              ]
+            }
+          ]
+        },
+        "3": {
+          "start_index": 37,
+          "obstacle_index": 247,
+          "obstacle_stride": 37,
+          "obstacle_offsets": [
+            -0.0605,
+            0.0443,
+            -0.1168
+          ],
+          "obstacles": [
+            {
+              "index": 247,
+              "s_m": 24.691,
+              "offset_m": -0.0605,
+              "region": "corner",
+              "curvature": 0.504,
+              "raceline_vx_mps": 3.76,
+              "raceline_ax_mps2": 5.31,
+              "visibility_m": 2.2,
+              "left_gap_m": 0.6,
+              "right_gap_m": 0.93,
+              "free_sides": [
+                "left",
+                "right"
+              ]
+            },
+            {
+              "index": 284,
+              "s_m": 28.39,
+              "offset_m": 0.0443,
+              "region": "corner",
+              "curvature": -0.486,
+              "raceline_vx_mps": 4.33,
+              "raceline_ax_mps2": 2.91,
+              "visibility_m": 2.3,
+              "left_gap_m": 1.28,
+              "right_gap_m": 1.54,
+              "free_sides": [
+                "left",
+                "right"
+              ]
+            },
+            {
+              "index": 321,
+              "s_m": 32.089,
+              "offset_m": -0.1168,
+              "region": "transition",
+              "curvature": -0.211,
+              "raceline_vx_mps": 6.44,
+              "raceline_ax_mps2": 3.1,
+              "visibility_m": 5.2,
+              "left_gap_m": 1.05,
+              "right_gap_m": 2.02,
+              "free_sides": [
+                "left",
+                "right"
+              ]
+            }
+          ]
+        },
+        "5": {
+          "start_index": 37,
+          "obstacle_index": 247,
+          "obstacle_stride": 37,
+          "obstacle_offsets": [
+            -0.0605,
+            0.0443,
+            -0.1168,
+            -0.0553,
+            -0.0378
+          ],
+          "obstacles": [
+            {
+              "index": 247,
+              "s_m": 24.691,
+              "offset_m": -0.0605,
+              "region": "corner",
+              "curvature": 0.504,
+              "raceline_vx_mps": 3.76,
+              "raceline_ax_mps2": 5.31,
+              "visibility_m": 2.2,
+              "left_gap_m": 0.6,
+              "right_gap_m": 0.93,
+              "free_sides": [
+                "left",
+                "right"
+              ]
+            },
+            {
+              "index": 284,
+              "s_m": 28.39,
+              "offset_m": 0.0443,
+              "region": "corner",
+              "curvature": -0.486,
+              "raceline_vx_mps": 4.33,
+              "raceline_ax_mps2": 2.91,
+              "visibility_m": 2.3,
+              "left_gap_m": 1.28,
+              "right_gap_m": 1.54,
+              "free_sides": [
+                "left",
+                "right"
+              ]
+            },
+            {
+              "index": 321,
+              "s_m": 32.089,
+              "offset_m": -0.1168,
+              "region": "transition",
+              "curvature": -0.211,
+              "raceline_vx_mps": 6.44,
+              "raceline_ax_mps2": 3.1,
+              "visibility_m": 5.2,
+              "left_gap_m": 1.05,
+              "right_gap_m": 2.02,
+              "free_sides": [
+                "left",
+                "right"
+              ]
+            },
+            {
+              "index": 358,
+              "s_m": 35.788,
+              "offset_m": -0.0553,
+              "region": "transition",
+              "curvature": -0.149,
+              "raceline_vx_mps": 7.91,
+              "raceline_ax_mps2": 2.45,
+              "visibility_m": 8.0,
+              "left_gap_m": 1.92,
+              "right_gap_m": 1.39,
+              "free_sides": [
+                "left",
+                "right"
+              ]
+            },
+            {
+              "index": 395,
+              "s_m": 39.487,
+              "offset_m": -0.0378,
+              "region": "transition",
+              "curvature": -0.14,
+              "raceline_vx_mps": 8.73,
+              "raceline_ax_mps2": 1.05,
+              "visibility_m": 8.0,
+              "left_gap_m": 2.41,
+              "right_gap_m": 0.84,
+              "free_sides": [
+                "left",
+                "right"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "D": {
+      "seed": 3104,
+      "character": "alternating sides back-to-back",
+      "configs": {
+        "1": {
+          "start_index": 37,
+          "obstacle_index": 173,
+          "obstacle_stride": 30,
+          "obstacle_offsets": [
+            0.1935
+          ],
+          "obstacles": [
+            {
+              "index": 173,
+              "s_m": 17.294,
+              "offset_m": 0.1935,
+              "region": "straight",
+              "curvature": 0.087,
+              "raceline_vx_mps": 8.72,
+              "raceline_ax_mps2": 4.3,
+              "visibility_m": 8.0,
+              "left_gap_m": 1.29,
+              "right_gap_m": 1.87,
+              "free_sides": [
+                "left",
+                "right"
+              ]
+            }
+          ]
+        },
+        "3": {
+          "start_index": 37,
+          "obstacle_index": 173,
+          "obstacle_stride": 30,
+          "obstacle_offsets": [
+            0.1935,
+            -0.1903,
+            0.1803
+          ],
+          "obstacles": [
+            {
+              "index": 173,
+              "s_m": 17.294,
+              "offset_m": 0.1935,
+              "region": "straight",
+              "curvature": 0.087,
+              "raceline_vx_mps": 8.72,
+              "raceline_ax_mps2": 4.3,
+              "visibility_m": 8.0,
+              "left_gap_m": 1.29,
+              "right_gap_m": 1.87,
+              "free_sides": [
+                "left",
+                "right"
+              ]
+            },
+            {
+              "index": 203,
+              "s_m": 20.294,
+              "offset_m": -0.1903,
+              "region": "transition",
+              "curvature": -0.212,
+              "raceline_vx_mps": 6.49,
+              "raceline_ax_mps2": -2.58,
+              "visibility_m": 7.3,
+              "left_gap_m": 2.41,
+              "right_gap_m": 0.25,
+              "free_sides": [
+                "left"
+              ]
+            },
+            {
+              "index": 233,
+              "s_m": 23.293,
+              "offset_m": 0.1803,
+              "region": "corner",
+              "curvature": 0.645,
+              "raceline_vx_mps": 3.68,
+              "raceline_ax_mps2": -3.17,
+              "visibility_m": 5.6,
+              "left_gap_m": 0.67,
+              "right_gap_m": 1.81,
+              "free_sides": [
+                "left",
+                "right"
+              ]
+            }
+          ]
+        },
+        "5": {
+          "start_index": 37,
+          "obstacle_index": 173,
+          "obstacle_stride": 30,
+          "obstacle_offsets": [
+            0.1935,
+            -0.1903,
+            0.1803,
+            -0.1533,
+            0.1912
+          ],
+          "obstacles": [
+            {
+              "index": 173,
+              "s_m": 17.294,
+              "offset_m": 0.1935,
+              "region": "straight",
+              "curvature": 0.087,
+              "raceline_vx_mps": 8.72,
+              "raceline_ax_mps2": 4.3,
+              "visibility_m": 8.0,
+              "left_gap_m": 1.29,
+              "right_gap_m": 1.87,
+              "free_sides": [
+                "left",
+                "right"
+              ]
+            },
+            {
+              "index": 203,
+              "s_m": 20.294,
+              "offset_m": -0.1903,
+              "region": "transition",
+              "curvature": -0.212,
+              "raceline_vx_mps": 6.49,
+              "raceline_ax_mps2": -2.58,
+              "visibility_m": 7.3,
+              "left_gap_m": 2.41,
+              "right_gap_m": 0.25,
+              "free_sides": [
+                "left"
+              ]
+            },
+            {
+              "index": 233,
+              "s_m": 23.293,
+              "offset_m": 0.1803,
+              "region": "corner",
+              "curvature": 0.645,
+              "raceline_vx_mps": 3.68,
+              "raceline_ax_mps2": -3.17,
+              "visibility_m": 5.6,
+              "left_gap_m": 0.67,
+              "right_gap_m": 1.81,
+              "free_sides": [
+                "left",
+                "right"
+              ]
+            },
+            {
+              "index": 263,
+              "s_m": 26.291,
+              "offset_m": -0.1533,
+              "region": "corner",
+              "curvature": -0.574,
+              "raceline_vx_mps": 3.8,
+              "raceline_ax_mps2": -3.46,
+              "visibility_m": 2.9,
+              "left_gap_m": 1.83,
+              "right_gap_m": 0.2,
+              "free_sides": [
+                "left"
+              ]
+            },
+            {
+              "index": 293,
+              "s_m": 29.29,
+              "offset_m": 0.1912,
+              "region": "corner",
+              "curvature": -0.371,
+              "raceline_vx_mps": 4.91,
+              "raceline_ax_mps2": 3.02,
+              "visibility_m": 2.9,
+              "left_gap_m": 0.97,
+              "right_gap_m": 1.96,
+              "free_sides": [
+                "left",
+                "right"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "E": {
+      "seed": 3105,
+      "character": "fastest straights and their braking zones",
+      "configs": {
+        "1": {
+          "start_index": 120,
+          "obstacle_index": 408,
+          "obstacle_stride": 40,
+          "obstacle_offsets": [
+            0.0018
+          ],
+          "obstacles": [
+            {
+              "index": 408,
+              "s_m": 40.786,
+              "offset_m": 0.0018,
+              "region": "transition",
+              "curvature": -0.146,
+              "raceline_vx_mps": 8.78,
+              "raceline_ax_mps2": -1.04,
+              "visibility_m": 8.0,
+              "left_gap_m": 2.63,
+              "right_gap_m": 0.68,
+              "free_sides": [
+                "left",
+                "right"
+              ]
+            }
+          ]
+        },
+        "3": {
+          "start_index": 120,
+          "obstacle_index": 408,
+          "obstacle_stride": 40,
+          "obstacle_offsets": [
+            0.0018,
+            -0.0171,
+            0.0724
+          ],
+          "obstacles": [
+            {
+              "index": 408,
+              "s_m": 40.786,
+              "offset_m": 0.0018,
+              "region": "transition",
+              "curvature": -0.146,
+              "raceline_vx_mps": 8.78,
+              "raceline_ax_mps2": -1.04,
+              "visibility_m": 8.0,
+              "left_gap_m": 2.63,
+              "right_gap_m": 0.68,
+              "free_sides": [
+                "left",
+                "right"
+              ]
+            },
+            {
+              "index": 448,
+              "s_m": 44.785,
+              "offset_m": -0.0171,
+              "region": "straight",
+              "curvature": -0.084,
+              "raceline_vx_mps": 9.19,
+              "raceline_ax_mps2": 4.02,
+              "visibility_m": 4.9,
+              "left_gap_m": 3.03,
+              "right_gap_m": 1.46,
+              "free_sides": [
+                "left",
+                "right"
+              ]
+            },
+            {
+              "index": 0,
+              "s_m": 0.0,
+              "offset_m": 0.0724,
+              "region": "straight",
+              "curvature": 0.031,
+              "raceline_vx_mps": 10.44,
+              "raceline_ax_mps2": -8.7,
+              "visibility_m": 7.5,
+              "left_gap_m": 0.52,
+              "right_gap_m": 2.87,
+              "free_sides": [
+                "left",
+                "right"
+              ]
+            }
+          ]
+        },
+        "5": {
+          "start_index": 120,
+          "obstacle_index": 408,
+          "obstacle_stride": 40,
+          "obstacle_offsets": [
+            0.0018,
+            -0.0171,
+            0.0724,
+            -0.0319,
+            -0.0193
+          ],
+          "obstacles": [
+            {
+              "index": 408,
+              "s_m": 40.786,
+              "offset_m": 0.0018,
+              "region": "transition",
+              "curvature": -0.146,
+              "raceline_vx_mps": 8.78,
+              "raceline_ax_mps2": -1.04,
+              "visibility_m": 8.0,
+              "left_gap_m": 2.63,
+              "right_gap_m": 0.68,
+              "free_sides": [
+                "left",
+                "right"
+              ]
+            },
+            {
+              "index": 448,
+              "s_m": 44.785,
+              "offset_m": -0.0171,
+              "region": "straight",
+              "curvature": -0.084,
+              "raceline_vx_mps": 9.19,
+              "raceline_ax_mps2": 4.02,
+              "visibility_m": 4.9,
+              "left_gap_m": 3.03,
+              "right_gap_m": 1.46,
+              "free_sides": [
+                "left",
+                "right"
+              ]
+            },
+            {
+              "index": 0,
+              "s_m": 0.0,
+              "offset_m": 0.0724,
+              "region": "straight",
+              "curvature": 0.031,
+              "raceline_vx_mps": 10.44,
+              "raceline_ax_mps2": -8.7,
+              "visibility_m": 7.5,
+              "left_gap_m": 0.52,
+              "right_gap_m": 2.87,
+              "free_sides": [
+                "left",
+                "right"
+              ]
+            },
+            {
+              "index": 40,
+              "s_m": 3.999,
+              "offset_m": -0.0319,
+              "region": "straight",
+              "curvature": -0.095,
+              "raceline_vx_mps": 6.95,
+              "raceline_ax_mps2": -7.33,
+              "visibility_m": 8.0,
+              "left_gap_m": 0.6,
+              "right_gap_m": 2.23,
+              "free_sides": [
+                "left",
+                "right"
+              ]
+            },
+            {
+              "index": 80,
+              "s_m": 7.998,
+              "offset_m": -0.0193,
+              "region": "corner",
+              "curvature": -0.674,
+              "raceline_vx_mps": 3.98,
+              "raceline_ax_mps2": -6.35,
+              "visibility_m": 8.0,
+              "left_gap_m": 2.42,
+              "right_gap_m": 0.32,
+              "free_sides": [
+                "left"
+              ]
+            }
+          ]
+        }
+      }
+    }
+  }
+}
